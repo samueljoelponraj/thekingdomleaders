@@ -195,48 +195,47 @@ Business mentoring, Kingdom marketplace ethos, and entrepreneurial networking hu
 
 ### 6. Events & Gallery ([events.html](file:///e:/aws-sf/kingdom%20busness%20hub/events.html))
 
-Central hub for current upcoming events, countdowns, and historical photo galleries.
+Central hub for current gatherings, schedule updates, past event logs, and historical photo galleries.
 
 | Component | Selector / ID | How It Works |
 |---|---|---|
-| **Featured Event Countdown Timer** | `#days`, `#hours`, `#minutes`, `#seconds` | Powered by `initPremiumEventsCountdown()`. Reads target date from `[data-target-date]` (or defaults to event target). Calculates difference from `new Date()` every 1,000ms and updates padded 2-digit values. Stops automatically at `00:00:00:00`. |
-| **Interactive Events Carousel** | `#events-carousel-track`, `#events-carousel` | Powered by `initEventsCarousel()`. Horizontal slide track supporting multiple event slides (West Chapter Launch, Central Chapter Meeting 1). |
-| **Carousel Slide Tab Pills** | `.event-tab-btn` | Interactive tabs above the slider that switch active slides and highlight with active pill styles. |
+| **Upcoming Schedule & Planning Notice** | Status notice banner | Informs visitors that September 2026 launches have concluded and highlights next cohort planning with direct community WhatsApp link. |
+| **Interactive Events Carousel** | `#events-carousel-track`, `#events-carousel` | Powered by `initEventsCarousel()`. Horizontal slide track highlighting concluded launches (West Chapter Launch, Central Chapter Meeting 1) with direct links to past recaps. |
+| **Carousel Slide Tab Pills** | `.event-tab-btn` | Interactive tabs above the slider that switch active slides and display concluded event badges. |
 | **Carousel Dot Indicators** | `#events-carousel-dots .event-dot` | Pill-shaped dot indicators tracking current slide index with active transition animations. |
 | **Touch Swipe Support** | `touchstart`, `touchend` | Swipe gestures on mobile devices measure `touchStartX` and `touchEndX` (40px threshold) to advance or reverse slides. |
 | **Auto-Play Engine** | `startAutoPlay()`, `stopAutoPlay()` | Automatically advances slides every 7 seconds; pauses on desktop hover (`mouseenter`) and resumes on mouse leave (`mouseleave`). |
+| **Past Events Log & Recaps** | `#past` card grid | Detailed history grid featuring recently concluded events including West Chapter Grand Launch (18 Sep 2026), Central Chapter Meeting 1 (18 Sep 2026), East Chapter Launch (11 Sep 2026), and South Chapter Meeting 2 (04 Sep 2026). |
 | **Photo Gallery Card Triggers** | `.gallery-trigger-card` | Clickable album cards with `data-gallery-category`: `leadersmeet-2026`, `civil-awareness`, `leadersmeet-2025`. |
 | **Gallery Lightbox Modal** | `#gallery-lightbox` | Powered by `initGalleryLightbox()`. Opens an animated full-screen modal showing the active album image, counter (`1 / 8`), and title. |
 | **Lightbox Keyboard & Button Navigation** | `#lightbox-prev`, `#lightbox-next`, Keyboard events | Navigate images using arrow buttons or keyboard `ArrowLeft` / `ArrowRight`. Close using `#lightbox-close`, clicking the backdrop overlay, or pressing `Escape`. |
 
 ---
 
-### 7. West Chapter Free Registration ([register-west.html](file:///e:/aws-sf/kingdom%20busness%20hub/register-west.html))
+### 7. West Chapter Registration ([register-west.html](file:///e:/aws-sf/kingdom%20busness%20hub/register-west.html))
 
-Dedicated registration landing page for the **West Chapter Grand Launch** (Free Entry with Dinner Included).
+Event landing page for the **West Chapter Grand Launch** (Held on 18 Sep 2026).
 
 | Component | Selector / ID | How It Works |
 |---|---|---|
 | **Event Summary Header & Badges** | Luxury dark gradient hero card | Displays Date (*Friday, 18 Sept 2026*), Time (*05:30 PM*), Venue (*Praise Evangelical Church, Mugalivakkam*), and *"Free Entry (Dinner Included)"* badge. |
-| **Guest Count Multiplier** | `#reg-guests`, `#guests-row` | Stepper input tracking accompanying guests. Dynamically shows or hides the guest summary badge without charging any fee. |
-| **Free Registration Form** | `#marketplace-reg-form` | Collects: Name, Email, Phone, Residential PIN, Company Name, Role, Existing Member Status, and Referred By. |
-| **Asynchronous Form Handler** | Script lines 968–1040 | On submit: disables button $\rightarrow$ builds JSON payload with `formType: "marketplace"`, `eventName: "Grand Launch: West Chapter"`, `totalCost: 0` $\rightarrow$ dispatches `fetch()` POST to Google Apps Script $\rightarrow$ switches UI. |
-| **Instant Confirmation View** | `#register-success-wrapper` | Hides form wrapper and displays the personalized digital pass with registrant's name, email, event details, and Google Maps directions link. |
+| **Registrations Closed Alert Banner** | Banner in `#register-form-wrapper` | Alerts visitors that the event successfully took place on 18 Sep 2026 and provides instant buttons to join the WhatsApp community or review past logs. |
+| **Archived Registration Form** | `#marketplace-reg-form` | Displays form structure in an inactive/closed state with disabled submission button (*"Registrations Closed (Event Concluded)"*). |
+| **Instant Confirmation View** | `#register-success-wrapper` | Displays digital pass summary template with Google Maps directions link. |
 
 ---
 
-### 8. Central Chapter Paid Registration ([register-central.html](file:///e:/aws-sf/kingdom%20busness%20hub/register-central.html))
+### 8. Central Chapter Registration ([register-central.html](file:///e:/aws-sf/kingdom%20busness%20hub/register-central.html))
 
-Complete registration, ticket calculation, UPI payment, and receipt verification engine for **Central Chapter Meeting 1** (₹250 per entry).
+Event landing and payment verification page for **Central Chapter Meeting 1** (Held on 18 Sep 2026).
 
 | Component | Selector / ID | How It Works |
 |---|---|---|
-| **Dynamic Ticket Calculator** | `#reg-guests`, `#total-amount-display`, `#summary-total` | Base ticket price = ₹250. When guest count changes: $\text{Total} = 250 \times (1 + \text{guests})$. Updates displayed price across both form summary and payment card in real time. |
-| **Payment UPI Display & QR Code** | UPI Payment Card | Displays official UPI ID, payee account details, and scanning instructions for GPay, PhonePe, and Paytm. |
-| **File Drag & Drop Receipt Uploader** | `#receipt-file-input`, `#receipt-upload-area` | Allows uploading payment screenshot (`.png`, `.jpg`, `.jpeg`, `.pdf` up to 10MB). Updates UI state to display uploaded file name and green checkmark. |
-| **Base64 FileReader Pipeline** | JavaScript `FileReader` | Converts user's uploaded image into Base64 format before sending. Strips data URI prefix and packages file name + MIME type into payload. |
-| **Asynchronous Paid Submission** | `#marketplace-reg-form` | Dispatches POST to Google Apps Script. Google Apps Script automatically saves the receipt to the designated Google Drive folder and records the Drive link in the Google Sheet. |
-| **Transaction Success State** | `#register-success-wrapper` | Renders a personalized ticket pass with confirmation badge and instructions regarding dinner voucher verification at the registration desk. |
+| **Event Summary Header & Badges** | Luxury dark gradient hero card | Displays Date (*Friday, 18 Sept 2026*), Venue, and Chief Guest details. |
+| **Registrations Closed Alert Banner** | Banner in `#register-form-wrapper` | Alerts visitors that the meeting has concluded and provides links to the regional WhatsApp group and past recaps. |
+| **Payment UPI Display & QR Code** | UPI Payment Card | Displays official UPI ID and scanning instructions. |
+| **Archived Registration Form** | `#marketplace-reg-form` | Displays fields with disabled submission button (*"Registrations Closed (Event Concluded)"*). |
+| **Transaction Success State** | `#register-success-wrapper` | Renders a personalized ticket pass with confirmation badge and dinner voucher verification details. |
 
 ---
 

@@ -585,7 +585,24 @@
                     data-aos="fade-left">
                     <!-- Form wrapper -->
                     <div id="register-form-wrapper">
-                        <form id="marketplace-reg-form" class="space-y-5">
+                        <!-- Event Concluded Notice -->
+                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl p-6 text-center mb-8 shadow-sm">
+                            <span class="inline-block bg-amber-200 text-amber-900 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider mb-2">Event Successfully Concluded</span>
+                            <h3 class="text-xl sm:text-2xl font-black text-slate-900">Registrations Are Closed</h3>
+                            <p class="text-slate-600 text-xs sm:text-sm mt-2 max-w-md mx-auto leading-relaxed">
+                                Chennai Central Chapter Meeting - 1 took place on <strong>Friday, 18 September 2026</strong>. Registrations and ticket bookings are now closed.
+                            </p>
+                            <div class="mt-4 flex flex-wrap gap-2.5 justify-center">
+                                <a href="contact.html" class="bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-all shadow-sm">
+                                    Join Central Chapter WhatsApp &rarr;
+                                </a>
+                                <a href="events.html#past" class="bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 text-xs font-semibold px-5 py-2.5 rounded-xl transition-all">
+                                    View Past Events Log
+                                </a>
+                            </div>
+                        </div>
+
+                        <form id="marketplace-reg-form" class="space-y-5 opacity-75">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Full
                                     Name *</label>
@@ -719,9 +736,9 @@
                                 </div>
                             </div>
 
-                            <button type="submit"
-                                class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-orange-500/30 transition-all text-sm uppercase tracking-wider mt-4">
-                                Confirm & Register (₹<span id="submit-button-total">250</span>)
+                            <button type="button" disabled
+                                class="w-full bg-slate-300 text-slate-500 font-bold py-4 px-6 rounded-xl cursor-not-allowed text-sm uppercase tracking-wider mt-4 shadow-none">
+                                Registrations Closed (Event Concluded)
                             </button>
                         </form>
                     </div>
