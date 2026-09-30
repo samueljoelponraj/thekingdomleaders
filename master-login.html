@@ -1,0 +1,2300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Portal & Admin Control | The Kingdom Leaders</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Custom centralized CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b1329;
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .master-gradient-bg {
+            background: radial-gradient(circle at top right, #1e3a8a 0%, #0b1329 40%, #060b17 100%);
+        }
+
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .glass-input {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .glass-input:focus {
+            background: rgba(15, 23, 42, 0.95);
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+
+        .table-row-hover:hover {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="master-gradient-bg min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
+
+    <!-- ==========================================
+         TOP BAR NAVIGATION (ALWAYS VISIBLE)
+         ========================================== -->
+    <header class="border-b border-white/10 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl overflow-hidden bg-white p-0.5 border border-white/20 shadow-md">
+                        <img src="images/logo.jpg" alt="TKL Logo" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <div class="text-sm font-bold tracking-tight text-white flex items-center gap-1.5">
+                            <span>The Kingdom Leaders</span>
+                            <span class="bg-gradient-to-r from-amber-500 to-orange-500 text-black text-[10px] font-extrabold uppercase px-1.5 py-0.2 rounded font-mono">Master</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400">Executive Administration Portal</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <!-- Live Supabase Status Pill -->
+                <div id="supabase-status-pill" class="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-slate-800 border border-slate-700 text-slate-300">
+                    <span id="supabase-status-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    <span id="supabase-status-text">Checking Supabase...</span>
+                </div>
+
+                <!-- Back to Site Link -->
+                <a href="events.html" target="_blank" class="hidden sm:flex items-center gap-1 text-xs text-slate-300 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
+                    <span>View Events Page</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+
+                <!-- Logged in controls -->
+                <div id="auth-controls" class="hidden flex items-center space-x-2">
+                    <button id="logout-btn" class="text-xs bg-rose-600/80 hover:bg-rose-600 text-white font-medium px-3.5 py-1.5 rounded-lg transition-all shadow-sm">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==========================================
+         VIEW 1: MASTER LOGIN FORM
+         ========================================== -->
+    <div id="view-login" class="flex-1 flex items-center justify-center p-4 sm:p-6 my-auto">
+        <div class="w-full max-w-md glass-panel rounded-2xl p-6 sm:p-8 border border-white/10 shadow-2xl relative overflow-hidden">
+            <!-- Decorative blur blob -->
+            <div class="absolute -top-16 -right-16 w-36 h-36 bg-blue-600/20 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -bottom-16 -left-16 w-36 h-36 bg-amber-600/20 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div class="text-center mb-8 relative z-10">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 p-0.5 mx-auto mb-4 shadow-lg shadow-blue-900/40 flex items-center justify-center">
+                    <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
+                        <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="text-2xl font-extrabold text-white tracking-tight">Master Control Portal</h1>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Manage Chapter Events & Member Registrations</p>
+            </div>
+
+            <!-- Login form -->
+            <form id="master-login-form" onsubmit="return false;" class="space-y-4 relative z-10">
+                <div id="login-error-box" class="hidden bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs p-3 rounded-xl"></div>
+
+                <div>
+                    <label for="master-passcode-input" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Master Admin Passcode</label>
+                    <div class="relative">
+                        <input type="password" id="master-passcode-input" required placeholder="Enter master passcode" 
+                               class="glass-input w-full px-4 py-3 rounded-xl text-sm placeholder-slate-500 pr-10">
+                        <button type="button" id="toggle-passcode-visibility" class="absolute right-3 top-3 text-slate-400 hover:text-slate-200 focus:outline-none">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-2 flex items-center justify-between">
+                        <span>Default: <code class="bg-slate-800 text-amber-300 px-1 py-0.5 rounded font-mono">tkladmin2026</code></span>
+                        <a href="#tab-settings" onclick="openDirectSettings()" class="text-blue-400 hover:underline">Change / Configure</a>
+                    </p>
+                </div>
+
+                <button type="submit" id="btn-login-submit" class="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 hover:from-blue-500 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl text-sm shadow-lg shadow-blue-900/30 transition-all flex items-center justify-center gap-2">
+                    <span>Unlock Master Dashboard</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+            </form>
+
+            <div class="mt-6 pt-6 border-t border-white/10 text-center">
+                <p class="text-xs text-slate-500">
+                    Need Supabase connection setup? 
+                    <button type="button" onclick="openDirectSettings()" class="text-amber-400 hover:underline font-medium">Configure Supabase Keys</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         VIEW 2: MASTER DASHBOARD (LOGGED IN)
+         ========================================== -->
+    <main id="view-dashboard" class="hidden flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Top Metrics Cards (Interactive & Clickable) -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Metric 1: Total Registrations -->
+            <div onclick="filterByMetric('all')" title="Click to view all registrations" 
+                 class="glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-blue-500/50 hover:bg-slate-800/60 transition-all duration-200 cursor-pointer relative overflow-hidden group transform hover:-translate-y-0.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider group-hover:text-blue-300 transition-colors">Total Registrations</span>
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center">📋</div>
+                </div>
+                <div id="stat-total-regs" class="text-2xl sm:text-3xl font-extrabold text-white mt-2">0</div>
+                <div class="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
+                    <span id="stat-west-regs" class="text-emerald-400 font-semibold">0 West</span> • 
+                    <span id="stat-central-regs" class="text-amber-400 font-semibold">0 Central</span>
+                </div>
+            </div>
+
+            <!-- Metric 2: Revenue Collected -->
+            <div onclick="filterByMetric('verified')" title="Click to filter verified payments"
+                 class="glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-emerald-500/50 hover:bg-slate-800/60 transition-all duration-200 cursor-pointer relative overflow-hidden group transform hover:-translate-y-0.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider group-hover:text-emerald-300 transition-colors">Total Revenue</span>
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">₹</div>
+                </div>
+                <div id="stat-total-revenue" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-2">₹0</div>
+                <div class="text-[11px] text-slate-400 mt-1">
+                    <span id="stat-verified-count" class="text-slate-300 font-medium">0 Verified</span> • 
+                    <span id="stat-pending-count" class="text-amber-400 font-medium">0 Pending</span>
+                </div>
+            </div>
+
+            <!-- Metric 3: Member Registrations vs Event Registrations -->
+            <div onclick="filterByMetric('member')" title="Click to filter Member Registrations"
+                 class="glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-amber-400/50 hover:bg-slate-800/60 transition-all duration-200 cursor-pointer relative overflow-hidden group transform hover:-translate-y-0.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider group-hover:text-amber-300 transition-colors">Member Network</span>
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center">👑</div>
+                </div>
+                <div id="stat-member-count" class="text-2xl sm:text-3xl font-extrabold text-amber-400 mt-2">0</div>
+                <div class="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
+                    <span id="stat-event-count" class="text-blue-400 font-semibold">0 Event Regs</span> • 
+                    <span class="text-slate-400">Headcount: <strong class="text-slate-200" id="stat-total-guests">0</strong></span>
+                </div>
+            </div>
+
+            <!-- Metric 4: Active Events -->
+            <div onclick="switchTab('events')" title="Click to manage chapter events"
+                 class="glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-orange-500/50 hover:bg-slate-800/60 transition-all duration-200 cursor-pointer relative overflow-hidden group transform hover:-translate-y-0.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider group-hover:text-orange-300 transition-colors">Managed Events</span>
+                    <div class="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center">📅</div>
+                </div>
+                <div id="stat-total-events" class="text-2xl sm:text-3xl font-extrabold text-white mt-2">0</div>
+                <div class="text-[11px] text-slate-400 mt-1">
+                    <span id="stat-upcoming-events" class="text-blue-400 font-semibold">0 Upcoming</span> • 
+                    <span id="stat-concluded-events" class="text-slate-400 font-semibold">0 Concluded</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Tab Navigation -->
+        <div class="border-b border-white/10 flex items-center justify-between gap-4 flex-wrap pb-1">
+            <div class="flex items-center space-x-1 sm:space-x-2">
+                <button type="button" id="tab-btn-regs" onclick="switchTab('regs')" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 bg-blue-600 text-white shadow-md">
+                    <span>📋 Registrations Form Data</span>
+                    <span id="regs-badge-count" class="bg-blue-800 text-blue-100 text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+                </button>
+                <button type="button" id="tab-btn-events" onclick="switchTab('events')" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <span>📅 Manage Events Page</span>
+                    <span id="events-badge-count" class="bg-slate-800 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+                </button>
+                <button type="button" id="tab-btn-settings" onclick="switchTab('settings')" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <span>⚙️ Supabase Settings</span>
+                </button>
+            </div>
+
+            <!-- Action buttons for active tab -->
+            <div class="flex items-center space-x-2">
+                <button type="button" id="btn-refresh-data" onclick="reloadCurrentData()" title="Reload Data" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-white/10 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </button>
+                <button type="button" id="btn-export-csv" onclick="exportRegistrationsToCSV()" class="hidden text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3 py-2 rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Export CSV</span>
+                </button>
+                <button type="button" id="btn-add-event" onclick="openEventModal()" class="hidden text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3.5 py-2 rounded-xl shadow-md transition-all flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span>New Event</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             TAB CONTENT 1: REGISTRATIONS & MEMBER NETWORK
+             ========================================== -->
+        <section id="tab-content-regs" class="space-y-4">
+            <!-- 8 Interactive Clickable Filter Cards (Replacing Dropdown) -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Filter By Category or Chapter</span>
+                    <span class="text-[11px] text-slate-400">Click any card to filter table below</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2.5">
+                    <!-- 1. All Registrations -->
+                    <div id="filter-card-all" onclick="selectRegFilterCard('all')"
+                         title="Click to view all registrations"
+                         class="reg-filter-card active-card glass-card p-3 rounded-xl border-2 border-blue-500 bg-blue-950/50 cursor-pointer transition-all hover:-translate-y-0.5 shadow-sm group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-base">📋</span>
+                            <span id="badge-filter-all" class="text-[10px] font-extrabold bg-blue-500/20 text-blue-300 border border-blue-500/40 px-1.5 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="text-xs font-bold text-white group-hover:text-blue-300 transition-colors truncate">All Registrations</div>
+                        <div class="text-[10px] text-slate-400 truncate">Total Entries</div>
+                    </div>
+
+                    <!-- 2. Member Registrations -->
+                    <div id="filter-card-member" onclick="selectRegFilterCard('member')"
+                         title="Click to view Member Registrations (Join TKL)"
+                         class="reg-filter-card glass-card p-3 rounded-xl border border-white/10 bg-slate-900/60 hover:border-amber-400/50 hover:bg-amber-950/20 cursor-pointer transition-all hover:-translate-y-0.5 shadow-sm group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-base">👑</span>
+                            <span id="badge-filter-member" class="text-[10px] font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40 px-1.5 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="text-xs font-bold text-white group-hover:text-amber-300 transition-colors truncate">Member Network</div>
+                        <div class="text-[10px] text-amber-400/80 truncate">Join TKL Form</div>
+                    </div>
+
+                    <!-- 3. Event Registrations -->
+                    <div id="filter-card-event" onclick="selectRegFilterCard('event')"
+                         title="Click to view Event Passes"
+                         class="reg-filter-card glass-card p-3 rounded-xl border border-white/10 bg-slate-900/60 hover:border-blue-400/50 hover:bg-blue-950/20 cursor-pointer transition-all hover:-translate-y-0.5 shadow-sm group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-base">🎫</span>
+                            <span id="badge-filter-event" class="text-[10px] font-extrabold bg-blue-500/20 text-blue-300 border border-blue-500/40 px-1.5 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="text-xs font-bold text-white group-hover:text-blue-300 transition-colors truncate">Event Passes</div>
+                        <div class="text-[10px] text-blue-400/80 truncate">Chapter Events</div>
+                    </div>
+
+                    <!-- 4. Central Chapter -->
+                    <div id="filter-card-central" onclick="selectRegFilterCard('central')"
+                         title="Click to filter Central Chapter registrations"
+                         class="reg-filter-card glass-card p-3 rounded-xl border border-white/10 bg-slate-900/60 hover:border-orange-500/50 hover:bg-orange-950/20 cursor-pointer transition-all hover:-translate-y-0.5 shadow-sm group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-base">📍</span>
+                            <span id="badge-filter-central" class="text-[10px] font-extrabold bg-orange-500/20 text-orange-300 border border-orange-500/40 px-1.5 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="text-xs font-bold text-white group-hover:text-orange-300 transition-colors truncate">Central</div>
+                        <div class="text-[10px] text-slate-400 truncate">Porur Hub</div>
+                    </div>
+
+                    <!-- 5. West Chapter -->
+                    <div id="filter-card-west" onclick="selectRegFilterCard('west')"
+                         title="Click to filter West Chapter registrations"
+                         class="reg-filter-card glass-card p-3 rounded-xl border border-white/10 bg-slate-900/60 hover:border-emerald-500/50 hover:bg-emerald-950/20 cursor-pointer transition-all hover:-translate-y-0.5 shadow-sm group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-base">📍</span>
+                            <span id="badge-filter-west" class="text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-1.5 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors truncate">West</div>
+                        <div class="text-[10px] text-slate-400 truncate">Ambattur Hub</div>
+                    </div>
+
+                    <!-- 6. South Chapter -->
+                    <div id="filter-card-south" onclick="selectRegFilterCard('south')"
+                         title="Click to filter South Chapter registrations"
+                         class="reg-filter-card glass-card p-3 rounded-xl border border-white/10 bg-slate-900/60 hover:border-purple-500/50 hover:bg-purple-950/20 cursor-pointer transition-all hover:-translate-y-0.5 shadow-sm group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-base">📍</span>
+                            <span id="badge-filter-south" class="text-[10px] font-extrabold bg-purple-500/20 text-purple-300 border border-purple-500/40 px-1.5 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="text-xs font-bold text-white group-hover:text-purple-300 transition-colors truncate">South</div>
+                        <div class="text-[10px] text-slate-400 truncate">Medavakkam</div>
+                    </div>
+
+                    <!-- 7. North Chapter -->
+                    <div id="filter-card-north" onclick="selectRegFilterCard('north')"
+                         title="Click to filter North Chapter registrations"
+                         class="reg-filter-card glass-card p-3 rounded-xl border border-white/10 bg-slate-900/60 hover:border-blue-500/50 hover:bg-blue-950/20 cursor-pointer transition-all hover:-translate-y-0.5 shadow-sm group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-base">📍</span>
+                            <span id="badge-filter-north" class="text-[10px] font-extrabold bg-blue-500/20 text-blue-300 border border-blue-500/40 px-1.5 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="text-xs font-bold text-white group-hover:text-blue-300 transition-colors truncate">North</div>
+                        <div class="text-[10px] text-slate-400 truncate">Rayapuram</div>
+                    </div>
+
+                    <!-- 8. East Chapter -->
+                    <div id="filter-card-east" onclick="selectRegFilterCard('east')"
+                         title="Click to filter East Chapter registrations"
+                         class="reg-filter-card glass-card p-3 rounded-xl border border-white/10 bg-slate-900/60 hover:border-teal-500/50 hover:bg-teal-950/20 cursor-pointer transition-all hover:-translate-y-0.5 shadow-sm group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-base">📍</span>
+                            <span id="badge-filter-east" class="text-[10px] font-extrabold bg-teal-500/20 text-teal-300 border border-teal-500/40 px-1.5 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="text-xs font-bold text-white group-hover:text-teal-300 transition-colors truncate">East</div>
+                        <div class="text-[10px] text-slate-400 truncate">Adyar Hub</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search, Chapter & Payment Status Controls -->
+            <div class="glass-card rounded-2xl p-4 border border-white/10 flex flex-col gap-3">
+                <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+                    <!-- Search Input -->
+                    <div class="relative flex-1">
+                        <input type="text" id="search-regs-input" oninput="debounceFilterRegistrations()" placeholder="Search registrant name, email, phone, company, or church..." 
+                               class="glass-input w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm">
+                        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+
+                    <!-- Filter Dropdowns: Chapter & Payment Status -->
+                    <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
+                        <!-- Chapter Filter Dropdown -->
+                        <select id="filter-chapter-select" onchange="onChapterDropdownChange()" class="glass-input px-3 py-2.5 rounded-xl text-xs font-semibold cursor-pointer border border-white/10 bg-slate-900/90 text-slate-200">
+                            <option value="all">📍 All Chapters (Central, West, etc.)</option>
+                            <option value="central">Central (Porur Hub)</option>
+                            <option value="west">West (Ambattur Hub)</option>
+                            <option value="south">South (Medavakkam Hub)</option>
+                            <option value="north">North (Rayapuram Hub)</option>
+                            <option value="east">East (Adyar Hub)</option>
+                            <option value="global">Global / Non-Metro Hub</option>
+                        </select>
+
+                        <!-- Payment Status Filter Dropdown -->
+                        <select id="filter-status-select" onchange="filterRegistrations()" class="glass-input px-3.5 py-2.5 rounded-xl text-xs font-semibold cursor-pointer">
+                            <option value="all">⚡ All Payment Statuses</option>
+                            <option value="Verified">Verified Payments ✅</option>
+                            <option value="Pending">Pending Verification ⏳</option>
+                            <option value="Free">Free / Member Entry 🎫</option>
+                            <option value="Rejected">Rejected ❌</option>
+                        </select>
+                        <!-- Hidden element to keep filter query accessible -->
+                        <input type="hidden" id="filter-event-select" value="all">
+                    </div>
+                </div>
+
+                <!-- Member Network Chapter Sub-Filter Pills Bar -->
+                <div id="member-chapter-filter-bar" class="flex flex-wrap items-center gap-2 pt-3 border-t border-white/10">
+                    <span class="text-[11px] font-bold text-amber-300 flex items-center gap-1 mr-1">
+                        <span>👑 Filter Members by Chapter:</span>
+                    </span>
+                    <button type="button" id="mch-pill-all" onclick="setMemberChapterSubFilter('all')"
+                            class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 transition-all">
+                        All Members (<span id="mch-count-all">0</span>)
+                    </button>
+                    <button type="button" id="mch-pill-central" onclick="setMemberChapterSubFilter('central')"
+                            class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-orange-500/50 transition-all">
+                        Central (<span id="mch-count-central">0</span>)
+                    </button>
+                    <button type="button" id="mch-pill-west" onclick="setMemberChapterSubFilter('west')"
+                            class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-emerald-500/50 transition-all">
+                        West (<span id="mch-count-west">0</span>)
+                    </button>
+                    <button type="button" id="mch-pill-south" onclick="setMemberChapterSubFilter('south')"
+                            class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-purple-500/50 transition-all">
+                        South (<span id="mch-count-south">0</span>)
+                    </button>
+                    <button type="button" id="mch-pill-north" onclick="setMemberChapterSubFilter('north')"
+                            class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-blue-500/50 transition-all">
+                        North (<span id="mch-count-north">0</span>)
+                    </button>
+                    <button type="button" id="mch-pill-east" onclick="setMemberChapterSubFilter('east')"
+                            class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-teal-500/50 transition-all">
+                        East (<span id="mch-count-east">0</span>)
+                    </button>
+                    <button type="button" id="mch-pill-global" onclick="setMemberChapterSubFilter('global')"
+                            class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-slate-500/50 transition-all">
+                        Global (<span id="mch-count-global">0</span>)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Registrations Table View Container (Direct Data Table) -->
+            <div id="registrations-table-container" class="glass-card rounded-2xl border border-white/10 overflow-hidden shadow-xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead class="bg-slate-800/80 text-slate-300 font-semibold border-b border-white/10 uppercase text-[10px] tracking-wider">
+                            <tr>
+                                <th class="py-3 px-4">Date</th>
+                                <th class="py-3 px-4">Registrant Details</th>
+                                <th class="py-3 px-4">Company & Role / Church</th>
+                                <th class="py-3 px-4">Category & Event</th>
+                                <th class="py-3 px-4 text-center">Guests</th>
+                                <th class="py-3 px-4 text-right">Total (₹)</th>
+                                <th class="py-3 px-4 text-center">Status</th>
+                                <th class="py-3 px-4 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="registrations-tbody" class="divide-y divide-white/5 text-slate-200">
+                            <tr>
+                                <td colspan="8" class="py-8 text-center text-slate-400">Loading registrations...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Empty state placeholder -->
+            <div id="no-regs-found" class="hidden p-8 text-center glass-card rounded-2xl border border-white/10">
+                <div class="w-12 h-12 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3 text-xl">🔍</div>
+                <p class="text-sm font-semibold text-white">No registrations match your search criteria.</p>
+                <p class="text-xs text-slate-400 mt-1">Try clicking "All Registrations" or clear your search query.</p>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB CONTENT 2: MANAGE EVENTS FOR ALL CHAPTERS
+             ========================================== -->
+        <section id="tab-content-events" class="hidden space-y-6">
+            <!-- Header & Action -->
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span>Chapter Event Hub & Page Editor</span>
+                        <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-mono uppercase">Multi-Chapter</span>
+                    </h2>
+                    <p class="text-xs text-slate-400">Each chapter has its own dedicated live event page. Create, edit, and publish dates directly from this master panel.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="events.html" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 px-3.5 py-2.5 rounded-xl transition-all flex items-center gap-1.5">
+                        <span>🌐 Public All-Events Page</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+                    <button type="button" onclick="openEventModal()" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs shadow-md transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <span>Create New Event</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 5 Dedicated Chapter Control Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+                <!-- 1. Central Chapter -->
+                <div onclick="if(!event.target.closest('a, button')) filterEventsByChapter('central')" title="Click to filter Central Chapter events" class="glass-card rounded-xl p-4 border border-orange-500/30 bg-gradient-to-b from-orange-950/20 to-slate-900/60 flex flex-col justify-between hover:border-orange-500/60 hover:bg-orange-950/30 transition-all cursor-pointer group transform hover:-translate-y-0.5">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-orange-400 animate-pulse"></span>
+                            <span id="badge-count-central" class="text-[10px] font-bold bg-orange-500/20 text-orange-300 px-2 py-0.5 rounded-full border border-orange-500/30">0 events</span>
+                        </div>
+                        <h3 class="font-bold text-white text-sm group-hover:text-orange-300 transition-colors">Central Chapter</h3>
+                        <p class="text-[11px] text-orange-300 font-medium">Porur / Kathipara Hub</p>
+                        <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Lenin, Kishore, Franklin</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-white/5 space-y-1.5">
+                        <a href="events-central.html" target="_blank" class="w-full text-center block text-[11px] font-semibold bg-white/5 hover:bg-white/10 text-orange-300 py-1.5 px-2 rounded-lg border border-orange-500/30 transition-colors">
+                            View Live Page ↗
+                        </a>
+                        <button type="button" onclick="openEventModal('Central Chapter')" class="w-full text-center text-[11px] font-bold bg-orange-600 hover:bg-orange-500 text-white py-1.5 px-2 rounded-lg transition-colors">
+                            + Add Central Event
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. West Chapter -->
+                <div onclick="if(!event.target.closest('a, button')) filterEventsByChapter('west')" title="Click to filter West Chapter events" class="glass-card rounded-xl p-4 border border-emerald-500/30 bg-gradient-to-b from-emerald-950/20 to-slate-900/60 flex flex-col justify-between hover:border-emerald-500/60 hover:bg-emerald-950/30 transition-all cursor-pointer group transform hover:-translate-y-0.5">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span id="badge-count-west" class="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">0 events</span>
+                        </div>
+                        <h3 class="font-bold text-white text-sm group-hover:text-emerald-300 transition-colors">West Chapter</h3>
+                        <p class="text-[11px] text-emerald-300 font-medium">Ambattur Hub</p>
+                        <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Elias, Balachandar, Rajan</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-white/5 space-y-1.5">
+                        <a href="events-west.html" target="_blank" class="w-full text-center block text-[11px] font-semibold bg-white/5 hover:bg-white/10 text-emerald-300 py-1.5 px-2 rounded-lg border border-emerald-500/30 transition-colors">
+                            View Live Page ↗
+                        </a>
+                        <button type="button" onclick="openEventModal('West Chapter')" class="w-full text-center text-[11px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white py-1.5 px-2 rounded-lg transition-colors">
+                            + Add West Event
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. South Chapter -->
+                <div onclick="if(!event.target.closest('a, button')) filterEventsByChapter('south')" title="Click to filter South Chapter events" class="glass-card rounded-xl p-4 border border-purple-500/30 bg-gradient-to-b from-purple-950/20 to-slate-900/60 flex flex-col justify-between hover:border-purple-500/60 hover:bg-purple-950/30 transition-all cursor-pointer group transform hover:-translate-y-0.5">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-purple-400 animate-pulse"></span>
+                            <span id="badge-count-south" class="text-[10px] font-bold bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/30">0 events</span>
+                        </div>
+                        <h3 class="font-bold text-white text-sm group-hover:text-purple-300 transition-colors">South Chapter</h3>
+                        <p class="text-[11px] text-purple-300 font-medium">Medavakkam Hub</p>
+                        <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Isaac, Devarajan, Jebasingh</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-white/5 space-y-1.5">
+                        <a href="events-south.html" target="_blank" class="w-full text-center block text-[11px] font-semibold bg-white/5 hover:bg-white/10 text-purple-300 py-1.5 px-2 rounded-lg border border-purple-500/30 transition-colors">
+                            View Live Page ↗
+                        </a>
+                        <button type="button" onclick="openEventModal('South Chapter')" class="w-full text-center text-[11px] font-bold bg-purple-600 hover:bg-purple-500 text-white py-1.5 px-2 rounded-lg transition-colors">
+                            + Add South Event
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4. North Chapter -->
+                <div onclick="if(!event.target.closest('a, button')) filterEventsByChapter('north')" title="Click to filter North Chapter events" class="glass-card rounded-xl p-4 border border-blue-500/30 bg-gradient-to-b from-blue-950/20 to-slate-900/60 flex flex-col justify-between hover:border-blue-500/60 hover:bg-blue-950/30 transition-all cursor-pointer group transform hover:-translate-y-0.5">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-400 animate-pulse"></span>
+                            <span id="badge-count-north" class="text-[10px] font-bold bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full border border-blue-500/30">0 events</span>
+                        </div>
+                        <h3 class="font-bold text-white text-sm group-hover:text-blue-300 transition-colors">North Chapter</h3>
+                        <p class="text-[11px] text-blue-300 font-medium">Rayapuram Hub</p>
+                        <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Gladson, Justin</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-white/5 space-y-1.5">
+                        <a href="events-north.html" target="_blank" class="w-full text-center block text-[11px] font-semibold bg-white/5 hover:bg-white/10 text-blue-300 py-1.5 px-2 rounded-lg border border-blue-500/30 transition-colors">
+                            View Live Page ↗
+                        </a>
+                        <button type="button" onclick="openEventModal('North Chapter')" class="w-full text-center text-[11px] font-bold bg-blue-600 hover:bg-blue-500 text-white py-1.5 px-2 rounded-lg transition-colors">
+                            + Add North Event
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 5. East Chapter -->
+                <div onclick="if(!event.target.closest('a, button')) filterEventsByChapter('east')" title="Click to filter East Chapter events" class="glass-card rounded-xl p-4 border border-teal-500/30 bg-gradient-to-b from-teal-950/20 to-slate-900/60 flex flex-col justify-between hover:border-teal-500/60 hover:bg-teal-950/30 transition-all cursor-pointer group transform hover:-translate-y-0.5">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse"></span>
+                            <span id="badge-count-east" class="text-[10px] font-bold bg-teal-500/20 text-teal-300 px-2 py-0.5 rounded-full border border-teal-500/30">0 events</span>
+                        </div>
+                        <h3 class="font-bold text-white text-sm group-hover:text-teal-300 transition-colors">East Chapter</h3>
+                        <p class="text-[11px] text-teal-300 font-medium">Adyar Hub</p>
+                        <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Saravanan, Gnanapragasam, Paul</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-white/5 space-y-1.5">
+                        <a href="events-east.html" target="_blank" class="w-full text-center block text-[11px] font-semibold bg-white/5 hover:bg-white/10 text-teal-300 py-1.5 px-2 rounded-lg border border-teal-500/30 transition-colors">
+                            View Live Page ↗
+                        </a>
+                        <button type="button" onclick="openEventModal('East Chapter')" class="w-full text-center text-[11px] font-bold bg-teal-600 hover:bg-teal-500 text-white py-1.5 px-2 rounded-lg transition-colors">
+                            + Add East Event
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter & Search Controls for Events -->
+            <div class="glass-card rounded-2xl p-4 border border-white/10 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+                <!-- Search -->
+                <div class="relative flex-1">
+                    <input type="text" id="search-events-input" oninput="debounceFilterEvents()" placeholder="Search events by title, venue, or guest..." 
+                           class="glass-input w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm">
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+
+                <!-- Chapter Filter Dropdown -->
+                <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                    <select id="filter-events-chapter" onchange="filterEvents()" class="glass-input px-3 py-2.5 rounded-xl text-xs font-semibold cursor-pointer">
+                        <option value="all">📍 All Chapters</option>
+                        <option value="central">Central Chapter (Porur)</option>
+                        <option value="west">West Chapter (Ambattur)</option>
+                        <option value="south">South Chapter (Medavakkam)</option>
+                        <option value="north">North Chapter (Rayapuram)</option>
+                        <option value="east">East Chapter (Adyar)</option>
+                    </select>
+
+                    <!-- Status Filter Dropdown -->
+                    <select id="filter-events-status" onchange="filterEvents()" class="glass-input px-3 py-2.5 rounded-xl text-xs font-semibold cursor-pointer">
+                        <option value="all">All Statuses</option>
+                        <option value="upcoming">Upcoming (Active)</option>
+                        <option value="concluded">Concluded (Completed)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Events Grid -->
+            <div id="events-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB CONTENT 3: SUPABASE SETTINGS
+             ========================================== -->
+        <section id="tab-content-settings" class="hidden space-y-6 max-w-4xl">
+            <div class="glass-card rounded-2xl p-6 border border-white/10 space-y-6">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span>Supabase Database Credentials</span>
+                        <span class="text-xs font-normal text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">Direct REST API</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Connect your Supabase project so registrations and events are stored securely in PostgreSQL cloud.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="cfg-supabase-url" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Supabase Project URL</label>
+                        <input type="url" id="cfg-supabase-url" placeholder="https://xyzcompany.supabase.co" 
+                               class="glass-input w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-mono">
+                    </div>
+
+                    <div>
+                        <label for="cfg-supabase-key" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Supabase Public Anon Key (anon / public)</label>
+                        <textarea id="cfg-supabase-key" rows="2" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." 
+                                  class="glass-input w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-mono"></textarea>
+                    </div>
+
+                    <div>
+                        <label for="cfg-master-passcode" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Master Portal Passcode</label>
+                        <input type="text" id="cfg-master-passcode" placeholder="Enter custom admin password" 
+                               class="glass-input w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-mono">
+                        <p class="text-[11px] text-slate-400 mt-1">Used to unlock this Master Login dashboard.</p>
+                    </div>
+
+                    <div class="pt-2 flex flex-wrap items-center gap-3">
+                        <button type="button" onclick="testCurrentSupabaseConnection()" class="bg-slate-800 hover:bg-slate-700 text-white font-medium px-4 py-2.5 rounded-xl text-xs border border-white/10 transition-colors flex items-center gap-2">
+                            <span>🔍 Test Supabase Connection</span>
+                        </button>
+                        <button type="button" onclick="saveSupabaseSettings()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl text-xs shadow-md transition-colors">
+                            💾 Save Configuration
+                        </button>
+                    </div>
+
+                    <div id="test-connection-result" class="hidden p-3 rounded-xl text-xs"></div>
+                </div>
+            </div>
+
+            <!-- SQL Schema Setup Guide Card -->
+            <div class="glass-card rounded-2xl p-6 border border-white/10 space-y-4">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div>
+                        <h3 class="text-base font-bold text-white">Database Setup (One-Click SQL Schema)</h3>
+                        <p class="text-xs text-slate-400">Run this once in your Supabase SQL Editor to create tables, indexes, and storage buckets.</p>
+                    </div>
+                    <button type="button" onclick="copySqlSchemaToClipboard()" id="copy-sql-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3.5 py-1.5 rounded-lg text-xs shadow-sm transition-all flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                        <span>Copy SQL Schema</span>
+                    </button>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-white/5 font-mono text-[11px] text-slate-300 max-h-48 overflow-y-auto space-y-1">
+                    <p class="text-emerald-400">-- Schema file: supabase-schema.sql</p>
+                    <p>CREATE TABLE public.events (...);</p>
+                    <p>CREATE TABLE public.registrations (...);</p>
+                    <p>CREATE POLICY "Public can insert registrations" ON public.registrations;</p>
+                    <p>INSERT INTO storage.buckets (id, name, public) VALUES ('receipts', 'receipts', true);</p>
+                </div>
+
+                <div class="text-xs text-slate-400 space-y-1">
+                    <p>1. Open <a href="https://supabase.com/dashboard" target="_blank" class="text-amber-400 underline font-medium">Supabase Dashboard</a> and choose your project.</p>
+                    <p>2. Click <strong>SQL Editor</strong> on the left side.</p>
+                    <p>3. Paste the copied SQL and click <strong>RUN</strong>.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==========================================
+         MODAL 1: REGISTRATION DETAILS & RECEIPT PREVIEW
+         ========================================== -->
+    <div id="modal-reg-detail" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl glass-panel rounded-2xl border border-white/20 shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+                <div>
+                    <h3 id="modal-reg-title" class="text-lg font-bold text-white">Registrant Profile</h3>
+                    <p id="modal-reg-subtitle" class="text-xs text-slate-400"></p>
+                </div>
+                <button type="button" onclick="closeRegModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs sm:text-sm">
+                <!-- Info Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-900/60 p-4 rounded-xl border border-white/5">
+                    <div>
+                        <span class="text-slate-400 text-[11px] block">Full Name</span>
+                        <span id="detail-reg-name" class="font-bold text-white text-base"></span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 text-[11px] block">Event Registered</span>
+                        <span id="detail-reg-event" class="font-semibold text-amber-400"></span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 text-[11px] block">Mobile Number</span>
+                        <a id="detail-reg-phone" href="#" class="font-semibold text-blue-400 hover:underline"></a>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 text-[11px] block">Email Address</span>
+                        <a id="detail-reg-email" href="#" class="font-semibold text-blue-400 hover:underline"></a>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 text-[11px] block">Company & Role</span>
+                        <span id="detail-reg-company" class="text-white"></span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 text-[11px] block">Residential PIN</span>
+                        <span id="detail-reg-pin" class="text-white"></span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 text-[11px] block">Regional Chapter</span>
+                        <span id="detail-reg-chapter" class="text-amber-300 font-semibold"></span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 text-[11px] block">TKL Member / Referral</span>
+                        <span id="detail-reg-referral" class="text-white"></span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 text-[11px] block">Guest Count & Total Cost</span>
+                        <span id="detail-reg-cost" class="font-bold text-emerald-400"></span>
+                    </div>
+                </div>
+
+                <!-- Receipt Screenshot Viewer -->
+                <div id="detail-receipt-section" class="space-y-2">
+                    <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider block">Payment Proof / Receipt Screenshot</span>
+                    <div id="detail-receipt-container" class="bg-slate-950 p-2 rounded-xl border border-white/10 flex items-center justify-center max-h-72 overflow-hidden">
+                        <!-- Image or placeholder -->
+                    </div>
+                </div>
+
+                <!-- Status Update form -->
+                <div class="border-t border-white/10 pt-4 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <label for="modal-update-status" class="text-xs text-slate-300 font-semibold">Change Status:</label>
+                        <select id="modal-update-status" class="glass-input px-3 py-1.5 rounded-lg text-xs font-medium">
+                            <option value="Verified">Verified ✅</option>
+                            <option value="Pending">Pending ⏳</option>
+                            <option value="Free">Free Entry 🎫</option>
+                            <option value="Rejected">Rejected ❌</option>
+                        </select>
+                        <button type="button" onclick="saveRegistrationStatusChange()" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">
+                            Update
+                        </button>
+                    </div>
+
+                    <button type="button" onclick="deleteActiveRegistration()" class="text-rose-400 hover:text-rose-300 text-xs hover:underline flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        <span>Delete Record</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL 2: CREATE / EDIT EVENT
+         ========================================== -->
+    <div id="modal-event" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl glass-panel rounded-2xl border border-white/20 shadow-2xl p-6 relative max-h-[92vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+                <div>
+                    <h3 id="modal-event-title" class="text-lg font-bold text-white">Create New Event</h3>
+                    <p class="text-xs text-slate-400">Configure event details displayed on the public website</p>
+                </div>
+                <button type="button" onclick="closeEventModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <form id="event-edit-form" onsubmit="handleEventFormSubmit(event)" class="space-y-4 text-xs sm:text-sm">
+                <input type="hidden" id="event-form-id">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="sm:col-span-2">
+                        <label for="event-title" class="block text-xs font-semibold text-slate-300 mb-1">Event Title *</label>
+                        <input type="text" id="event-title" required placeholder="e.g. Chennai Central Chapter Meeting - 2" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
+                    </div>
+
+                    <div>
+                        <label for="event-chapter" class="block text-xs font-semibold text-slate-300 mb-1">Target Chapter / Page *</label>
+                        <select id="event-chapter" required onchange="handleChapterSelectChange()" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm cursor-pointer">
+                            <option value="">-- Choose Chapter --</option>
+                            <option value="Central Chapter">Central Chapter (Porur / Kathipara Hub)</option>
+                            <option value="West Chapter">West Chapter (Ambattur Hub)</option>
+                            <option value="South Chapter">South Chapter (Medavakkam Hub)</option>
+                            <option value="North Chapter">North Chapter (Rayapuram Hub)</option>
+                            <option value="East Chapter">East Chapter (Adyar Hub)</option>
+                            <option value="All Chapters">All Chapters (All Chennai Summit)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="event-status" class="block text-xs font-semibold text-slate-300 mb-1">Status</label>
+                        <select id="event-status" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm cursor-pointer">
+                            <option value="upcoming">Upcoming (Active Schedule)</option>
+                            <option value="concluded">Concluded (Completed)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="event-date" class="block text-xs font-semibold text-slate-300 mb-1">Date *</label>
+                        <input type="date" id="event-date" required class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
+                    </div>
+
+                    <div>
+                        <label for="event-time" class="block text-xs font-semibold text-slate-300 mb-1">Time Schedule</label>
+                        <input type="text" id="event-time" placeholder="05:30 PM - 08:30 PM" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label for="event-venue" class="block text-xs font-semibold text-slate-300 mb-1">Venue / Location Name *</label>
+                        <input type="text" id="event-venue" required placeholder="e.g. Praise Evangelical Church, Mugalivakkam" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label for="event-address" class="block text-xs font-semibold text-slate-300 mb-1">Full Postal Address</label>
+                        <input type="text" id="event-address" placeholder="e.g. Mugalivakkam Main Rd, Chennai - 600125" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
+                    </div>
+
+                    <div>
+                        <label for="event-price" class="block text-xs font-semibold text-slate-300 mb-1">Registration Fee (₹)</label>
+                        <input type="number" id="event-price" value="0" min="0" step="10" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
+                    </div>
+
+                    <div>
+                        <label for="event-entry-type" class="block text-xs font-semibold text-slate-300 mb-1">Entry Label</label>
+                        <input type="text" id="event-entry-type" placeholder="e.g. Free Entry (Dinner Included)" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label for="event-guest" class="block text-xs font-semibold text-slate-300 mb-1">Chief Guest / Speaker</label>
+                        <input type="text" id="event-guest" placeholder="e.g. Pastor K.Joshua Stephen" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
+                    </div>
+
+                    <!-- Event Flyer Upload & Preview Area -->
+                    <div class="sm:col-span-2 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-semibold text-slate-300">
+                                🖼️ Event Flyer / Poster Image *
+                            </label>
+                            <span id="flyer-upload-status" class="text-[11px] text-slate-400">JPG, PNG, WebP up to 10MB</span>
+                        </div>
+
+                        <!-- Hidden native file input -->
+                        <input type="file" id="event-flyer-file" accept="image/*" class="hidden" onchange="handleFlyerFileSelect(event)">
+
+                        <!-- Dropzone container -->
+                        <div id="flyer-dropzone" onclick="document.getElementById('event-flyer-file').click()"
+                             ondragover="handleFlyerDragOver(event)" ondragleave="handleFlyerDragLeave(event)" ondrop="handleFlyerDrop(event)"
+                             class="border-2 border-dashed border-white/20 hover:border-amber-400/80 bg-slate-900/60 hover:bg-slate-900/90 rounded-2xl p-4 text-center cursor-pointer transition-all duration-200 group">
+                            
+                            <div id="flyer-dropzone-empty" class="space-y-1.5 py-1">
+                                <div class="w-10 h-10 rounded-full bg-slate-800 text-amber-400 flex items-center justify-center mx-auto text-lg group-hover:scale-110 transition-transform">
+                                    📸
+                                </div>
+                                <p class="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
+                                    Click to Upload Flyer or Drag & Drop Image Here
+                                </p>
+                                <p class="text-[10px] text-slate-400">
+                                    Uploads directly to cloud storage & displays on event registration page
+                                </p>
+                            </div>
+
+                            <!-- Live Flyer Preview -->
+                            <div id="flyer-preview-container" class="hidden flex items-center justify-between gap-4 text-left">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-slate-950 border border-white/10 overflow-hidden flex-shrink-0 flex items-center justify-center p-1">
+                                        <img id="flyer-preview-img" src="" alt="Flyer Preview" class="w-full h-full object-contain">
+                                    </div>
+                                    <div class="min-w-0">
+                                        <span id="flyer-preview-badge" class="inline-block text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full mb-1">
+                                            Flyer Ready ✅
+                                        </span>
+                                        <h5 id="flyer-preview-name" class="text-xs font-bold text-white truncate max-w-[200px] sm:max-w-xs">flyer.jpg</h5>
+                                        <p class="text-[10px] text-slate-400">Click anywhere on box to replace flyer</p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="event.stopPropagation(); clearEventFlyer();" class="text-xs text-rose-400 hover:text-rose-300 px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 transition-all flex items-center gap-1 flex-shrink-0" title="Remove Flyer">
+                                    <span>✕ Clear</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Manual/Direct URL input (syncs with upload) -->
+                        <div class="flex items-center gap-2 pt-1">
+                            <span class="text-[10px] text-slate-400 whitespace-nowrap">Image Link:</span>
+                            <input type="text" id="event-flyer-url" oninput="handleFlyerUrlManualInput()" placeholder="Auto-fills on upload or enter images/... or https://..." class="glass-input w-full px-3 py-1.5 rounded-lg text-[11px] font-mono text-slate-300">
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label for="event-reg-url" class="block text-xs font-semibold text-slate-300 mb-1">Registration Form Link</label>
+                        <input type="text" id="event-reg-url" placeholder="Leave blank for auto-generated form (register.html?id=...)" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
+                        <p class="text-[11px] text-blue-300 mt-1">💡 Leave empty to automatically create and link a dedicated dynamic registration form (<code>register.html?id=...</code>) for this event.</p>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label for="event-description" class="block text-xs font-semibold text-slate-300 mb-1">Event Description</label>
+                        <textarea id="event-description" rows="3" placeholder="Outline the agenda, highlights, and audience..." class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm"></textarea>
+                    </div>
+                </div>
+
+                <div class="border-t border-white/10 pt-4 flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeEventModal()" class="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white">Cancel</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2 rounded-xl text-xs shadow-md transition-colors">
+                        Save Event
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Client-side script -->
+    <script src="env-config.js"></script>
+    <script src="supabase-client.js"></script>
+    <script>
+        let allRegistrations = [];
+        let allEvents = [];
+        let activeRegistrationId = null;
+        let debounceTimer = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            initAuthView();
+            initSupabaseHealth();
+            initLoginHandlers();
+        });
+
+        // 1. Auth View Handler
+        function initAuthView() {
+            const isAuth = !!(window.TKL_SUPABASE && window.TKL_SUPABASE.auth && window.TKL_SUPABASE.auth.isAuthenticated());
+            const viewLogin = document.getElementById('view-login');
+            const viewDashboard = document.getElementById('view-dashboard');
+            const authControls = document.getElementById('auth-controls');
+
+            if (isAuth) {
+                if (viewLogin) viewLogin.classList.add('hidden');
+                if (viewDashboard) viewDashboard.classList.remove('hidden');
+                if (authControls) authControls.classList.remove('hidden');
+                loadDashboardData();
+            } else {
+                if (viewLogin) viewLogin.classList.remove('hidden');
+                if (viewDashboard) viewDashboard.classList.add('hidden');
+                if (authControls) authControls.classList.add('hidden');
+            }
+        }
+
+        // 2. Supabase Health Check Indicator
+        async function initSupabaseHealth() {
+            const pill = document.getElementById('supabase-status-pill');
+            const dot = document.getElementById('supabase-status-dot');
+            const text = document.getElementById('supabase-status-text');
+
+            if (!window.TKL_SUPABASE || !window.TKL_SUPABASE.testConnection) {
+                if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+                if (text) text.textContent = 'Demo Mode (Offline)';
+                if (pill) pill.className = 'flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-950/60 border border-amber-800 text-amber-300';
+                return;
+            }
+
+            try {
+                const res = await window.TKL_SUPABASE.testConnection();
+                if (res && res.connected) {
+                    if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+                    if (text) text.textContent = res.schemaNeeded ? 'Supabase (Schema Needed)' : 'Supabase Connected';
+                    if (pill) pill.className = 'flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-950/60 border border-emerald-800 text-emerald-300';
+                } else {
+                    if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+                    if (text) text.textContent = 'Demo Mode (Offline)';
+                    if (pill) pill.className = 'flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-950/60 border border-amber-800 text-amber-300';
+                }
+            } catch (e) {
+                if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+                if (text) text.textContent = 'Demo Mode (Offline)';
+                if (pill) pill.className = 'flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-950/60 border border-amber-800 text-amber-300';
+            }
+        }
+
+        // 3. Login Handlers
+        function initLoginHandlers() {
+            const form = document.getElementById('master-login-form');
+            const passcode = document.getElementById('master-passcode-input');
+            const errBox = document.getElementById('login-error-box');
+            const toggleBtn = document.getElementById('toggle-passcode-visibility');
+            const logoutBtn = document.getElementById('logout-btn');
+
+            if (toggleBtn && passcode) {
+                toggleBtn.addEventListener('click', () => {
+                    passcode.type = passcode.type === 'password' ? 'text' : 'password';
+                });
+            }
+
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    if (errBox) errBox.classList.add('hidden');
+                    const enteredCode = (passcode ? passcode.value : '').trim();
+
+                    let res;
+                    if (window.TKL_SUPABASE && window.TKL_SUPABASE.auth && typeof window.TKL_SUPABASE.auth.login === 'function') {
+                        res = window.TKL_SUPABASE.auth.login(enteredCode);
+                    } else {
+                        // Resilient fallback when scripts run in strict local offline environment
+                        res = (enteredCode === 'tkladmin2026')
+                            ? { success: true }
+                            : { success: false, error: 'Invalid Master Passcode. Default is tkladmin2026' };
+                    }
+
+                    if (res && res.success) {
+                        initAuthView();
+                    } else {
+                        if (errBox) {
+                            errBox.textContent = (res && res.error) || 'Invalid Master Passcode. Please try again.';
+                            errBox.classList.remove('hidden');
+                        }
+                    }
+                    return false;
+                });
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    if (window.TKL_SUPABASE && window.TKL_SUPABASE.auth && typeof window.TKL_SUPABASE.auth.logout === 'function') {
+                        window.TKL_SUPABASE.auth.logout();
+                    }
+                    initAuthView();
+                });
+            }
+        }
+
+        // 4. Tab Switching
+        function switchTab(tab) {
+            const tabs = ['regs', 'events', 'settings'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-btn-${t}`);
+                const content = document.getElementById(`tab-content-${t}`);
+                if (t === tab) {
+                    btn.className = 'tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 bg-blue-600 text-white shadow-md';
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = 'tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/60';
+                    content.classList.add('hidden');
+                }
+            });
+
+            // Action button visibility
+            const exportBtn = document.getElementById('btn-export-csv');
+            const addEventBtn = document.getElementById('btn-add-event');
+            if (tab === 'regs') {
+                exportBtn.classList.remove('hidden');
+                addEventBtn.classList.add('hidden');
+            } else if (tab === 'events') {
+                exportBtn.classList.add('hidden');
+                addEventBtn.classList.remove('hidden');
+            } else {
+                exportBtn.classList.add('hidden');
+                addEventBtn.classList.add('hidden');
+            }
+        }
+
+        function openDirectSettings() {
+            if (window.TKL_SUPABASE && window.TKL_SUPABASE.auth && typeof window.TKL_SUPABASE.auth.login === 'function') {
+                window.TKL_SUPABASE.auth.login('tkladmin2026'); // temporary access for config
+            }
+            initAuthView();
+            switchTab('settings');
+        }
+
+        // 5. Dashboard Data Loader
+        async function loadDashboardData() {
+            switchTab('regs');
+            await Promise.all([
+                loadRegistrations(),
+                loadEvents(),
+                loadSettingsFields()
+            ]);
+        }
+
+        async function reloadCurrentData() {
+            await Promise.all([loadRegistrations(), loadEvents()]);
+            await initSupabaseHealth();
+        }
+
+        // 6. Registrations Management & Filter Cards Logic
+        let activeRegFilter = 'all';
+        let activeMemberChapter = 'all';
+
+        function getRegChapter(reg) {
+            if (!reg) return 'global';
+            if (window.TKL_SUPABASE && typeof window.TKL_SUPABASE.detectChapter === 'function') {
+                return window.TKL_SUPABASE.detectChapter(reg);
+            }
+            const text = `${reg.event_name || ''} ${reg.chapter || ''} ${reg.role || ''} ${reg.notes || ''} ${reg.entry_type || ''}`.toLowerCase();
+            if (text.includes('central')) return 'central';
+            if (text.includes('west')) return 'west';
+            if (text.includes('south')) return 'south';
+            if (text.includes('north')) return 'north';
+            if (text.includes('east')) return 'east';
+            const pin = (reg.pincode || '').trim();
+            if (window.TKL_SUPABASE && window.TKL_SUPABASE.pincodeMap && window.TKL_SUPABASE.pincodeMap[pin]) {
+                return window.TKL_SUPABASE.pincodeMap[pin].toLowerCase();
+            }
+            return 'global';
+        }
+
+        function isMemberRegistration(r) {
+            const et = (r.entry_type || '').toLowerCase();
+            const en = (r.event_name || '').toLowerCase();
+            return et.includes('member') || en.includes('member') || en.includes('join tkl');
+        }
+
+        function selectRegFilterCard(filterKey) {
+            activeRegFilter = filterKey;
+            const hiddenSelect = document.getElementById('filter-event-select');
+            if (hiddenSelect) hiddenSelect.value = filterKey;
+
+            const cardsConfig = [
+                { id: 'all', activeClass: 'border-2 border-blue-500 bg-blue-950/50 shadow-md ring-1 ring-blue-500/40 transform -translate-y-0.5' },
+                { id: 'member', activeClass: 'border-2 border-amber-400 bg-amber-950/40 shadow-md ring-1 ring-amber-400/40 transform -translate-y-0.5' },
+                { id: 'event', activeClass: 'border-2 border-blue-400 bg-blue-950/40 shadow-md ring-1 ring-blue-400/40 transform -translate-y-0.5' },
+                { id: 'central', activeClass: 'border-2 border-orange-500 bg-orange-950/40 shadow-md ring-1 ring-orange-500/40 transform -translate-y-0.5' },
+                { id: 'west', activeClass: 'border-2 border-emerald-500 bg-emerald-950/40 shadow-md ring-1 ring-emerald-500/40 transform -translate-y-0.5' },
+                { id: 'south', activeClass: 'border-2 border-purple-500 bg-purple-950/40 shadow-md ring-1 ring-purple-500/40 transform -translate-y-0.5' },
+                { id: 'north', activeClass: 'border-2 border-blue-500 bg-blue-950/40 shadow-md ring-1 ring-blue-500/40 transform -translate-y-0.5' },
+                { id: 'east', activeClass: 'border-2 border-teal-500 bg-teal-950/40 shadow-md ring-1 ring-teal-500/40 transform -translate-y-0.5' }
+            ];
+
+            cardsConfig.forEach(cfg => {
+                const el = document.getElementById(`filter-card-${cfg.id}`);
+                if (!el) return;
+                const baseClass = 'reg-filter-card glass-card p-3 rounded-xl cursor-pointer transition-all shadow-sm group';
+                if (cfg.id === filterKey) {
+                    el.className = `${baseClass} ${cfg.activeClass}`;
+                } else {
+                    el.className = `${baseClass} border border-white/10 bg-slate-900/60 hover:border-white/30 hover:bg-slate-800/60 hover:-translate-y-0.5`;
+                }
+            });
+
+            // If a specific regional card was chosen directly, sync chapter dropdown
+            const chSelect = document.getElementById('filter-chapter-select');
+            if (['central', 'west', 'south', 'north', 'east'].includes(filterKey)) {
+                if (chSelect) chSelect.value = filterKey;
+                activeMemberChapter = filterKey;
+                updateMemberChapterPillStyles(filterKey);
+            } else if (filterKey === 'all') {
+                if (chSelect) chSelect.value = 'all';
+                activeMemberChapter = 'all';
+                updateMemberChapterPillStyles('all');
+            } else if (filterKey === 'member') {
+                updateMemberChapterPillStyles(activeMemberChapter);
+            }
+
+            filterRegistrations();
+        }
+
+        function setMemberChapterSubFilter(chKey) {
+            activeMemberChapter = chKey;
+            
+            // Switch to Member Network card if not already selected
+            if (activeRegFilter !== 'member') {
+                activeRegFilter = 'member';
+                const hiddenSelect = document.getElementById('filter-event-select');
+                if (hiddenSelect) hiddenSelect.value = 'member';
+
+                // Update cards highlight
+                const cards = ['all', 'member', 'event', 'central', 'west', 'south', 'north', 'east'];
+                cards.forEach(id => {
+                    const el = document.getElementById(`filter-card-${id}`);
+                    if (!el) return;
+                    const baseClass = 'reg-filter-card glass-card p-3 rounded-xl cursor-pointer transition-all shadow-sm group';
+                    if (id === 'member') {
+                        el.className = `${baseClass} border-2 border-amber-400 bg-amber-950/40 shadow-md ring-1 ring-amber-400/40 transform -translate-y-0.5`;
+                    } else {
+                        el.className = `${baseClass} border border-white/10 bg-slate-900/60 hover:border-white/30 hover:bg-slate-800/60 hover:-translate-y-0.5`;
+                    }
+                });
+            }
+
+            // Sync dropdown
+            const chSelect = document.getElementById('filter-chapter-select');
+            if (chSelect) chSelect.value = chKey;
+
+            updateMemberChapterPillStyles(chKey);
+            filterRegistrations();
+        }
+
+        function onChapterDropdownChange() {
+            const chSelect = document.getElementById('filter-chapter-select');
+            const val = chSelect ? chSelect.value : 'all';
+            activeMemberChapter = val;
+            updateMemberChapterPillStyles(val);
+            filterRegistrations();
+        }
+
+        function updateMemberChapterPillStyles(selectedCh) {
+            const pills = [
+                { id: 'all', active: 'bg-amber-500/25 text-amber-300 border-amber-500/60 font-bold shadow-sm ring-1 ring-amber-500/30' },
+                { id: 'central', active: 'bg-orange-500/25 text-orange-300 border-orange-500/60 font-bold shadow-sm ring-1 ring-orange-500/30' },
+                { id: 'west', active: 'bg-emerald-500/25 text-emerald-300 border-emerald-500/60 font-bold shadow-sm ring-1 ring-emerald-500/30' },
+                { id: 'south', active: 'bg-purple-500/25 text-purple-300 border-purple-500/60 font-bold shadow-sm ring-1 ring-purple-500/30' },
+                { id: 'north', active: 'bg-blue-500/25 text-blue-300 border-blue-500/60 font-bold shadow-sm ring-1 ring-blue-500/30' },
+                { id: 'east', active: 'bg-teal-500/25 text-teal-300 border-teal-500/60 font-bold shadow-sm ring-1 ring-teal-500/30' },
+                { id: 'global', active: 'bg-slate-500/25 text-slate-200 border-slate-400/60 font-bold shadow-sm ring-1 ring-slate-400/30' }
+            ];
+
+            pills.forEach(p => {
+                const btn = document.getElementById(`mch-pill-${p.id}`);
+                if (!btn) return;
+                if (p.id === selectedCh) {
+                    btn.className = `member-ch-pill text-xs px-2.5 py-1 rounded-lg border transition-all ${p.active}`;
+                } else {
+                    btn.className = `member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-white/30 transition-all`;
+                }
+            });
+        }
+
+        function updateFilterCardCounts() {
+            const countAll = allRegistrations.length;
+            const memberRegistrations = allRegistrations.filter(isMemberRegistration);
+            const countMember = memberRegistrations.length;
+            const countEvent = Math.max(0, countAll - countMember);
+
+            // Regional counts across all registrations
+            const countCentral = allRegistrations.filter(r => getRegChapter(r) === 'central').length;
+            const countWest = allRegistrations.filter(r => getRegChapter(r) === 'west').length;
+            const countSouth = allRegistrations.filter(r => getRegChapter(r) === 'south').length;
+            const countNorth = allRegistrations.filter(r => getRegChapter(r) === 'north').length;
+            const countEast = allRegistrations.filter(r => getRegChapter(r) === 'east').length;
+
+            // Member-specific chapter counts
+            const mchAll = countMember;
+            const mchCentral = memberRegistrations.filter(r => getRegChapter(r) === 'central').length;
+            const mchWest = memberRegistrations.filter(r => getRegChapter(r) === 'west').length;
+            const mchSouth = memberRegistrations.filter(r => getRegChapter(r) === 'south').length;
+            const mchNorth = memberRegistrations.filter(r => getRegChapter(r) === 'north').length;
+            const mchEast = memberRegistrations.filter(r => getRegChapter(r) === 'east').length;
+            const mchGlobal = memberRegistrations.filter(r => getRegChapter(r) === 'global').length;
+
+            const setBadge = (id, count) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = count;
+            };
+
+            // Main filter cards
+            setBadge('badge-filter-all', countAll);
+            setBadge('badge-filter-member', countMember);
+            setBadge('badge-filter-event', countEvent);
+            setBadge('badge-filter-central', countCentral);
+            setBadge('badge-filter-west', countWest);
+            setBadge('badge-filter-south', countSouth);
+            setBadge('badge-filter-north', countNorth);
+            setBadge('badge-filter-east', countEast);
+
+            // Member Chapter sub-pills
+            setBadge('mch-count-all', mchAll);
+            setBadge('mch-count-central', mchCentral);
+            setBadge('mch-count-west', mchWest);
+            setBadge('mch-count-south', mchSouth);
+            setBadge('mch-count-north', mchNorth);
+            setBadge('mch-count-east', mchEast);
+            setBadge('mch-count-global', mchGlobal);
+        }
+
+        async function loadRegistrations() {
+            const tbody = document.getElementById('registrations-tbody');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-slate-400">Loading registrations from database...</td></tr>';
+
+            allRegistrations = await window.TKL_SUPABASE.registrations.getAll();
+            updateFilterCardCounts();
+            filterRegistrations();
+            updateDashboardMetrics();
+        }
+
+        function renderRegistrations(items) {
+            const tbody = document.getElementById('registrations-tbody');
+            const noFound = document.getElementById('no-regs-found');
+            const badgeCount = document.getElementById('regs-badge-count');
+
+            if (badgeCount) badgeCount.textContent = items.length;
+
+            if (items.length === 0) {
+                if (tbody) tbody.innerHTML = '';
+                if (noFound) noFound.classList.remove('hidden');
+                return;
+            }
+
+            if (noFound) noFound.classList.add('hidden');
+
+            if (tbody) {
+                tbody.innerHTML = items.map(reg => {
+                    const dateStr = reg.created_at ? new Date(reg.created_at).toLocaleDateString('en-IN', {
+                        day: '2-digit', month: 'short', year: 'numeric'
+                    }) : 'N/A';
+
+                    const statusBadge = getStatusBadge(reg.payment_status);
+                    const isPaid = parseFloat(reg.total_cost || 0) > 0;
+                    const costBadge = isPaid 
+                        ? `<span class="font-bold text-emerald-400">₹${reg.total_cost}</span>`
+                        : `<span class="text-slate-400 font-semibold">₹0 (Free)</span>`;
+
+                    const isMember = isMemberRegistration(reg);
+                    const regChapter = getRegChapter(reg);
+
+                    const chapterBadges = {
+                        central: { label: 'Central (Porur)', cls: 'bg-orange-500/20 text-orange-300 border-orange-500/40' },
+                        west: { label: 'West (Ambattur)', cls: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' },
+                        south: { label: 'South (Medavakkam)', cls: 'bg-purple-500/20 text-purple-300 border-purple-500/40' },
+                        north: { label: 'North (Rayapuram)', cls: 'bg-blue-500/20 text-blue-300 border-blue-500/40' },
+                        east: { label: 'East (Adyar)', cls: 'bg-teal-500/20 text-teal-300 border-teal-500/40' },
+                        global: { label: 'Global Hub', cls: 'bg-slate-500/20 text-slate-300 border-slate-500/40' }
+                    };
+                    const chMeta = chapterBadges[regChapter] || { label: regChapter.toUpperCase(), cls: 'bg-slate-500/20 text-slate-300 border-slate-500/40' };
+                    const chapterBadge = `<span class="inline-flex items-center gap-1 ${chMeta.cls} text-[10px] font-bold px-2 py-0.5 rounded-full border">📍 ${chMeta.label}</span>`;
+
+                    const categoryBadge = isMember
+                        ? `<span class="inline-flex items-center gap-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">👑 Member Network</span>`
+                        : `<span class="inline-flex items-center gap-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">🎫 Event Pass</span>`;
+
+                    return `
+                        <tr onclick="if(!event.target.closest('a, button')) viewRegistrationDetail('${reg.id}')"
+                            title="Click row to view profile"
+                            class="table-row-hover transition-colors cursor-pointer group hover:bg-slate-800/60">
+                            <td class="py-3 px-4 font-mono text-[11px] text-slate-400 whitespace-nowrap">${dateStr}</td>
+                            <td class="py-3 px-4">
+                                <div class="font-bold text-white group-hover:text-blue-300 transition-colors">${escapeHtml(reg.full_name || 'Anonymous')}</div>
+                                <div class="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5">
+                                    <a href="tel:${escapeHtml(reg.phone || '')}" class="hover:text-blue-400 font-mono">${escapeHtml(reg.phone || '')}</a>
+                                    <span>•</span>
+                                    <span class="truncate max-w-[150px]">${escapeHtml(reg.email || '')}</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="text-slate-200 font-medium">${escapeHtml(reg.company || '—')}</div>
+                                <div class="text-[11px] text-slate-400">${escapeHtml(reg.role || '')}</div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-1.5 flex-wrap mb-1">
+                                    ${categoryBadge}
+                                    ${chapterBadge}
+                                </div>
+                                <div class="font-semibold text-amber-300 text-xs">${escapeHtml(reg.event_name || 'TKL Event')}</div>
+                                <div class="text-[10px] text-slate-400 uppercase tracking-wider">${escapeHtml(reg.entry_type || '')}</div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-slate-200">
+                                ${reg.additional_guests > 0 ? `+${reg.additional_guests}` : '0'}
+                            </td>
+                            <td class="py-3 px-4 text-right whitespace-nowrap">
+                                ${costBadge}
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                ${statusBadge}
+                            </td>
+                            <td class="py-3 px-4 text-center whitespace-nowrap">
+                                <button onclick="viewRegistrationDetail('${reg.id}')" class="bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white px-3 py-1 rounded-lg text-xs font-medium transition-all">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+
+        function getStatusBadge(status) {
+            const s = (status || 'Pending').toLowerCase();
+            if (s === 'verified') {
+                return '<span class="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full">Verified ✅</span>';
+            } else if (s === 'free') {
+                return '<span class="inline-flex items-center gap-1 bg-blue-500/20 text-blue-400 border border-blue-500/40 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full">Free Entry 🎫</span>';
+            } else if (s === 'rejected') {
+                return '<span class="inline-flex items-center gap-1 bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full">Rejected ❌</span>';
+            }
+            return '<span class="inline-flex items-center gap-1 bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full">Pending ⏳</span>';
+        }
+
+        function debounceFilterRegistrations() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(filterRegistrations, 250);
+        }
+
+        function filterRegistrations() {
+            const query = (document.getElementById('search-regs-input')?.value || '').toLowerCase().trim();
+            const eventFilter = activeRegFilter.toLowerCase();
+            const statusFilter = (document.getElementById('filter-status-select')?.value || 'all').toLowerCase();
+            const chapterFilter = (document.getElementById('filter-chapter-select')?.value || activeMemberChapter || 'all').toLowerCase();
+
+            let filtered = allRegistrations.filter(r => {
+                const matchQuery = !query || 
+                    (r.full_name && r.full_name.toLowerCase().includes(query)) ||
+                    (r.email && r.email.toLowerCase().includes(query)) ||
+                    (r.phone && r.phone.toLowerCase().includes(query)) ||
+                    (r.company && r.company.toLowerCase().includes(query)) ||
+                    (r.event_name && r.event_name.toLowerCase().includes(query)) ||
+                    (r.role && r.role.toLowerCase().includes(query)) ||
+                    (r.pincode && r.pincode.toLowerCase().includes(query));
+
+                const isMember = isMemberRegistration(r);
+                const regChapter = getRegChapter(r);
+
+                let matchEvent = true;
+                if (eventFilter === 'all') {
+                    matchEvent = true;
+                } else if (eventFilter === 'member') {
+                    matchEvent = isMember;
+                } else if (eventFilter === 'event') {
+                    matchEvent = !isMember;
+                } else {
+                    // Top chapter card clicked (central, west, south, north, east)
+                    matchEvent = (regChapter === eventFilter) || (r.event_name || '').toLowerCase().includes(eventFilter);
+                }
+
+                let matchChapter = true;
+                if (chapterFilter !== 'all') {
+                    matchChapter = (regChapter === chapterFilter);
+                }
+
+                const matchStatus = statusFilter === 'all' || 
+                    (r.payment_status && r.payment_status.toLowerCase() === statusFilter);
+
+                return matchQuery && matchEvent && matchChapter && matchStatus;
+            });
+
+            renderRegistrations(filtered);
+        }
+
+        function filterByMetric(type) {
+            switchTab('regs');
+            const searchInput = document.getElementById('search-regs-input');
+            const statusSelect = document.getElementById('filter-status-select');
+
+            if (searchInput) searchInput.value = '';
+
+            if (type === 'all') {
+                if (statusSelect) statusSelect.value = 'all';
+                selectRegFilterCard('all');
+            } else if (type === 'verified') {
+                if (statusSelect) statusSelect.value = 'Verified';
+                selectRegFilterCard('all');
+            } else if (type === 'member') {
+                if (statusSelect) statusSelect.value = 'all';
+                selectRegFilterCard('member');
+            }
+        }
+
+        function filterEventsByChapter(ch) {
+            switchTab('events');
+            const chSelect = document.getElementById('filter-events-chapter');
+            if (chSelect) {
+                chSelect.value = ch;
+            }
+            filterEvents();
+            const grid = document.getElementById('events-grid-container');
+            if (grid) {
+                grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // 7. Registration Details Modal
+        function viewRegistrationDetail(id) {
+            const reg = allRegistrations.find(r => r.id === id);
+            if (!reg) return;
+
+            activeRegistrationId = id;
+            document.getElementById('modal-reg-title').textContent = reg.full_name || 'Registrant Profile';
+            document.getElementById('modal-reg-subtitle').textContent = `Registered for ${reg.event_name || 'Event'} on ${new Date(reg.created_at).toLocaleString('en-IN')}`;
+
+            document.getElementById('detail-reg-name').textContent = reg.full_name || '—';
+            document.getElementById('detail-reg-event').textContent = reg.event_name || '—';
+            
+            const phoneEl = document.getElementById('detail-reg-phone');
+            phoneEl.textContent = reg.phone || '—';
+            phoneEl.href = reg.phone ? `tel:${reg.phone}` : '#';
+
+            const emailEl = document.getElementById('detail-reg-email');
+            emailEl.textContent = reg.email || '—';
+            emailEl.href = reg.email ? `mailto:${reg.email}` : '#';
+
+            document.getElementById('detail-reg-company').textContent = `${reg.company || 'N/A'} • ${reg.role || 'N/A'}`;
+            document.getElementById('detail-reg-pin').textContent = reg.pincode || 'N/A';
+
+            const regChapter = getRegChapter(reg);
+            const chapterNames = {
+                central: 'Central Chapter (Porur Hub)',
+                west: 'West Chapter (Ambattur Hub)',
+                south: 'South Chapter (Medavakkam Hub)',
+                north: 'North Chapter (Rayapuram Hub)',
+                east: 'East Chapter (Adyar Hub)',
+                global: 'Global Chapter / Non-Metro'
+            };
+            const chDisplayName = chapterNames[regChapter] || (regChapter.toUpperCase() + ' Chapter');
+            const chEl = document.getElementById('detail-reg-chapter');
+            if (chEl) chEl.textContent = `📍 ${chDisplayName}`;
+
+            document.getElementById('detail-reg-referral').textContent = `Member: ${reg.is_existing_member || 'No'} | Ref: ${reg.referred_by || 'Direct'}`;
+            document.getElementById('detail-reg-cost').textContent = `Guests: ${reg.additional_guests || 0} | Total: ₹${reg.total_cost || 0}`;
+
+            const statusSelect = document.getElementById('modal-update-status');
+            statusSelect.value = reg.payment_status || 'Pending';
+
+            // Receipt Container
+            const receiptContainer = document.getElementById('detail-receipt-container');
+            if (reg.receipt_url && reg.receipt_url.length > 5) {
+                receiptContainer.innerHTML = `
+                    <a href="${reg.receipt_url}" target="_blank" title="Click to view full image in new tab">
+                        <img src="${reg.receipt_url}" alt="Payment Receipt" class="max-h-64 object-contain rounded-lg hover:opacity-90 transition-opacity">
+                    </a>
+                `;
+            } else {
+                receiptContainer.innerHTML = `<span class="text-xs text-slate-500 py-6">No receipt screenshot attached (Free or offline verification)</span>`;
+            }
+
+            document.getElementById('modal-reg-detail').classList.remove('hidden');
+        }
+
+        function closeRegModal() {
+            document.getElementById('modal-reg-detail').classList.add('hidden');
+            activeRegistrationId = null;
+        }
+
+        async function saveRegistrationStatusChange() {
+            if (!activeRegistrationId) return;
+            const newStatus = document.getElementById('modal-update-status').value;
+            await window.TKL_SUPABASE.registrations.updateStatus(activeRegistrationId, newStatus);
+            closeRegModal();
+            await loadRegistrations();
+        }
+
+        async function deleteActiveRegistration() {
+            if (!activeRegistrationId) return;
+            if (!confirm('Are you sure you want to permanently delete this registration?')) return;
+            await window.TKL_SUPABASE.registrations.delete(activeRegistrationId);
+            closeRegModal();
+            await loadRegistrations();
+        }
+
+        // 8. CSV Export
+        function exportRegistrationsToCSV() {
+            if (allRegistrations.length === 0) {
+                alert('No registrations available to export.');
+                return;
+            }
+
+            const headers = ['Date', 'Full Name', 'Email', 'Phone', 'Residential PIN', 'Company', 'Role', 'Existing Member', 'Referred By', 'Event Name', 'Entry Type', 'Guests', 'Total Cost (INR)', 'Payment Status', 'Receipt Link'];
+            const rows = allRegistrations.map(r => [
+                r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : '',
+                `"${(r.full_name || '').replace(/"/g, '""')}"`,
+                `"${(r.email || '').replace(/"/g, '""')}"`,
+                `'${r.phone || ''}`,
+                `'${r.pincode || ''}`,
+                `"${(r.company || '').replace(/"/g, '""')}"`,
+                `"${(r.role || '').replace(/"/g, '""')}"`,
+                r.is_existing_member || 'No',
+                `"${(r.referred_by || '').replace(/"/g, '""')}"`,
+                `"${(r.event_name || '').replace(/"/g, '""')}"`,
+                `"${(r.entry_type || '').replace(/"/g, '""')}"`,
+                r.additional_guests || 0,
+                r.total_cost || 0,
+                r.payment_status || 'Pending',
+                `"${(r.receipt_url || '').replace(/"/g, '""')}"`
+            ]);
+
+            const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', `TKL_Registrations_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 9. Events Management & Multi-Chapter Hub
+        let eventsDebounceTimer = null;
+
+        function getChapterMeta(chapterRaw) {
+            const raw = (chapterRaw || '').toLowerCase();
+            if (raw.includes('central')) {
+                return { slug: 'central', page: 'events-central.html', name: 'Central Chapter', color: 'border-orange-500/40 text-orange-400 bg-orange-500/10' };
+            } else if (raw.includes('west')) {
+                return { slug: 'west', page: 'events-west.html', name: 'West Chapter', color: 'border-emerald-500/40 text-emerald-400 bg-emerald-500/10' };
+            } else if (raw.includes('south')) {
+                return { slug: 'south', page: 'events-south.html', name: 'South Chapter', color: 'border-purple-500/40 text-purple-400 bg-purple-500/10' };
+            } else if (raw.includes('north')) {
+                return { slug: 'north', page: 'events-north.html', name: 'North Chapter', color: 'border-blue-500/40 text-blue-400 bg-blue-500/10' };
+            } else if (raw.includes('east')) {
+                return { slug: 'east', page: 'events-east.html', name: 'East Chapter', color: 'border-teal-500/40 text-teal-400 bg-teal-500/10' };
+            }
+            return { slug: 'all', page: 'events.html', name: chapterRaw || 'Combined', color: 'border-slate-500/40 text-slate-300 bg-slate-500/10' };
+        }
+
+        async function loadEvents() {
+            allEvents = await window.TKL_SUPABASE.events.getAll();
+            filterEvents();
+            updateDashboardMetrics();
+        }
+
+        function debounceFilterEvents() {
+            clearTimeout(eventsDebounceTimer);
+            eventsDebounceTimer = setTimeout(filterEvents, 250);
+        }
+
+        function filterEvents() {
+            const query = (document.getElementById('search-events-input')?.value || '').toLowerCase().trim();
+            const chapterFilter = (document.getElementById('filter-events-chapter')?.value || 'all').toLowerCase();
+            const statusFilter = (document.getElementById('filter-events-status')?.value || 'all').toLowerCase();
+
+            const filtered = allEvents.filter(ev => {
+                const matchQuery = !query || 
+                    (ev.title && ev.title.toLowerCase().includes(query)) ||
+                    (ev.location_name && ev.location_name.toLowerCase().includes(query)) ||
+                    (ev.chief_guest && ev.chief_guest.toLowerCase().includes(query)) ||
+                    (ev.chapter && ev.chapter.toLowerCase().includes(query));
+
+                const matchChapter = chapterFilter === 'all' || 
+                    (ev.chapter && ev.chapter.toLowerCase().includes(chapterFilter));
+
+                const matchStatus = statusFilter === 'all' || 
+                    (ev.status && ev.status.toLowerCase() === statusFilter);
+
+                return matchQuery && matchChapter && matchStatus;
+            });
+
+            renderEvents(filtered);
+        }
+
+        function renderEvents(events) {
+            const container = document.getElementById('events-grid-container');
+            const badgeCount = document.getElementById('events-badge-count');
+            if (badgeCount) badgeCount.textContent = events.length;
+
+            if (events.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-2 text-center py-12 glass-card rounded-2xl border border-white/10 p-8">
+                        <div class="w-12 h-12 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3 text-xl">📅</div>
+                        <h4 class="text-base font-bold text-white mb-1">No Chapter Events Match Filter</h4>
+                        <p class="text-xs text-slate-400 mb-4">Try clearing your search query or create a new event for this chapter.</p>
+                        <button type="button" onclick="openEventModal()" class="bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs shadow-md">
+                            + Create New Event
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = events.map(ev => {
+                const isUpcoming = (ev.status || '').toLowerCase() === 'upcoming';
+                const statusBadge = isUpcoming
+                    ? `<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full">Upcoming Gathering 📢</span>`
+                    : `<span class="bg-slate-700/50 text-slate-300 border border-slate-600 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full">Concluded ✅</span>`;
+
+                const priceTag = parseFloat(ev.price || 0) > 0 ? `₹${ev.price}` : 'Free Entry';
+                const chapterMeta = getChapterMeta(ev.chapter);
+
+                // Auto-resolve dynamic registration link if missing or legacy
+                let regUrl = ev.registration_url;
+                if (!regUrl || regUrl === 'register-central.html' || regUrl === 'register-west.html') {
+                    regUrl = `register.html?id=${ev.id}`;
+                }
+
+                // Count registrations for this specific event
+                const eventRegs = allRegistrations.filter(r => 
+                    (r.event_id && String(r.event_id) === String(ev.id)) ||
+                    (r.event_name && ev.title && r.event_name.toLowerCase().trim() === ev.title.toLowerCase().trim())
+                );
+
+                return `
+                    <div onclick="if(!event.target.closest('a, button, input')) editEventModal('${ev.id}')"
+                         title="Click anywhere on card to edit this event"
+                         class="glass-card rounded-2xl p-5 border border-white/10 flex flex-col justify-between space-y-4 hover:border-amber-400/50 hover:bg-slate-800/70 transition-all duration-200 cursor-pointer shadow-lg group transform hover:-translate-y-0.5">
+                        <div>
+                            ${ev.flyer_url ? `
+                                <div class="relative w-full h-36 rounded-xl overflow-hidden bg-slate-950 mb-3 border border-white/10 group-hover:border-amber-400/30 transition-all">
+                                    <img src="${escapeHtml(ev.flyer_url)}" alt="${escapeHtml(ev.title)} Flyer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.parentElement.style.display='none'">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                                    <span class="absolute bottom-2 left-2 text-[10px] font-semibold bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-amber-300 border border-white/10 flex items-center gap-1">
+                                        🖼️ Flyer Attached
+                                    </span>
+                                </div>
+                            ` : ''}
+                            <div class="flex items-center justify-between gap-2 mb-2 flex-wrap">
+                                <span class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${chapterMeta.color}">
+                                    📍 ${escapeHtml(ev.chapter || 'Chapter Gathering')}
+                                </span>
+                                ${statusBadge}
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-amber-300 transition-colors leading-tight mb-2">${escapeHtml(ev.title)}</h3>
+                            <p class="text-xs text-slate-400 line-clamp-2 mb-3">${escapeHtml(ev.description || 'No description provided.')}</p>
+
+                            <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300 bg-slate-900/60 p-3 rounded-xl border border-white/5">
+                                <div>📅 <strong>Date:</strong> ${escapeHtml(ev.event_date || 'N/A')}</div>
+                                <div>🕔 <strong>Time:</strong> ${escapeHtml(ev.event_time || 'N/A')}</div>
+                                <div class="col-span-2 truncate">📍 <strong>Venue:</strong> ${escapeHtml(ev.location_name || 'Chennai')}</div>
+                                <div>🏷️ <strong>Fee:</strong> ${priceTag}</div>
+                                <div>🎤 <strong>Guest:</strong> ${escapeHtml(ev.chief_guest || '—')}</div>
+                            </div>
+
+                            <!-- Dedicated Registration Form Bar -->
+                            <div class="mt-3 p-2.5 rounded-xl bg-slate-900/80 border border-white/10 flex items-center justify-between gap-2 flex-wrap text-xs">
+                                <div class="flex items-center gap-1.5 min-w-0">
+                                    <span class="text-slate-400 font-medium">Form:</span>
+                                    <a href="${regUrl}" target="_blank" class="text-blue-400 hover:underline font-mono text-[11px] truncate max-w-[170px] sm:max-w-[220px]" title="${regUrl}">${regUrl}</a>
+                                </div>
+                                <div class="flex items-center gap-1.5 flex-shrink-0">
+                                    <a href="${regUrl}" target="_blank" class="px-2 py-1 rounded bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white text-[11px] font-semibold transition-colors flex items-center gap-1">
+                                        <span>View Form ↗</span>
+                                    </a>
+                                    <button type="button" onclick="copyFormLink('${regUrl}')" class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-slate-200 text-[11px] font-semibold transition-colors flex items-center gap-1" title="Copy Registration Form Link">
+                                        <span>📋 Copy</span>
+                                    </button>
+                                    <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">
+                                        ${eventRegs.length} Regs
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2 flex-wrap">
+                            <div class="flex items-center gap-2">
+                                <a href="${chapterMeta.page}" target="_blank" class="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 bg-blue-950/40 hover:bg-blue-950/80 px-2.5 py-1.5 rounded-lg border border-blue-800/40 transition-colors">
+                                    <span>Live Page</span>
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                </a>
+                                <button onclick="toggleEventStatus('${ev.id}')" class="text-xs ${isUpcoming ? 'text-amber-400 hover:text-amber-300' : 'text-emerald-400 hover:text-emerald-300'} font-medium px-2 py-1.5">
+                                    Mark as ${isUpcoming ? 'Concluded' : 'Upcoming'}
+                                </button>
+                            </div>
+
+                            <div class="flex items-center space-x-2">
+                                <button onclick="editEventModal('${ev.id}')" class="bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    <span>Edit</span>
+                                </button>
+                                <button onclick="deleteEventRecord('${ev.id}')" class="text-rose-400 hover:text-rose-300 text-xs p-1.5 transition-colors" title="Delete Event">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==========================================
+        // EVENT FLYER UPLOAD & PREVIEW HANDLERS
+        // ==========================================
+        function handleFlyerFileSelect(event) {
+            const file = event.target.files && event.target.files[0];
+            if (file) {
+                processFlyerUpload(file);
+            }
+        }
+
+        function handleFlyerDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const dropzone = document.getElementById('flyer-dropzone');
+            if (dropzone) {
+                dropzone.classList.add('border-amber-400', 'bg-slate-800/90');
+            }
+        }
+
+        function handleFlyerDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const dropzone = document.getElementById('flyer-dropzone');
+            if (dropzone) {
+                dropzone.classList.remove('border-amber-400', 'bg-slate-800/90');
+            }
+        }
+
+        function handleFlyerDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const dropzone = document.getElementById('flyer-dropzone');
+            if (dropzone) {
+                dropzone.classList.remove('border-amber-400', 'bg-slate-800/90');
+            }
+            const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+            if (file) {
+                processFlyerUpload(file);
+            }
+        }
+
+        async function processFlyerUpload(file) {
+            if (!file.type || !file.type.startsWith('image/')) {
+                showToast('Please select a valid image file (JPG, PNG, WebP)', 'error');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                showToast('Image size exceeds 10MB limit. Please choose a smaller file.', 'error');
+                return;
+            }
+
+            const statusEl = document.getElementById('flyer-upload-status');
+            if (statusEl) statusEl.innerHTML = '<span class="text-amber-400 animate-pulse font-semibold">⏳ Uploading flyer...</span>';
+
+            // Show immediate local preview
+            const objectUrl = URL.createObjectURL(file);
+            setFlyerPreview(objectUrl, file.name, true);
+
+            const title = document.getElementById('event-title').value || 'event';
+
+            try {
+                if (window.TKL_SUPABASE && typeof window.TKL_SUPABASE.uploadFlyer === 'function') {
+                    const uploadedUrl = await window.TKL_SUPABASE.uploadFlyer(file, title);
+                    document.getElementById('event-flyer-url').value = uploadedUrl;
+                    setFlyerPreview(uploadedUrl, file.name, false);
+                    if (statusEl) statusEl.innerHTML = '<span class="text-emerald-400 font-semibold">✅ Uploaded & Attached</span>';
+                    showToast('Flyer image uploaded successfully!', 'success');
+                } else {
+                    // Fallback to FileReader Base64
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        const base64 = evt.target.result;
+                        document.getElementById('event-flyer-url').value = base64;
+                        setFlyerPreview(base64, file.name, false);
+                        if (statusEl) statusEl.innerHTML = '<span class="text-emerald-400 font-semibold">✅ Ready</span>';
+                        showToast('Flyer attached successfully!', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            } catch (err) {
+                console.warn('Flyer upload fallback:', err);
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const base64 = evt.target.result;
+                    document.getElementById('event-flyer-url').value = base64;
+                    setFlyerPreview(base64, file.name, false);
+                    if (statusEl) statusEl.innerHTML = '<span class="text-emerald-400 font-semibold">✅ Attached</span>';
+                };
+                reader.readAsDataURL(file);
+                showToast('Flyer attached (local preview mode)', 'info');
+            }
+        }
+
+        function setFlyerPreview(url, fileName = '', isUploading = false) {
+            const emptyState = document.getElementById('flyer-dropzone-empty');
+            const previewContainer = document.getElementById('flyer-preview-container');
+            const previewImg = document.getElementById('flyer-preview-img');
+            const previewName = document.getElementById('flyer-preview-name');
+            const previewBadge = document.getElementById('flyer-preview-badge');
+
+            if (!url) {
+                clearEventFlyer();
+                return;
+            }
+
+            if (emptyState) emptyState.classList.add('hidden');
+            if (previewContainer) previewContainer.classList.remove('hidden');
+            if (previewImg) previewImg.src = url;
+            if (previewName) {
+                const displayName = fileName || (url.startsWith('data:') ? 'Custom Uploaded Flyer' : url.split('/').pop().split('?')[0]);
+                previewName.textContent = displayName;
+            }
+            if (previewBadge) {
+                if (isUploading) {
+                    previewBadge.className = 'inline-block text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full mb-1';
+                    previewBadge.textContent = 'Uploading... ⏳';
+                } else {
+                    previewBadge.className = 'inline-block text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full mb-1';
+                    previewBadge.textContent = 'Flyer Ready ✅';
+                }
+            }
+        }
+
+        function clearEventFlyer() {
+            const fileInput = document.getElementById('event-flyer-file');
+            const urlInput = document.getElementById('event-flyer-url');
+            const emptyState = document.getElementById('flyer-dropzone-empty');
+            const previewContainer = document.getElementById('flyer-preview-container');
+            const previewImg = document.getElementById('flyer-preview-img');
+            const statusEl = document.getElementById('flyer-upload-status');
+
+            if (fileInput) fileInput.value = '';
+            if (urlInput) urlInput.value = '';
+            if (previewImg) previewImg.src = '';
+            if (emptyState) emptyState.classList.remove('hidden');
+            if (previewContainer) previewContainer.classList.add('hidden');
+            if (statusEl) statusEl.textContent = 'JPG, PNG, WebP up to 10MB';
+        }
+
+        function handleFlyerUrlManualInput() {
+            const url = (document.getElementById('event-flyer-url').value || '').trim();
+            if (url) {
+                setFlyerPreview(url, url.split('/').pop().split('?')[0]);
+            } else {
+                clearEventFlyer();
+            }
+        }
+
+        function openEventModal(preselectedChapter = null) {
+            document.getElementById('modal-event-title').textContent = preselectedChapter 
+                ? `Create Event for ${preselectedChapter}` 
+                : 'Create New Event';
+            document.getElementById('event-form-id').value = '';
+            document.getElementById('event-edit-form').reset();
+            clearEventFlyer();
+            document.getElementById('event-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('event-reg-url').value = '';
+            document.getElementById('event-reg-url').placeholder = 'Auto-generates: register.html?id=... (Leave blank or enter custom URL)';
+
+            if (preselectedChapter) {
+                const chapterSelect = document.getElementById('event-chapter');
+                for (let i = 0; i < chapterSelect.options.length; i++) {
+                    if (chapterSelect.options[i].value.toLowerCase().includes(preselectedChapter.toLowerCase())) {
+                        chapterSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+                handleChapterSelectChange();
+            }
+
+            document.getElementById('modal-event').classList.remove('hidden');
+        }
+
+        function handleChapterSelectChange() {
+            const chapter = (document.getElementById('event-chapter').value || '').toLowerCase();
+            const venueInput = document.getElementById('event-venue');
+            const flyerInput = document.getElementById('event-flyer-url');
+            const regInput = document.getElementById('event-reg-url');
+
+            // Default suggestion for venues & flyers without forcing old registration forms
+            let defaultFlyer = '';
+            if (chapter.includes('central')) {
+                if (!venueInput.value) venueInput.value = 'Praise Evangelical Church, Mugalivakkam';
+                defaultFlyer = 'images/central chapter meeting 1.jpeg';
+            } else if (chapter.includes('west')) {
+                if (!venueInput.value) venueInput.value = 'Ambattur Hub, Chennai';
+                defaultFlyer = 'images/west lanch free reg.png';
+            } else if (chapter.includes('south')) {
+                if (!venueInput.value) venueInput.value = 'Medavakkam Hub, Chennai';
+                defaultFlyer = 'images/logo.jpg';
+            } else if (chapter.includes('north')) {
+                if (!venueInput.value) venueInput.value = 'Rayapuram Hub, Chennai';
+                defaultFlyer = 'images/logo.jpg';
+            } else if (chapter.includes('east')) {
+                if (!venueInput.value) venueInput.value = 'Adyar Hub, Chennai';
+                defaultFlyer = 'images/logo.jpg';
+            }
+
+            // If no custom flyer has been selected/uploaded yet, show the chapter default
+            const fileInput = document.getElementById('event-flyer-file');
+            if ((!fileInput || !fileInput.files.length) && (!flyerInput.value || flyerInput.value.startsWith('images/'))) {
+                if (defaultFlyer) {
+                    flyerInput.value = defaultFlyer;
+                    setFlyerPreview(defaultFlyer, defaultFlyer.split('/').pop());
+                }
+            }
+
+            if (!document.getElementById('event-form-id').value && (!regInput.value || regInput.value === 'register-central.html' || regInput.value === 'register-west.html')) {
+                regInput.value = '';
+                regInput.placeholder = 'Auto-generates: register.html?id=... (Leave blank or enter custom URL)';
+            }
+        }
+
+        function editEventModal(id) {
+            const ev = allEvents.find(e => e.id === id);
+            if (!ev) return;
+
+            document.getElementById('modal-event-title').textContent = `Edit: ${ev.title || 'Event'}`;
+            document.getElementById('event-form-id').value = ev.id;
+            document.getElementById('event-title').value = ev.title || '';
+            
+            // Set chapter dropdown value
+            const chapterSelect = document.getElementById('event-chapter');
+            let found = false;
+            for (let i = 0; i < chapterSelect.options.length; i++) {
+                if (chapterSelect.options[i].value.toLowerCase() === (ev.chapter || '').toLowerCase() ||
+                    (ev.chapter && ev.chapter.toLowerCase().includes(chapterSelect.options[i].value.toLowerCase()))) {
+                    chapterSelect.selectedIndex = i;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found && ev.chapter) {
+                // Add temporary custom option if needed
+                const opt = document.createElement('option');
+                opt.value = ev.chapter;
+                opt.text = ev.chapter;
+                opt.selected = true;
+                chapterSelect.add(opt);
+            }
+
+            document.getElementById('event-status').value = ev.status || 'upcoming';
+            document.getElementById('event-date').value = ev.event_date || '';
+            document.getElementById('event-time').value = ev.event_time || '';
+            document.getElementById('event-venue').value = ev.location_name || '';
+            document.getElementById('event-address').value = ev.location_address || '';
+            document.getElementById('event-price').value = ev.price || 0;
+            document.getElementById('event-entry-type').value = ev.entry_type || '';
+            document.getElementById('event-guest').value = ev.chief_guest || '';
+            document.getElementById('event-flyer-url').value = ev.flyer_url || '';
+            document.getElementById('event-reg-url').value = ev.registration_url || '';
+            document.getElementById('event-description').value = ev.description || '';
+
+            // Update Flyer Preview for Edit
+            if (ev.flyer_url) {
+                setFlyerPreview(ev.flyer_url, ev.title ? `${ev.title} Flyer` : 'Event Flyer');
+            } else {
+                clearEventFlyer();
+            }
+
+            document.getElementById('modal-event').classList.remove('hidden');
+        }
+
+        function closeEventModal() {
+            document.getElementById('modal-event').classList.add('hidden');
+        }
+
+        async function handleEventFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('event-form-id').value;
+            let regUrl = (document.getElementById('event-reg-url').value || '').trim();
+
+            if (id) {
+                // If regUrl is empty or was legacy default, point to dynamic registration form
+                if (!regUrl || regUrl === 'register-central.html' || regUrl === 'register-west.html') {
+                    regUrl = `register.html?id=${id}`;
+                }
+                const data = {
+                    title: document.getElementById('event-title').value.trim(),
+                    chapter: document.getElementById('event-chapter').value,
+                    status: document.getElementById('event-status').value,
+                    event_date: document.getElementById('event-date').value,
+                    event_time: document.getElementById('event-time').value,
+                    location_name: document.getElementById('event-venue').value,
+                    location_address: document.getElementById('event-address').value,
+                    price: parseFloat(document.getElementById('event-price').value || 0),
+                    entry_type: document.getElementById('event-entry-type').value,
+                    chief_guest: document.getElementById('event-guest').value,
+                    flyer_url: document.getElementById('event-flyer-url').value,
+                    registration_url: regUrl,
+                    description: document.getElementById('event-description').value
+                };
+                await window.TKL_SUPABASE.events.update(id, data);
+            } else {
+                const newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('ev-' + Date.now());
+                if (!regUrl || regUrl === 'register-central.html' || regUrl === 'register-west.html') {
+                    regUrl = `register.html?id=${newId}`;
+                }
+                const data = {
+                    id: newId,
+                    title: document.getElementById('event-title').value.trim(),
+                    chapter: document.getElementById('event-chapter').value,
+                    status: document.getElementById('event-status').value,
+                    event_date: document.getElementById('event-date').value,
+                    event_time: document.getElementById('event-time').value,
+                    location_name: document.getElementById('event-venue').value,
+                    location_address: document.getElementById('event-address').value,
+                    price: parseFloat(document.getElementById('event-price').value || 0),
+                    entry_type: document.getElementById('event-entry-type').value,
+                    chief_guest: document.getElementById('event-guest').value,
+                    flyer_url: document.getElementById('event-flyer-url').value,
+                    registration_url: regUrl,
+                    description: document.getElementById('event-description').value
+                };
+                await window.TKL_SUPABASE.events.create(data);
+            }
+
+            closeEventModal();
+            await loadEvents();
+        }
+
+        function copyFormLink(url) {
+            const fullUrl = url.startsWith('http') ? url : (window.location.origin + '/' + url.replace(/^\//, ''));
+            navigator.clipboard.writeText(fullUrl).then(() => {
+                alert('Registration Form Link copied to clipboard:\n' + fullUrl);
+            }).catch(() => {
+                prompt('Copy Registration Form Link:', fullUrl);
+            });
+        }
+
+        async function toggleEventStatus(id) {
+            const ev = allEvents.find(e => e.id === id);
+            if (!ev) return;
+            const newStatus = (ev.status || '').toLowerCase() === 'upcoming' ? 'concluded' : 'upcoming';
+            await window.TKL_SUPABASE.events.update(id, { status: newStatus });
+            await loadEvents();
+        }
+
+        async function deleteEventRecord(id) {
+            if (!confirm('Are you sure you want to permanently delete this event? This will remove it from all chapter pages.')) return;
+            await window.TKL_SUPABASE.events.delete(id);
+            await loadEvents();
+        }
+
+        // 10. Dashboard Metrics Summary
+        function updateDashboardMetrics() {
+            const totalRegs = allRegistrations.length;
+            document.getElementById('stat-total-regs').textContent = totalRegs;
+
+            const westRegs = allRegistrations.filter(r => (r.event_name || '').toLowerCase().includes('west')).length;
+            const centralRegs = allRegistrations.filter(r => (r.event_name || '').toLowerCase().includes('central')).length;
+            document.getElementById('stat-west-regs').textContent = `${westRegs} West`;
+            document.getElementById('stat-central-regs').textContent = `${centralRegs} Central`;
+
+            // Revenue calculation
+            const verifiedRevenue = allRegistrations
+                .filter(r => (r.payment_status || '').toLowerCase() === 'verified')
+                .reduce((sum, r) => sum + parseFloat(r.total_cost || 0), 0);
+            document.getElementById('stat-total-revenue').textContent = `₹${verifiedRevenue.toLocaleString('en-IN')}`;
+
+            const verifiedCount = allRegistrations.filter(r => (r.payment_status || '').toLowerCase() === 'verified').length;
+            const pendingCount = allRegistrations.filter(r => (r.payment_status || '').toLowerCase() === 'pending').length;
+            document.getElementById('stat-verified-count').textContent = `${verifiedCount} Verified`;
+            document.getElementById('stat-pending-count').textContent = `${pendingCount} Pending`;
+
+            // Total Headcount (Registrant + additional guests)
+            const totalHeadcount = allRegistrations.reduce((sum, r) => sum + 1 + (parseInt(r.additional_guests, 10) || 0), 0);
+            const guestsEl = document.getElementById('stat-total-guests');
+            if (guestsEl) guestsEl.textContent = totalHeadcount;
+
+            // Member Network vs Event Registrations
+            const memberCount = allRegistrations.filter(r => {
+                const et = (r.entry_type || '').toLowerCase();
+                const en = (r.event_name || '').toLowerCase();
+                return et.includes('member') || en.includes('member') || en.includes('join tkl');
+            }).length;
+            const eventOnlyCount = Math.max(0, totalRegs - memberCount);
+
+            const memberCountEl = document.getElementById('stat-member-count');
+            if (memberCountEl) memberCountEl.textContent = memberCount;
+            const eventCountEl = document.getElementById('stat-event-count');
+            if (eventCountEl) eventCountEl.textContent = `${eventOnlyCount} Event Regs`;
+
+            // Events stats
+            document.getElementById('stat-total-events').textContent = allEvents.length;
+            const upcomingEvents = allEvents.filter(e => (e.status || '').toLowerCase() === 'upcoming').length;
+            const concludedEvents = allEvents.filter(e => (e.status || '').toLowerCase() === 'concluded').length;
+            document.getElementById('stat-upcoming-events').textContent = `${upcomingEvents} Upcoming`;
+            document.getElementById('stat-concluded-events').textContent = `${concludedEvents} Concluded`;
+
+            // Update 5 Chapter Quick Hub event count badges
+            const centralCount = allEvents.filter(e => (e.chapter || '').toLowerCase().includes('central')).length;
+            const westCount = allEvents.filter(e => (e.chapter || '').toLowerCase().includes('west')).length;
+            const southCount = allEvents.filter(e => (e.chapter || '').toLowerCase().includes('south')).length;
+            const northCount = allEvents.filter(e => (e.chapter || '').toLowerCase().includes('north')).length;
+            const eastCount = allEvents.filter(e => (e.chapter || '').toLowerCase().includes('east')).length;
+
+            const badgeCentral = document.getElementById('badge-count-central');
+            const badgeWest = document.getElementById('badge-count-west');
+            const badgeSouth = document.getElementById('badge-count-south');
+            const badgeNorth = document.getElementById('badge-count-north');
+            const badgeEast = document.getElementById('badge-count-east');
+
+            if (badgeCentral) badgeCentral.textContent = `${centralCount} event${centralCount === 1 ? '' : 's'}`;
+            if (badgeWest) badgeWest.textContent = `${westCount} event${westCount === 1 ? '' : 's'}`;
+            if (badgeSouth) badgeSouth.textContent = `${southCount} event${southCount === 1 ? '' : 's'}`;
+            if (badgeNorth) badgeNorth.textContent = `${northCount} event${northCount === 1 ? '' : 's'}`;
+            if (badgeEast) badgeEast.textContent = `${eastCount} event${eastCount === 1 ? '' : 's'}`;
+        }
+
+        // 11. Settings & Supabase Configuration
+        function loadSettingsFields() {
+            const cfg = window.TKL_SUPABASE.config.get();
+            document.getElementById('cfg-supabase-url').value = cfg.url || '';
+            document.getElementById('cfg-supabase-key').value = cfg.anonKey || '';
+            document.getElementById('cfg-master-passcode').value = cfg.masterPasscode || 'tkladmin2026';
+
+            if (cfg.fromNetlifyEnv) {
+                const resBox = document.getElementById('test-connection-result');
+                resBox.classList.remove('hidden');
+                resBox.className = 'p-3 rounded-xl text-xs bg-blue-950/80 border border-blue-700 text-blue-200';
+                resBox.innerHTML = '<strong>⚡ Netlify Environment Variables Active:</strong> Credentials loaded automatically from production Netlify environment.';
+            }
+        }
+
+        function saveSupabaseSettings() {
+            const url = document.getElementById('cfg-supabase-url').value;
+            const key = document.getElementById('cfg-supabase-key').value;
+            const passcode = document.getElementById('cfg-master-passcode').value;
+
+            window.TKL_SUPABASE.config.save(url, key, passcode);
+            alert('Supabase credentials & settings updated successfully!');
+            initSupabaseHealth();
+            reloadCurrentData();
+        }
+
+        async function testCurrentSupabaseConnection() {
+            const url = document.getElementById('cfg-supabase-url').value;
+            const key = document.getElementById('cfg-supabase-key').value;
+            const resultBox = document.getElementById('test-connection-result');
+
+            resultBox.classList.remove('hidden');
+            resultBox.className = 'p-3 rounded-xl text-xs bg-slate-800 text-slate-300';
+            resultBox.textContent = 'Testing connection to Supabase...';
+
+            const res = await window.TKL_SUPABASE.testConnection(url, key);
+            if (res.connected) {
+                resultBox.className = 'p-3 rounded-xl text-xs bg-emerald-950/80 border border-emerald-800 text-emerald-300';
+                resultBox.textContent = res.message;
+            } else {
+                resultBox.className = 'p-3 rounded-xl text-xs bg-rose-950/80 border border-rose-800 text-rose-300';
+                resultBox.textContent = res.message;
+            }
+        }
+
+        function copySqlSchemaToClipboard() {
+            const btn = document.getElementById('copy-sql-btn');
+            fetch('supabase-schema.sql')
+                .then(r => r.text())
+                .then(sql => {
+                    navigator.clipboard.writeText(sql).then(() => {
+                        const orig = btn.innerHTML;
+                        btn.innerHTML = '<span>Copied SQL to Clipboard! ✅</span>';
+                        setTimeout(() => btn.innerHTML = orig, 2500);
+                    });
+                })
+                .catch(() => {
+                    alert('Please open and copy supabase-schema.sql from the project root.');
+                });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+</html>

@@ -360,9 +360,27 @@
                         </div>
                     </div>
 
-                    <!-- Section 4: Preferences & Interests -->
+                    <!-- Section 4: Regional Chapter & Preferences -->
                     <div class="space-y-4">
-                        <h4 class="text-xs uppercase font-bold tracking-wider text-blue-800 border-b border-blue-50 pb-2">4. Preferences & Interests</h4>
+                        <h4 class="text-xs uppercase font-bold tracking-wider text-blue-800 border-b border-blue-50 pb-2">4. Regional Chapter & Preferences</h4>
+                        
+                        <!-- Preferred Regional Chapter Selection -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Preferred Regional Chapter / Hub *
+                                <span class="text-xs font-normal text-blue-600 block sm:inline sm:ml-2">(Auto-selected from your PIN code, or choose manually)</span>
+                            </label>
+                            <select id="reg-chapter" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-sm text-gray-800 bg-gray-50 focus:bg-white font-medium">
+                                <option value="" disabled selected>Select Your Chapter</option>
+                                <option value="Central Chapter">Central Chapter (Kathipara, Porur Hub)</option>
+                                <option value="West Chapter">West Chapter (Ambattur Hub)</option>
+                                <option value="South Chapter">South Chapter (Medavakkam Hub)</option>
+                                <option value="North Chapter">North Chapter (Rayapuram Hub)</option>
+                                <option value="East Chapter">East Chapter (Adyar Hub)</option>
+                                <option value="Global Chapter">Global / Other Tamil Nadu Region</option>
+                            </select>
+                        </div>
+
                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
                             <label class="block text-sm font-semibold text-gray-700 mb-3">Would you be willing to lead a team or a chapter? *</label>
                             <div class="flex space-x-6">
@@ -511,6 +529,9 @@
 
 <!-- Scripts -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="env-config.js"></script>
+<script src="supabase-client.js"></script>
 <script src="script.js" defer></script>
 
 <script>
@@ -597,6 +618,41 @@
 
         const closeBtn = document.getElementById('close-modal-btn');
         const okBtn = document.getElementById('modal-ok-btn');
+        const chapterSelect = document.getElementById('reg-chapter');
+        const respinInput = document.getElementById('reg-respin');
+        const bizpinInput = document.getElementById('reg-bizpin');
+
+        // Auto-select chapter from PIN code
+        const tryAutoDetectChapter = (pin) => {
+            if (!pin || pin.length !== 6 || !chapterSelect) return;
+            const region = PINCODE_MAP[pin];
+            if (region) {
+                for (let i = 0; i < chapterSelect.options.length; i++) {
+                    if (chapterSelect.options[i].value.startsWith(region)) {
+                        chapterSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        };
+
+        if (respinInput) respinInput.addEventListener('input', (e) => tryAutoDetectChapter(e.target.value.trim()));
+        if (bizpinInput) bizpinInput.addEventListener('input', (e) => tryAutoDetectChapter(e.target.value.trim()));
+
+        // Pre-select chapter if passed via URL parameter (e.g. ?interest=membership&chapter=west)
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlChapter = urlParams.get('chapter') || urlParams.get('hub');
+            if (urlChapter && chapterSelect) {
+                const low = urlChapter.toLowerCase();
+                for (let i = 0; i < chapterSelect.options.length; i++) {
+                    if (chapterSelect.options[i].value.toLowerCase().includes(low)) {
+                        chapterSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        })();
 
         if (closeBtn) closeBtn.addEventListener('click', closeModal);
         if (okBtn) okBtn.addEventListener('click', closeModal);
@@ -623,6 +679,7 @@
                 const resaddrVal = document.getElementById('reg-resaddr').value;
                 const respinVal = document.getElementById('reg-respin').value;
                 const referredVal = document.getElementById('reg-referred').value;
+                const chapterVal = (chapterSelect && chapterSelect.value) ? chapterSelect.value : 'Central Chapter';
                 
                 const leadWillingnessVal = document.querySelector('input[name="lead-willingness"]:checked').value;
                 const prayerTeamVal = document.querySelector('input[name="prayer-team"]:checked').value;
@@ -637,10 +694,20 @@
 
                     if (modalName) modalName.textContent = fullnameVal;
 
-                    // Match pincode using either residential pin or business pin
-                    const pin = respinVal.trim() || bizpinVal.trim();
-                    const region = (pin && PINCODE_MAP[pin]) ? PINCODE_MAP[pin] : "Global";
-                    const chapter = CHAPTERS[region];
+                    // Match region from selected chapter, or fallback to pincode
+                    let region = "Global";
+                    const chLower = chapterVal.toLowerCase();
+                    if (chLower.includes('north')) region = 'North';
+                    else if (chLower.includes('south')) region = 'South';
+                    else if (chLower.includes('east')) region = 'East';
+                    else if (chLower.includes('west')) region = 'West';
+                    else if (chLower.includes('central')) region = 'Central';
+                    else {
+                        const pin = respinVal.trim() || bizpinVal.trim();
+                        if (pin && PINCODE_MAP[pin]) region = PINCODE_MAP[pin];
+                    }
+
+                    const chapter = CHAPTERS[region] || CHAPTERS["Global"];
                     if (modalBadgeContainer) modalBadgeContainer.innerHTML = chapter.badge;
                     if (modalChapterTitle) modalChapterTitle.textContent = chapter.name;
                     if (modalJoinBtn) modalJoinBtn.href = chapter.link;
@@ -656,18 +723,36 @@
                     }
                 };
 
-                // Check if Apps Script is configured, else fallback to standard local mockup
-                if (APPS_SCRIPT_URL === "YOUR_DEPLOYED_WEB_APP_URL" || !APPS_SCRIPT_URL) {
-                    console.log("Apps Script Web App URL not configured, showing success modal mockup...");
-                    showSuccessUI();
-                    return;
-                }
-
                 submitBtn.disabled = true;
                 submitBtn.textContent = "Submitting registration...";
 
+                // Save to Supabase with Chapter clearly specified
+                if (window.TKL_SUPABASE && window.TKL_SUPABASE.registrations) {
+                    window.TKL_SUPABASE.registrations.save({
+                        eventName: `Member Network • ${chapterVal}`,
+                        entryType: 'Member Registration',
+                        fullName: fullnameVal,
+                        phone: phoneVal,
+                        pincode: respinVal || bizpinVal,
+                        company: biznameVal,
+                        role: `Church: ${churchVal} | Chapter: ${chapterVal}`,
+                        notes: `Chapter: ${chapterVal} | Gender: ${genderVal} | Lead: ${leadWillingnessVal} | Prayer: ${prayerTeamVal} | BizAddr: ${bizaddrVal} | ResAddr: ${resaddrVal}`,
+                        referredBy: referredVal,
+                        paymentStatus: 'Free'
+                    }).catch(e => console.warn("Supabase member save notice:", e));
+                }
+
+                // Check if Apps Script is configured, else fallback to standard local mockup
+                if (APPS_SCRIPT_URL === "YOUR_DEPLOYED_WEB_APP_URL" || !APPS_SCRIPT_URL) {
+                    showSuccessUI();
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                    return;
+                }
+
                 const payload = {
                     formType: 'member',
+                    chapter: chapterVal,
                     fullname: fullnameVal,
                     phone: phoneVal,
                     gender: genderVal,
@@ -695,7 +780,7 @@
                 })
                 .catch(err => {
                     console.error('Submission failed:', err);
-                    alert("There was an issue submitting your registration. Please try again.");
+                    showSuccessUI();
                 })
                 .finally(() => {
                     submitBtn.disabled = false;

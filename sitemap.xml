@@ -9,6 +9,14 @@
   </url>
 
 
+  <!-- Universal Dynamic Event Registration -->
+  <url>
+    <loc>https://thekingdomleaders.in/register.html</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+
   <!-- Grand Launch: West Chapter (Upcoming Event) -->
   <url>
     <loc>https://thekingdomleaders.in/register-west.html</loc>

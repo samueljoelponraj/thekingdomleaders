@@ -2,4 +2,6 @@
 .DS_Store
 Thumbs.db
 _backup_old_photos/
+.env
+.env.*
 

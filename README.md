@@ -370,6 +370,9 @@ kingdom-business-hub/
 ├── styles.css                   # Master CSS (Glassmorphism, animations, custom scrollbars)
 ├── script.js                    # Master JavaScript (Nav, Leaflet, Carousel, Lightbox, Timers)
 ├── google-apps-script.js        # Serverless Web App Backend (Sheets router & Drive upload)
+├── master-login.html            # Master Control & Admin Portal (Registrations Hub & Event Management)
+├── supabase-client.js           # Supabase Database client & storage uploader
+├── supabase-schema.sql          # Ready-to-run Supabase PostgreSQL schema with RLS & storage
 ├── sitemap.xml                  # SEO Sitemap
 ├── robots.txt                   # Search Engine Crawler Directives
 ├── images/                      # Optimized image assets & photo albums
@@ -379,6 +382,59 @@ kingdom-business-hub/
 │   └── Civil awarness/          # Photo album assets
 └── README.md                    # This master documentation file
 ```
+
+---
+
+## Supabase Database & Master Administration Portal
+
+### 1. Master Portal Access & Multi-Chapter Management
+- **URL**: `master-login.html`
+- **Default Master Passcode**: `tkladmin2026` (Customizable directly inside the dashboard)
+- **Features**:
+  - **Multi-Chapter Event Hub**: Manage and publish events for all 5 Chennai chapters independently. Each chapter card shows active event counts, a quick `+ Add Event` action, and direct link to preview the live chapter page.
+  - **Chapter Event Pages**:
+    - **Central Chapter** (`events-central.html`): Porur / Kathipara Hub
+    - **West Chapter** (`events-west.html`): Ambattur Hub
+    - **South Chapter** (`events-south.html`): Medavakkam Hub
+    - **North Chapter** (`events-north.html`): Rayapuram Hub
+    - **East Chapter** (`events-east.html`): Adyar Hub
+    - **Universal Dynamic Route** (`events-chapter.html?chapter=<slug>`): Dynamic chapter loader
+  - **Editable from Master Login**:
+    - Select target chapter (`Central`, `West`, `South`, `North`, `East`, or `All Chapters`).
+    - Auto-suggests hub venue defaults and registration forms (`register-central.html`, `register-west.html`, `contact.html`).
+    - Edit title, date, time, venue, pricing, flyer image URL, registration URL, and speaker details.
+    - Toggle live status (`Upcoming` vs. `Concluded`) with one click.
+  - **Registrations Manager**: Search, filter by chapter or payment status (Verified, Pending, Free, Rejected), view payment receipts, update statuses, and export to CSV.
+  - **Dynamic Synchronization**: Any events published or edited in the Master Portal automatically display in real time on both [events.html](file:///e:/aws-sf/kingdom%20busness%20hub/events.html) and the specific chapter page.
+
+### 2. Connecting Your Supabase Project (3-Step Setup)
+1. **Create Database Tables**:
+   - Open your project on [Supabase Dashboard](https://supabase.com/dashboard).
+   - Go to **SQL Editor** on the left menu, paste all contents from [supabase-schema.sql](file:///e:/aws-sf/kingdom%20busness%20hub/supabase-schema.sql), and click **RUN**.
+2. **Retrieve API Credentials**:
+   - Go to **Project Settings** $\rightarrow$ **API**.
+   - Copy your **Project URL** (`https://<project-ref>.supabase.co`) and **Public Anon Key** (`anon / public`).
+3. **Configure in Master Portal**:
+   - Open [master-login.html](file:///e:/aws-sf/kingdom%20busness%20hub/master-login.html).
+   - Switch to the **Supabase Settings** tab.
+   - Paste your URL and Anon Key, then click **Test Supabase Connection** and **Save Configuration**.
+
+### 3. Netlify Deployment & Environment Variables
+
+When deploying on **Netlify**, set these environment variables in your Netlify dashboard:
+
+| Variable Name | Description | Example Value |
+|---|---|---|
+| `SUPABASE_URL` | Your Supabase Project URL | `https://xyzproject.supabase.co` |
+| `SUPABASE_ANON_KEY` | Your Supabase Public `anon` Key | `eyJhbGciOiJIUzI1NiIsInR5cCI6...` |
+| `MASTER_PASSCODE` | *(Optional)* Custom Master Admin Passcode | `tkladmin2026` |
+
+#### How to Add in Netlify:
+1. Go to your **Netlify Dashboard** $\rightarrow$ select your site.
+2. Navigate to **Site configuration** (or **Site settings**) $\rightarrow$ **Environment variables**.
+3. Click **Add a variable** and enter `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
+4. Trigger a **Deploy site**.
+   - Netlify will automatically run the build command configured in `netlify.toml` (`node build-env.js`), inject the keys into `env-config.js`, and connect the entire site to Supabase!
 
 ---
 
@@ -399,21 +455,8 @@ npx serve .
 # Install 'Live Server' extension and click 'Go Live'
 ```
 
-### Connecting Google Apps Script Backend
-
-1. Open [Google Sheets](https://sheets.new) and create a new spreadsheet.
-2. In the menu, go to **Extensions** $\rightarrow$ **Apps Script**.
-3. Copy all code from [google-apps-script.js](file:///e:/aws-sf/kingdom%20busness%20hub/google-apps-script.js) and paste it into the script editor.
-4. Click **Deploy** $\rightarrow$ **New deployment**.
-5. Select type: **Web app**.
-   - **Execute as**: *Me*
-   - **Who has access**: *Anyone* (mandatory for anonymous registration submissions)
-6. Click **Deploy** and authorize permissions.
-7. Copy the generated **Web App URL** (e.g. `https://script.google.com/macros/s/.../exec`).
-8. Update `APPS_SCRIPT_URL` in the following files:
-   - [register-west.html](file:///e:/aws-sf/kingdom%20busness%20hub/register-west.html#L966)
-   - [register-central.html](file:///e:/aws-sf/kingdom%20busness%20hub/register-central.html#L1065)
-   - [contact.html](file:///e:/aws-sf/kingdom%20busness%20hub/contact.html#L520)
+### Dual-Write Cloud Integration
+Form submissions automatically post to Supabase and dual-write to Google Apps Script as a redundant backup, ensuring zero data loss.
 
 ---
 
@@ -422,3 +465,4 @@ npx serve .
 - **Official Email**: `founder@thekingdomleaders.in`
 - **Location**: Chennai, Tamil Nadu, India
 - **Platform**: The Kingdom Leaders (TKL) Community Hub
+

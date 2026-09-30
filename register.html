@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Event Registration - The Kingdom Leaders</title>
+    <meta name="description" id="page-meta-desc"
+        content="Register to attend The Kingdom Leaders chapter gatherings, conferences, and business networking summits.">
+    <meta name="keywords"
+        content="The Kingdom Leaders, event registration, business networking Chennai, Christian entrepreneurs, marketplace leaders">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://thekingdomleaders.in/register.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thekingdomleaders.in/register.html">
+    <meta property="og:title" id="og-title" content="Event Registration - The Kingdom Leaders">
+    <meta property="og:description" id="og-desc"
+        content="Secure your pass for The Kingdom Leaders chapter events and leadership gatherings.">
+    <meta property="og:image" id="og-image" content="https://thekingdomleaders.in/images/logo.jpg">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Custom Central Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Custom Fonts & Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .luxury-dark-bg {
+            background: radial-gradient(circle at top left, #0d1e46 0%, #071126 50%, #030814 100%);
+        }
+
+        .text-gradient-orange {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-gradient-gold {
+            background: linear-gradient(to right, #f59e0b, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.06);
+        }
+
+        .modern-input {
+            transition: all 0.2s ease;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+        }
+
+        .modern-input:focus {
+            background: #ffffff;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .floating-flyer {
+            animation: floatSlow 5s ease-in-out infinite;
+        }
+
+        @media print {
+            header, footer, #other-events-bar, .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            #digital-pass-card {
+                box-shadow: none !important;
+                border: 2px solid #000 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-[#fafbfc] text-[#0f172a] overflow-x-hidden antialiased flex flex-col min-h-screen">
+
+    <!-- Header Navigation -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-slate-950/80 backdrop-blur-md border-b border-white/10">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <a href="index.html" class="flex items-center space-x-3 min-w-0 pr-2">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden flex items-center justify-center bg-white shadow-md flex-shrink-0">
+                        <img src="images/logo.jpg" alt="The Kingdom Leaders Logo" class="w-full h-full object-cover">
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-base sm:text-lg font-bold text-white transition-colors duration-300 truncate">The Kingdom Leaders</div>
+                        <p class="text-[10px] text-gray-400 font-medium tracking-wider truncate">Leadership Excellence</p>
+                    </div>
+                </a>
+
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-300 hover:text-white font-medium transition-colors">Home</a>
+                    <a href="about.html" class="text-gray-300 hover:text-white font-medium transition-colors">What We Do</a>
+                    <a href="chapters.html" class="text-gray-300 hover:text-white font-medium transition-colors">Chapters</a>
+                    <a href="events.html" class="text-white font-bold transition-colors">All Events</a>
+                    <a href="contact.html" class="text-gray-300 hover:text-white font-medium transition-colors">Contact</a>
+                    <a href="contact.html?interest=membership"
+                        class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-2.5 rounded-full hover:shadow-xl hover:scale-105 transition-all text-xs">
+                        Join TKL
+                    </a>
+                </div>
+
+                <button id="mobile-menu-btn"
+                    class="lg:hidden p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-colors focus:outline-none flex-shrink-0 ml-2" aria-label="Open mobile menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu Backdrop & Drawer -->
+    <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black/60 z-[99] transition-opacity duration-300 opacity-0 pointer-events-none lg:hidden"></div>
+    <div id="mobile-menu-drawer" class="fixed top-0 left-0 bottom-0 w-[85vw] max-w-[340px] bg-slate-900 text-white z-[100] shadow-2xl transition-transform duration-300 -translate-x-full lg:hidden flex flex-col h-full overflow-y-auto">
+        <div class="p-5 flex items-center justify-between border-b border-white/10">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center bg-white flex-shrink-0">
+                    <img src="images/logo.jpg" alt="Logo" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <div class="text-sm font-bold text-white leading-tight">The Kingdom Leaders</div>
+                    <p class="text-[9px] text-gray-400">Leadership Excellence</p>
+                </div>
+            </div>
+            <button id="mobile-menu-close-btn" class="p-2 text-gray-400 hover:text-white" aria-label="Close menu">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="p-5 space-y-2">
+            <a href="index.html" class="block py-2.5 text-gray-300 hover:text-white text-sm font-medium">Home</a>
+            <a href="about.html" class="block py-2.5 text-gray-300 hover:text-white text-sm font-medium">What We Do</a>
+            <a href="chapters.html" class="block py-2.5 text-gray-300 hover:text-white text-sm font-medium">Chapters</a>
+            <a href="events.html" class="block py-2.5 text-white font-bold text-sm">All Events</a>
+            <a href="contact.html" class="block py-2.5 text-gray-300 hover:text-white text-sm font-medium">Contact Us</a>
+        </div>
+    </div>
+
+    <!-- Multi-Event Selector Bar (Only visible if visiting without ID or browsing) -->
+    <div id="other-events-bar" class="hidden bg-slate-900 border-b border-white/10 pt-24 pb-3 px-4 no-print">
+        <div class="container mx-auto max-w-6xl flex items-center justify-between gap-3 flex-wrap">
+            <span class="text-xs text-slate-300 font-semibold flex items-center gap-1.5">
+                <span>📢</span>
+                <span>Select Event Registration:</span>
+            </span>
+            <div id="events-quick-pills" class="flex items-center gap-2 overflow-x-auto py-1 max-w-full">
+                <!-- Dynamically populated pills -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Hero Section -->
+    <section class="luxury-dark-bg min-h-[75vh] relative overflow-hidden text-white flex flex-col justify-center pt-32 pb-24 md:pt-36 md:pb-28">
+        <!-- Ambient blur blobs -->
+        <div class="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-orange-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
+
+            <!-- Badges -->
+            <div class="inline-flex items-center space-x-2.5 mb-6 bg-white/10 border border-white/15 px-4 py-1.5 rounded-full shadow-sm backdrop-blur-md"
+                data-aos="fade-down">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" id="status-pulse-dot"></span>
+                <span class="text-xs font-bold uppercase tracking-widest text-slate-200" id="hero-badge-text">
+                    Official Event Registration
+                </span>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-black text-white leading-tight max-w-4xl mb-4" id="hero-event-title" data-aos="fade-up">
+                Loading Event Details...
+            </h1>
+
+            <p class="text-slate-300 text-sm sm:text-base max-w-2xl mb-8 leading-relaxed font-light" id="hero-event-subtitle" data-aos="fade-up" data-aos-delay="100">
+                Join marketplace leaders, entrepreneurs, and executives for fellowship, spiritual alignment, and kingdom business expansion.
+            </p>
+
+            <!-- Center Flyer Preview (if flyer_url exists) -->
+            <div id="flyer-container" class="hidden w-full max-w-md bg-white/5 rounded-3xl p-2 sm:p-3 shadow-2xl border border-white/10 relative overflow-hidden floating-flyer mb-8"
+                data-aos="zoom-in">
+                <img id="flyer-img" src="" alt="Event Flyer" class="w-full h-auto rounded-2xl shadow-inner max-h-[500px] object-contain mx-auto">
+            </div>
+
+            <!-- CTA Actions -->
+            <div class="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center z-10 no-print" data-aos="fade-up">
+                <a href="#registration-section" id="hero-register-btn"
+                    class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-8 py-3.5 rounded-xl text-center text-sm shadow-xl transition-all transform hover:scale-105">
+                    Proceed to Registration &darr;
+                </a>
+                <a id="hero-download-flyer-btn" href="#" download class="hidden bg-white/10 hover:bg-white/15 text-white border border-white/15 font-semibold px-6 py-3.5 rounded-xl text-center text-sm transition-all flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    <span>Download Flyer</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Details Ribbon -->
+    <section class="relative z-20 -mt-10 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full" data-aos="fade-up">
+        <div class="glass-card-light rounded-3xl p-6 sm:p-7 shadow-2xl grid grid-cols-2 md:grid-cols-4 gap-5 text-gray-800 border border-white/80">
+            <div class="flex items-center space-x-3 md:border-r md:border-slate-200/60 pr-2">
+                <div class="w-11 h-11 rounded-2xl bg-blue-50 flex items-center justify-center text-xl text-blue-600 shadow-sm flex-shrink-0">📅</div>
+                <div class="min-w-0">
+                    <span class="text-[9px] uppercase tracking-widest text-slate-400 font-bold block truncate">Date</span>
+                    <span class="text-xs sm:text-sm font-extrabold text-slate-800 block truncate" id="ribbon-date">TBA</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 md:border-r md:border-slate-200/60 pr-2">
+                <div class="w-11 h-11 rounded-2xl bg-indigo-50 flex items-center justify-center text-xl text-indigo-600 shadow-sm flex-shrink-0">🕔</div>
+                <div class="min-w-0">
+                    <span class="text-[9px] uppercase tracking-widest text-slate-400 font-bold block truncate">Time</span>
+                    <span class="text-xs sm:text-sm font-extrabold text-slate-800 block truncate" id="ribbon-time">05:30 PM Onwards</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 md:border-r md:border-slate-200/60 pr-2">
+                <div class="w-11 h-11 rounded-2xl bg-emerald-50 flex items-center justify-center text-xl text-emerald-600 shadow-sm flex-shrink-0">📍</div>
+                <div class="min-w-0">
+                    <span class="text-[9px] uppercase tracking-widest text-slate-400 font-bold block truncate">Venue</span>
+                    <span class="text-xs sm:text-sm font-extrabold text-slate-800 block truncate" id="ribbon-venue">Chennai Hub</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 pr-2 col-span-2 md:col-span-1">
+                <div class="w-11 h-11 rounded-2xl bg-amber-50 flex items-center justify-center text-xl text-amber-600 shadow-sm flex-shrink-0">🏷️</div>
+                <div class="min-w-0">
+                    <span class="text-[9px] uppercase tracking-widest text-slate-400 font-bold block truncate">Pass / Entry</span>
+                    <span class="text-xs sm:text-sm font-extrabold text-blue-700 block truncate" id="ribbon-entry">Free Entry</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chief Guest / Speaker Section (if available) -->
+    <section id="guest-speaker-section" class="hidden py-10 bg-slate-50 border-b border-slate-100">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/60 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+                <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-900 to-indigo-950 text-white text-3xl font-black flex items-center justify-center shadow flex-shrink-0">
+                    🎤
+                </div>
+                <div>
+                    <span class="inline-block bg-blue-100 text-blue-800 text-[10px] font-extrabold px-3 py-0.5 rounded-full uppercase tracking-wider mb-1.5">
+                        Chief Guest / Speaker
+                    </span>
+                    <h3 class="text-xl sm:text-2xl font-black text-slate-900" id="speaker-name">Pastor / Guest Speaker</h3>
+                    <p class="text-xs text-slate-500 mt-1" id="speaker-note">Imparting leadership excellence, marketplace wisdom, and kingdom purpose.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Registration Section -->
+    <section id="registration-section" class="py-16 md:py-24 bg-[#f8fafc] flex-grow">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+
+            <!-- Concluded Event Notice (Hidden by default, shown if status === 'concluded') -->
+            <div id="concluded-notice" class="hidden bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-3xl p-8 text-center max-w-2xl mx-auto shadow-md mb-8">
+                <span class="inline-block bg-amber-200 text-amber-900 text-[11px] font-black px-4 py-1.5 rounded-full uppercase tracking-wider mb-3">
+                    Event Successfully Concluded ✅
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900" id="concluded-event-title">Registrations Are Closed</h2>
+                <p class="text-slate-600 text-sm mt-3 leading-relaxed" id="concluded-event-desc">
+                    This gathering has already taken place. Online registrations and passes are now closed for this date.
+                </p>
+                <div class="mt-6 flex flex-wrap gap-3 justify-center">
+                    <a href="contact.html" class="bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold px-6 py-3 rounded-xl transition-all shadow-md">
+                        Join Regional WhatsApp Community &rarr;
+                    </a>
+                    <a href="events.html" class="bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-semibold px-6 py-3 rounded-xl transition-all">
+                        Browse Upcoming Events
+                    </a>
+                </div>
+            </div>
+
+            <!-- Active Registration Container -->
+            <div id="active-reg-container" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+                <!-- Left Column: Payment & Event Info Card -->
+                <div class="lg:col-span-5 space-y-6">
+
+                    <!-- Event Overview Card -->
+                    <div class="bg-slate-900 text-white rounded-[32px] p-6 sm:p-7 shadow-xl border border-white/10">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full border border-blue-500/30" id="sidebar-chapter-badge">
+                                Regional Chapter
+                            </span>
+                            <span class="text-xs font-bold text-emerald-400" id="sidebar-status-badge">
+                                Registrations Open
+                            </span>
+                        </div>
+
+                        <h3 class="text-xl font-bold text-white mb-2" id="sidebar-event-title">Event Title</h3>
+                        <p class="text-xs text-slate-300 mb-6 leading-relaxed" id="sidebar-event-desc">Overview details.</p>
+
+                        <div class="space-y-3 text-xs border-t border-white/10 pt-4 text-slate-300">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">Date</span>
+                                <span class="font-bold text-white" id="sidebar-date">TBA</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">Time</span>
+                                <span class="font-bold text-white" id="sidebar-time">TBA</span>
+                            </div>
+                            <div class="flex justify-between items-start text-right">
+                                <span class="text-slate-400 text-left">Venue</span>
+                                <span class="font-bold text-white max-w-[200px]" id="sidebar-venue">Chennai Hub</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-2 border-t border-white/5">
+                                <span class="text-slate-400">Per Person Fee</span>
+                                <span class="font-bold text-amber-400 text-sm" id="sidebar-price">Free</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-white/10 flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg flex-shrink-0">📞</div>
+                            <div>
+                                <span class="text-[10px] text-slate-400 block font-bold">EVENT HELPLINE</span>
+                                <a href="tel:9381807007" class="text-xs font-extrabold text-white hover:text-amber-400 transition-colors">9381807007 / 8148187386</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment QR Card (Only shown if price > 0) -->
+                    <div id="payment-card" class="hidden bg-white rounded-[32px] p-6 shadow-xl border border-slate-200/80 text-center">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-orange-700 bg-orange-100 px-3 py-1 rounded-full inline-block mb-3">
+                            Direct UPI / GPay
+                        </span>
+                        <h4 class="font-black text-slate-900 text-base mb-1">
+                            Scan & Pay ₹<span id="payment-qr-total">0</span>
+                        </h4>
+                        <p class="text-slate-500 text-xs mb-4">Pay securely via Google Pay, PhonePe, Paytm, or any UPI app</p>
+
+                        <!-- Dynamic QR Code Container -->
+                        <div class="w-48 h-48 mx-auto bg-slate-50 rounded-2xl p-2 border border-slate-200 shadow-inner flex items-center justify-center mb-4">
+                            <img id="payment-qr-img" src="" alt="Payment QR Code" class="w-full h-full object-contain">
+                        </div>
+
+                        <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 flex items-center justify-between">
+                            <div class="text-left min-w-0 pr-2">
+                                <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">UPI ID / GPay</span>
+                                <span id="upi-id-text" class="text-xs font-extrabold text-slate-800">9841498500@upi</span>
+                            </div>
+                            <button id="copy-upi-btn" type="button" class="bg-blue-50 text-blue-700 hover:bg-blue-100 text-[11px] font-bold px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Free Pass Badge Card (Shown if price === 0) -->
+                    <div id="free-pass-card" class="bg-white rounded-[32px] p-6 shadow-xl border border-emerald-100 text-center">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-3 text-2xl">
+                            🎫
+                        </div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full inline-block mb-2">
+                            Complimentary Entry Pass
+                        </span>
+                        <h4 class="font-bold text-slate-900 text-base">No Registration Fee (₹0)</h4>
+                        <p class="text-slate-500 text-xs mt-1 leading-relaxed">
+                            This gathering is completely free of charge. Fill in the attendee form to confirm your seat and receive your digital entrance pass instantly.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Right Column: Registration Form or Success View -->
+                <div class="lg:col-span-7 bg-white rounded-[32px] p-6 sm:p-8 md:p-10 shadow-2xl border border-slate-200/80">
+
+                    <!-- Form Wrapper -->
+                    <div id="reg-form-wrapper">
+                        <div class="border-b border-slate-100 pb-5 mb-6">
+                            <h2 class="text-2xl font-black text-slate-900" id="form-heading">Delegate Registration</h2>
+                            <p class="text-slate-500 text-xs sm:text-sm mt-1">Please enter your details accurately for gate pass issuance and dinner allocation.</p>
+                        </div>
+
+                        <form id="event-reg-form" class="space-y-4 sm:space-y-5">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Full Name *</label>
+                                <input type="text" id="reg-name" required placeholder="e.g. John Doe"
+                                    class="w-full px-4 py-3 rounded-xl outline-none text-sm text-slate-800 modern-input">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Email Address *</label>
+                                    <input type="email" id="reg-email" required placeholder="john@example.com"
+                                        class="w-full px-4 py-3 rounded-xl outline-none text-sm text-slate-800 modern-input">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">WhatsApp / Phone Number *</label>
+                                    <input type="tel" id="reg-phone" required pattern="[0-9]{10}" placeholder="10-digit mobile number"
+                                        class="w-full px-4 py-3 rounded-xl outline-none text-sm text-slate-800 modern-input">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Residential Area / PIN Code *</label>
+                                    <input type="text" id="reg-pincode" required placeholder="e.g. Porur / 600116"
+                                        class="w-full px-4 py-3 rounded-xl outline-none text-sm text-slate-800 modern-input">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Organization / Business</label>
+                                    <input type="text" id="reg-company" placeholder="e.g. Apex Tech Ventures"
+                                        class="w-full px-4 py-3 rounded-xl outline-none text-sm text-slate-800 modern-input">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Profession / Designation</label>
+                                    <input type="text" id="reg-role" placeholder="e.g. Managing Director / Founder"
+                                        class="w-full px-4 py-3 rounded-xl outline-none text-sm text-slate-800 modern-input">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Existing TKL Member?</label>
+                                    <select id="reg-existing-member"
+                                        class="w-full px-4 py-3 rounded-xl outline-none text-sm text-slate-800 modern-input cursor-pointer">
+                                        <option value="No">No (First time guest)</option>
+                                        <option value="Yes">Yes (Registered TKL Member)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="referred-by-group">
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Referred By / How did you hear about us?</label>
+                                <input type="text" id="reg-referred-by" placeholder="e.g. Friend, WhatsApp group, Pastor, Social Media"
+                                    class="w-full px-4 py-3 rounded-xl outline-none text-sm text-slate-800 modern-input">
+                            </div>
+
+                            <!-- Additional Guests Counter -->
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <label for="reg-additional-guests" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                            Bringing Additional Guests / Colleagues?
+                                        </label>
+                                        <p class="text-[11px] text-slate-500">Add the number of accompanying delegates</p>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button type="button" id="btn-decrease-guests" class="w-8 h-8 rounded-lg bg-white border border-slate-300 text-slate-700 font-bold hover:bg-slate-100 flex items-center justify-center">-</button>
+                                        <input type="number" id="reg-additional-guests" min="0" max="10" value="0"
+                                            class="w-12 text-center py-1.5 font-bold rounded-lg border border-slate-300 text-sm">
+                                        <button type="button" id="btn-increase-guests" class="w-8 h-8 rounded-lg bg-white border border-slate-300 text-slate-700 font-bold hover:bg-slate-100 flex items-center justify-center">+</button>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Price Calculation Breakdown (only for paid events) -->
+                                <div id="pricing-breakdown" class="hidden mt-3 pt-3 border-t border-slate-200/80 text-xs space-y-1">
+                                    <div class="flex justify-between text-slate-600">
+                                        <span>Primary Attendee Pass</span>
+                                        <span>₹<span id="calc-primary-cost">0</span></span>
+                                    </div>
+                                    <div id="calc-guests-row" class="hidden flex justify-between text-slate-600">
+                                        <span>Additional Guests (<span id="calc-guests-count">0</span> × ₹<span id="calc-unit-cost">0</span>)</span>
+                                        <span>₹<span id="calc-guests-cost">0</span></span>
+                                    </div>
+                                    <div class="flex justify-between font-extrabold text-slate-900 text-sm pt-1 border-t border-slate-200">
+                                        <span>Total Registration Amount</span>
+                                        <span class="text-blue-700">₹<span id="calc-total-cost">0</span></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Payment Receipt Dropzone (only for paid events) -->
+                            <div id="screenshot-group" class="hidden space-y-2">
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                    Payment Screenshot / Proof (Optional but Recommended)
+                                </label>
+                                <div id="receipt-dropzone" class="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-2xl p-4 text-center cursor-pointer transition-colors bg-slate-50/50">
+                                    <input type="file" id="reg-screenshot" accept="image/*" class="hidden">
+                                    <div id="dropzone-empty">
+                                        <div class="text-2xl mb-1">📸</div>
+                                        <p class="text-xs font-bold text-slate-700">Click or Drag & Drop Screenshot Here</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5">PNG, JPG, or JPEG up to 5MB</p>
+                                    </div>
+                                    <div id="dropzone-selected" class="hidden text-emerald-600 font-bold text-xs flex items-center justify-center gap-2">
+                                        <span>✅ File selected:</span>
+                                        <span id="selected-file-name" class="text-slate-800 truncate max-w-[200px]"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submission Submit Button -->
+                            <div class="pt-4">
+                                <button type="submit" id="submit-btn"
+                                    class="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold py-4 px-6 rounded-2xl text-sm sm:text-base shadow-xl transition-all transform active:scale-98 flex items-center justify-center gap-2">
+                                    <span id="submit-btn-text">Confirm & Register Pass</span>
+                                </button>
+                                <p class="text-center text-[11px] text-slate-400 mt-3">
+                                    🔒 Your information is confidential and will only be used for event access and chapter updates.
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Registration Success Confirmation Pass View -->
+                    <div id="reg-success-wrapper" class="hidden py-6 space-y-6">
+                        <div class="text-center space-y-2">
+                            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
+                                ✓
+                            </div>
+                            <span class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-extrabold uppercase px-3 py-1 rounded-full">
+                                Registration Confirmed
+                            </span>
+                            <h3 class="text-2xl sm:text-3xl font-black text-slate-900">You Are Registered!</h3>
+                            <p class="text-slate-500 text-xs sm:text-sm max-w-md mx-auto">
+                                Thank you, <span id="pass-attendee-name" class="font-bold text-slate-900"></span>. Your pass has been recorded in our official delegate registry.
+                            </p>
+                        </div>
+
+                        <!-- Digital Pass Card -->
+                        <div id="digital-pass-card" class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-white/10 relative overflow-hidden">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+                                <div>
+                                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">TKL OFFICIAL PASS</span>
+                                    <span class="font-mono text-xs font-bold text-amber-400" id="pass-ref-code">TKL-REG-00000</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">STATUS</span>
+                                    <span class="text-xs font-extrabold text-emerald-400" id="pass-status-text">Verified</span>
+                                </div>
+                            </div>
+
+                            <h4 class="text-lg sm:text-xl font-black text-white leading-tight mb-2" id="pass-event-title">Event Title</h4>
+                            <p class="text-xs text-blue-300 font-medium mb-4" id="pass-event-chapter">Regional Chapter Gathering</p>
+
+                            <div class="grid grid-cols-2 gap-3 text-xs bg-white/5 p-4 rounded-2xl border border-white/5 mb-4">
+                                <div>
+                                    <span class="text-slate-400 text-[10px] block">Date</span>
+                                    <span class="font-bold text-white" id="pass-date">TBA</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 text-[10px] block">Time</span>
+                                    <span class="font-bold text-white" id="pass-time">TBA</span>
+                                </div>
+                                <div class="col-span-2">
+                                    <span class="text-slate-400 text-[10px] block">Venue</span>
+                                    <span class="font-bold text-white" id="pass-venue">Chennai Hub</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 text-[10px] block">Total Passes</span>
+                                    <span class="font-bold text-white" id="pass-seats">1 Delegate</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 text-[10px] block">Amount</span>
+                                    <span class="font-bold text-amber-400" id="pass-amount">₹0</span>
+                                </div>
+                            </div>
+
+                            <p class="text-[10px] text-slate-400 text-center">
+                                Please show this confirmation pass or your registered mobile number at the welcome desk.
+                            </p>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-3 pt-2 no-print">
+                            <button type="button" onclick="window.print()" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 shadow">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                                <span>Save / Print Pass</span>
+                            </button>
+                            <a href="contact.html" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 px-4 rounded-xl text-xs text-center transition-colors flex items-center justify-center gap-1.5 shadow">
+                                <span>Join Chapter WhatsApp Group &rarr;</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         FOUNDER, STATE, CITY & CHAPTER LEADERSHIP DIRECTORY
+         ========================================== -->
+    <section class="py-16 md:py-20 bg-white border-t border-slate-200/80 no-print">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+            <div class="text-center mb-12">
+                <span class="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full bg-blue-50 text-blue-900 text-xs font-extrabold uppercase tracking-wider mb-2 border border-blue-200">
+                    <span class="w-2 h-2 rounded-full bg-blue-600"></span> Kingdom Leadership Directory
+                </span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Leadership Excellence</h3>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">
+                    Guided by visionary founder Jacob Bagyadoss, state & city directors, and regional chapter officers.
+                </p>
+            </div>
+
+            <!-- 1. Founder & Chairman Card -->
+            <div class="max-w-4xl mx-auto bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-white/10 mb-12 flex flex-col sm:flex-row items-center gap-6 group hover:border-orange-500/30 transition-all">
+                <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border-2 border-orange-500 flex-shrink-0 shadow-lg bg-slate-800">
+                    <img src="images/founder.jpeg" alt="Jacob Bagyadoss - Founder & Chairman" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="text-center sm:text-left flex-1">
+                    <span class="inline-block bg-orange-500/20 text-orange-400 text-[10px] font-extrabold px-3 py-0.5 rounded-full uppercase tracking-wider mb-2 border border-orange-500/30">
+                        Founder & Chairman
+                    </span>
+                    <h4 class="text-2xl sm:text-3xl font-bold text-white leading-tight">Jacob Bagyadoss</h4>
+                    <p class="text-orange-300 text-xs font-semibold mt-0.5">The Kingdom Leaders</p>
+                    <p class="text-slate-300 text-xs sm:text-sm mt-2.5 leading-relaxed font-light">
+                        Championing marketplace ministries, ethical business governance, student incubation, and city-wide chapter expansion across Tamil Nadu and beyond.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2. State Leadership • Tamil Nadu -->
+            <div class="mb-10">
+                <div class="flex items-center gap-3 mb-5">
+                    <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-blue-50 text-blue-900 text-[11px] font-extrabold uppercase tracking-wider border border-blue-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span> State Leadership • Tamil Nadu
+                    </span>
+                    <div class="flex-1 h-px bg-gradient-to-r from-blue-200 to-transparent"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- State President: Sugumar -->
+                    <div class="bg-slate-50 rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm flex flex-col sm:flex-row items-center gap-5 relative overflow-hidden group hover:shadow-md transition-all">
+                        <div class="w-32 h-40 sm:w-36 sm:h-44 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0 p-1.5 flex items-center justify-center">
+                            <img src="images/chapter learder images/sugumar state presdient.png" alt="Sugumar - State President" class="w-full h-full object-contain max-h-full transition-transform duration-300 group-hover:scale-105">
+                        </div>
+                        <div class="text-center sm:text-left flex-1 min-w-0">
+                            <span class="inline-block py-0.5 px-2.5 rounded-full bg-blue-100 text-blue-900 text-[10px] font-extrabold uppercase tracking-wider mb-1.5">
+                                State President
+                            </span>
+                            <h4 class="text-xl font-bold text-slate-900 leading-tight">Sugumar</h4>
+                            <p class="text-xs font-bold text-blue-800 mb-2">State President - Tamil Nadu</p>
+                            <p class="text-xs text-slate-600 leading-relaxed font-light">
+                                Spearheading state-level kingdom vision, regional chapter expansion, and strategic governance across Tamil Nadu.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- State Secretary: Jebastin -->
+                    <div class="bg-slate-50 rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm flex flex-col sm:flex-row items-center gap-5 relative overflow-hidden group hover:shadow-md transition-all">
+                        <div class="w-32 h-40 sm:w-36 sm:h-44 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0 p-1.5 flex items-center justify-center">
+                            <img src="images/chapter learder images/jebastin state secretary.png" alt="Jebastin - State Secretary" class="w-full h-full object-contain max-h-full transition-transform duration-300 group-hover:scale-105">
+                        </div>
+                        <div class="text-center sm:text-left flex-1 min-w-0">
+                            <span class="inline-block py-0.5 px-2.5 rounded-full bg-indigo-100 text-indigo-900 text-[10px] font-extrabold uppercase tracking-wider mb-1.5">
+                                State Secretary
+                            </span>
+                            <h4 class="text-xl font-bold text-slate-900 leading-tight">Jebastin</h4>
+                            <p class="text-xs font-bold text-indigo-800 mb-2">State Secretary - Tamil Nadu</p>
+                            <p class="text-xs text-slate-600 leading-relaxed font-light">
+                                Overseeing state administration, inter-chapter operational coordination, and organizational communication.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. City Leadership • Chennai Region -->
+            <div class="mb-12">
+                <div class="flex items-center gap-3 mb-5">
+                    <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-blue-50 text-blue-900 text-[11px] font-extrabold uppercase tracking-wider border border-blue-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span> City Leadership • Chennai Region
+                    </span>
+                    <div class="flex-1 h-px bg-gradient-to-r from-blue-200 to-transparent"></div>
+                </div>
+
+                <!-- City President: Praveen Joshua -->
+                <div class="bg-slate-50 rounded-2xl p-5 sm:p-7 border border-slate-200/80 shadow-sm flex flex-col sm:flex-row items-center gap-6 relative overflow-hidden group hover:shadow-md transition-all">
+                    <div class="w-36 h-44 sm:w-40 sm:h-48 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0 p-1.5 flex items-center justify-center">
+                        <img src="images/Praveen joshua.jpeg" alt="Praveen Joshua - City President" class="w-full h-full object-contain max-h-full transition-transform duration-300 group-hover:scale-105">
+                    </div>
+                    <div class="text-center sm:text-left flex-1 min-w-0">
+                        <span class="inline-block py-0.5 px-2.5 rounded-full bg-blue-100 text-blue-900 text-[10px] font-extrabold uppercase tracking-wider mb-1.5">
+                            City President
+                        </span>
+                        <h4 class="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">Praveen Joshua</h4>
+                        <p class="text-xs sm:text-sm font-bold text-blue-800 mb-2">City President - Chennai Region</p>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-light max-w-2xl">
+                            Leading strategic direction, chapter expansion, and kingdom business initiatives across Chennai.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Chapter Leadership Board (Dynamically updated for event chapter) -->
+            <div id="dynamic-chapter-officers-section">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-orange-50 text-orange-900 text-[11px] font-extrabold uppercase tracking-wider border border-orange-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> <span id="chapter-officers-badge">Regional Officers</span>
+                    </span>
+                    <div class="flex-1 h-px bg-gradient-to-r from-orange-200 to-transparent"></div>
+                    <span id="chapter-officers-heading" class="text-xs font-bold text-slate-700 hidden sm:inline">Chapter Leadership Board</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Chapter President -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200/80 shadow-sm text-center flex flex-col items-center hover:shadow-md transition-all group">
+                        <div class="w-32 h-32 rounded-2xl overflow-hidden mb-3.5 border-2 border-orange-200 bg-white shadow-sm flex items-center justify-center p-1">
+                            <img id="reg-president-img" src="images/chapter learder images/lenin_president.jpeg" alt="President" class="w-full h-full object-cover object-top rounded-xl group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-orange-800 bg-orange-100 px-3 py-0.5 rounded-full mb-1.5">President</span>
+                        <h4 id="reg-president-name" class="text-base font-bold text-slate-900">Mr. Lenin</h4>
+                        <p id="reg-president-role" class="text-xs text-slate-500 mt-0.5">Chapter President</p>
+                        <a id="reg-president-phone" href="tel:+918148187386" class="mt-3 text-xs font-semibold text-blue-800 hover:text-blue-900 inline-flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            <span id="reg-president-phone-text">+91 81481 87386</span>
+                        </a>
+                    </div>
+
+                    <!-- Chapter Secretary -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200/80 shadow-sm text-center flex flex-col items-center hover:shadow-md transition-all group">
+                        <div class="w-32 h-32 rounded-2xl overflow-hidden mb-3.5 border-2 border-orange-200 bg-white shadow-sm flex items-center justify-center p-1">
+                            <img id="reg-secretary-img" src="images/chapter learder images/kishore_secretary.jpeg" alt="Secretary" class="w-full h-full object-cover object-[center_25%] rounded-xl group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-orange-800 bg-orange-100 px-3 py-0.5 rounded-full mb-1.5">Secretary</span>
+                        <h4 id="reg-secretary-name" class="text-base font-bold text-slate-900">Mr. Kishore Abishek M</h4>
+                        <p id="reg-secretary-role" class="text-xs text-slate-500 mt-0.5">Chapter Secretary</p>
+                        <a id="reg-secretary-phone" href="tel:+918148937880" class="mt-3 text-xs font-semibold text-blue-800 hover:text-blue-900 inline-flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            <span id="reg-secretary-phone-text">+91 81489 37880</span>
+                        </a>
+                    </div>
+
+                    <!-- Chapter Treasurer -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200/80 shadow-sm text-center flex flex-col items-center hover:shadow-md transition-all group">
+                        <div class="w-32 h-32 rounded-2xl overflow-hidden mb-3.5 border-2 border-orange-200 bg-white shadow-sm flex items-center justify-center p-1">
+                            <img id="reg-treasurer-img" src="images/chapter learder images/franklin_treasurer.jpeg" alt="Treasurer" class="w-full h-full object-cover object-top rounded-xl group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-orange-800 bg-orange-100 px-3 py-0.5 rounded-full mb-1.5">Treasurer</span>
+                        <h4 id="reg-treasurer-name" class="text-base font-bold text-slate-900">Mr. Franklin</h4>
+                        <p id="reg-treasurer-role" class="text-xs text-slate-500 mt-0.5">Chapter Treasurer</p>
+                        <a id="reg-treasurer-phone" href="tel:+919940150812" class="mt-3 text-xs font-semibold text-blue-800 hover:text-blue-900 inline-flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            <span id="reg-treasurer-phone-text">+91 99401 50812</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-slate-400 py-12 border-t border-white/5 no-print mt-auto">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs space-y-4">
+            <div class="flex items-center justify-center space-x-3">
+                <img src="images/logo.jpg" alt="Logo" class="w-8 h-8 rounded-lg object-cover">
+                <span class="text-white font-bold text-sm">The Kingdom Leaders</span>
+            </div>
+            <p class="max-w-md mx-auto text-slate-500">
+                Empowering ethical Christian leaders, founders, and marketplace visionaries across Chennai chapters.
+            </p>
+            <div class="pt-4 border-t border-white/5 flex flex-wrap justify-center gap-6 text-[11px]">
+                <a href="events.html" class="hover:text-white transition-colors">All Events</a>
+                <a href="chapters.html" class="hover:text-white transition-colors">Chapters Directory</a>
+                <a href="about.html" class="hover:text-white transition-colors">About Ministry</a>
+                <a href="contact.html" class="hover:text-white transition-colors">Contact Us</a>
+                <a href="master-login.html" class="hover:text-white transition-colors">Master Portal</a>
+            </div>
+            <p class="text-[10px] text-slate-600 pt-2">
+                &copy; 2026 The Kingdom Leaders. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="env-config.js"></script>
+    <script src="supabase-client.js"></script>
+
+    <script>
+        // State variables
+        let currentEvent = null;
+        let allUpcomingEvents = [];
+        let uploadedScreenshotBase64 = null;
+        let uploadedScreenshotMeta = {};
+
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCtGqXfpABUNY9-tE1ZwJwmp-C6GtcMdjxxLifuU2BRf98UgcHr6-wPwkQYBno0N3r/exec";
+        const UPI_ID = '9841498500@upi';
+        const PAYEE_NAME = 'The Kingdom Leaders';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (typeof AOS !== 'undefined') AOS.init({ duration: 800, once: true });
+            initMobileMenu();
+            initGuestCounter();
+            initDropzone();
+            initCopyUpi();
+
+            // Load Event from URL parameter or fallback
+            await loadEventData();
+        });
+
+        // 1. Mobile Menu Handling
+        function initMobileMenu() {
+            const btn = document.getElementById('mobile-menu-btn');
+            const closeBtn = document.getElementById('mobile-menu-close-btn');
+            const drawer = document.getElementById('mobile-menu-drawer');
+            const backdrop = document.getElementById('mobile-menu-backdrop');
+
+            if (btn && drawer && backdrop) {
+                const open = () => {
+                    drawer.classList.remove('-translate-x-full');
+                    backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                };
+                const close = () => {
+                    drawer.classList.add('-translate-x-full');
+                    backdrop.classList.add('opacity-0', 'pointer-events-none');
+                };
+                btn.addEventListener('click', open);
+                if (closeBtn) closeBtn.addEventListener('click', close);
+                backdrop.addEventListener('click', close);
+            }
+        }
+
+        // 2. Load Event Data
+        async function loadEventData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetId = urlParams.get('id') || urlParams.get('event') || urlParams.get('event_id');
+
+            try {
+                // Fetch all events for fallback / pill switcher
+                const allEvents = await window.TKL_SUPABASE.events.getAll(false);
+                allUpcomingEvents = allEvents.filter(e => (e.status || '').toLowerCase() === 'upcoming');
+
+                if (targetId) {
+                    currentEvent = await window.TKL_SUPABASE.events.getById(targetId);
+                }
+
+                // If not found or no ID provided, pick the earliest upcoming event
+                if (!currentEvent && allUpcomingEvents.length > 0) {
+                    currentEvent = allUpcomingEvents[0];
+                }
+
+                // Ultimate fallback
+                if (!currentEvent) {
+                    currentEvent = allEvents[0] || {
+                        id: 'default-gathering',
+                        title: 'The Kingdom Leaders Gathering',
+                        chapter: 'Chennai Central Chapter',
+                        event_date: new Date().toISOString().split('T')[0],
+                        event_time: '05:30 PM Onwards',
+                        location_name: 'Chennai Hub',
+                        location_address: 'Chennai, Tamil Nadu',
+                        price: 0,
+                        entry_type: 'Free Entry',
+                        status: 'upcoming',
+                        description: 'Join marketplace leaders, entrepreneurs, and professionals.'
+                    };
+                }
+
+                // Populate multi-event switcher bar if multiple upcoming events exist
+                renderOtherEventsBar(allUpcomingEvents, currentEvent.id);
+
+                // Render page UI with this event
+                renderEventDetails(currentEvent);
+
+            } catch (err) {
+                console.error("Error loading event data:", err);
+                document.getElementById('hero-event-title').textContent = "Event Registration";
+            }
+        }
+
+        // 3. Render Event Switcher Bar
+        function renderOtherEventsBar(upcomingEvents, activeId) {
+            const bar = document.getElementById('other-events-bar');
+            const pills = document.getElementById('events-quick-pills');
+            if (!bar || !pills || upcomingEvents.length <= 1) return;
+
+            bar.classList.remove('hidden');
+            pills.innerHTML = upcomingEvents.map(ev => {
+                const isSelected = String(ev.id) === String(activeId);
+                const priceLabel = parseFloat(ev.price || 0) > 0 ? `₹${ev.price}` : 'Free';
+                return `
+                    <a href="register.html?id=${ev.id}" class="text-xs font-semibold px-3 py-1.5 rounded-full transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                        isSelected 
+                        ? 'bg-blue-600 text-white shadow-md' 
+                        : 'bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white'
+                    }">
+                        <span>📍 ${escapeHtml(ev.chapter || 'Event')}</span>
+                        <span class="text-[10px] opacity-75">(${priceLabel})</span>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        // 4. Render Event Details onto Page
+        function renderEventDetails(ev) {
+            const isConcluded = (ev.status || '').toLowerCase() === 'concluded';
+            const price = parseFloat(ev.price || 0);
+            const isPaid = price > 0;
+
+            // Page Meta & Titles
+            document.title = `Register: ${ev.title} | The Kingdom Leaders`;
+            document.getElementById('page-title').textContent = `Register: ${ev.title} - The Kingdom Leaders`;
+            const metaDesc = `Register to attend ${ev.title} on ${ev.event_date || 'upcoming date'} at ${ev.location_name || 'Chennai'}. ${ev.entry_type || ''}`;
+            const metaDescEl = document.getElementById('page-meta-desc');
+            if (metaDescEl) metaDescEl.setAttribute('content', metaDesc);
+
+            // Hero Section
+            document.getElementById('hero-event-title').textContent = ev.title || 'Chapter Gathering';
+            document.getElementById('hero-event-subtitle').textContent = ev.description || 
+                'Join marketplace leaders, entrepreneurs, and professionals for inspiring fellowship and kingdom expansion.';
+            
+            const badgeText = isConcluded
+                ? `Event Concluded • ${ev.chapter || 'Chapter'} • Registrations Closed`
+                : `Active Registration • ${ev.chapter || 'Chapter'} • ${isPaid ? `₹${price} Entry` : 'Free Entry'}`;
+            document.getElementById('hero-badge-text').textContent = badgeText;
+
+            const pulseDot = document.getElementById('status-pulse-dot');
+            if (pulseDot) {
+                if (isConcluded) {
+                    pulseDot.classList.replace('bg-emerald-400', 'bg-slate-400');
+                    pulseDot.classList.remove('animate-pulse');
+                } else {
+                    pulseDot.classList.replace('bg-slate-400', 'bg-emerald-400');
+                    pulseDot.classList.add('animate-pulse');
+                }
+            }
+
+            // Flyer Preview
+            const flyerContainer = document.getElementById('flyer-container');
+            const flyerImg = document.getElementById('flyer-img');
+            const downloadBtn = document.getElementById('hero-download-flyer-btn');
+            if (ev.flyer_url && ev.flyer_url.trim().length > 5) {
+                flyerImg.src = ev.flyer_url;
+                flyerContainer.classList.remove('hidden');
+                if (downloadBtn) {
+                    downloadBtn.href = ev.flyer_url;
+                    downloadBtn.setAttribute('download', `${ev.title.replace(/[^a-zA-Z0-9]/g, '_')}_Flyer.jpeg`);
+                    downloadBtn.classList.remove('hidden');
+                }
+            } else {
+                flyerContainer.classList.add('hidden');
+                if (downloadBtn) downloadBtn.classList.add('hidden');
+            }
+
+            // Key Details Ribbon
+            document.getElementById('ribbon-date').textContent = formatDateDisplay(ev.event_date);
+            document.getElementById('ribbon-time').textContent = ev.event_time || '05:30 PM Onwards';
+            document.getElementById('ribbon-venue').textContent = ev.location_name || 'Chennai';
+            document.getElementById('ribbon-entry').textContent = isPaid ? `₹${price}/- (Dinner incl.)` : (ev.entry_type || 'Free Entry');
+
+            // Speaker Section
+            const speakerSection = document.getElementById('guest-speaker-section');
+            if (ev.chief_guest && ev.chief_guest.trim().length > 0) {
+                document.getElementById('speaker-name').textContent = ev.chief_guest;
+                speakerSection.classList.remove('hidden');
+            } else {
+                speakerSection.classList.add('hidden');
+            }
+
+            // Sidebar Overview Card
+            document.getElementById('sidebar-chapter-badge').textContent = ev.chapter || 'Chapter Gathering';
+            document.getElementById('sidebar-status-badge').textContent = isConcluded ? 'Concluded' : 'Registrations Open';
+            document.getElementById('sidebar-event-title').textContent = ev.title;
+            document.getElementById('sidebar-event-desc').textContent = ev.description || 'Join us for this purposeful leadership gathering.';
+            document.getElementById('sidebar-date').textContent = formatDateDisplay(ev.event_date);
+            document.getElementById('sidebar-time').textContent = ev.event_time || '05:30 PM Onwards';
+            document.getElementById('sidebar-venue').textContent = `${ev.location_name || 'Chennai'}${ev.location_address ? ` (${ev.location_address})` : ''}`;
+            document.getElementById('sidebar-price').textContent = isPaid ? `₹${price} / person` : 'Free Entry (Dinner Included)';
+
+            // Status: Concluded vs Upcoming
+            const concludedNotice = document.getElementById('concluded-notice');
+            const activeRegContainer = document.getElementById('active-reg-container');
+
+            if (isConcluded) {
+                concludedNotice.classList.remove('hidden');
+                document.getElementById('concluded-event-title').textContent = `Registrations Are Closed`;
+                document.getElementById('concluded-event-desc').textContent = 
+                    `${ev.title} was held on ${formatDateDisplay(ev.event_date)}. Registrations and ticket bookings are now closed.`;
+                activeRegContainer.classList.add('hidden');
+                return;
+            } else {
+                concludedNotice.classList.add('hidden');
+                activeRegContainer.classList.remove('hidden');
+            }
+
+            // Paid vs Free Layout
+            const paymentCard = document.getElementById('payment-card');
+            const freePassCard = document.getElementById('free-pass-card');
+            const pricingBreakdown = document.getElementById('pricing-breakdown');
+            const screenshotGroup = document.getElementById('screenshot-group');
+            const submitBtnText = document.getElementById('submit-btn-text');
+
+            if (isPaid) {
+                paymentCard.classList.remove('hidden');
+                freePassCard.classList.add('hidden');
+                pricingBreakdown.classList.remove('hidden');
+                screenshotGroup.classList.remove('hidden');
+                document.getElementById('calc-primary-cost').textContent = price;
+                document.getElementById('calc-unit-cost').textContent = price;
+            } else {
+                paymentCard.classList.add('hidden');
+                freePassCard.classList.remove('hidden');
+                pricingBreakdown.classList.add('hidden');
+                screenshotGroup.classList.add('hidden');
+            }
+
+            // Update Chapter Leadership Board dynamically
+            renderChapterLeadersForEvent(ev.chapter || ev.title || '');
+
+            updatePriceCalculations();
+        }
+
+        // Helper: Render Dynamic Chapter Leaders
+        function renderChapterLeadersForEvent(chapterStr) {
+            const raw = (chapterStr || '').toLowerCase();
+            let chapterKey = 'central';
+            if (raw.includes('west')) chapterKey = 'west';
+            else if (raw.includes('south')) chapterKey = 'south';
+            else if (raw.includes('north')) chapterKey = 'north';
+            else if (raw.includes('east')) chapterKey = 'east';
+            else if (raw.includes('central')) chapterKey = 'central';
+
+            const chapterMeta = window.TKL_SUPABASE && window.TKL_SUPABASE.chapters ? window.TKL_SUPABASE.chapters[chapterKey] : null;
+            const leaders = chapterMeta ? chapterMeta.leaders : null;
+            if (!leaders) return;
+
+            const chapterLabel = chapterMeta.name || 'Chapter';
+            const badgeEl = document.getElementById('chapter-officers-badge');
+            const headingEl = document.getElementById('chapter-officers-heading');
+            if (badgeEl) badgeEl.textContent = `${chapterLabel} Officers`;
+            if (headingEl) headingEl.textContent = `${chapterLabel} Leadership Board`;
+
+            if (leaders.president) {
+                const img = document.getElementById('reg-president-img');
+                const name = document.getElementById('reg-president-name');
+                const phone = document.getElementById('reg-president-phone');
+                const phoneText = document.getElementById('reg-president-phone-text');
+                const role = document.getElementById('reg-president-role');
+                if (img) img.src = leaders.president.image || 'images/logo.jpg';
+                if (name) name.textContent = leaders.president.name;
+                if (role) role.textContent = `${chapterLabel} President`;
+                if (phone && leaders.president.phone) phone.href = `tel:+91${leaders.president.phone.replace(/[^0-9]/g, '')}`;
+                if (phoneText) phoneText.textContent = leaders.president.phone ? `+91 ${leaders.president.phone}` : 'Contact Office';
+            }
+
+            if (leaders.secretary) {
+                const img = document.getElementById('reg-secretary-img');
+                const name = document.getElementById('reg-secretary-name');
+                const phone = document.getElementById('reg-secretary-phone');
+                const phoneText = document.getElementById('reg-secretary-phone-text');
+                const role = document.getElementById('reg-secretary-role');
+                if (img) img.src = leaders.secretary.image || 'images/logo.jpg';
+                if (name) name.textContent = leaders.secretary.name;
+                if (role) role.textContent = `${chapterLabel} Secretary`;
+                if (phone && leaders.secretary.phone) phone.href = `tel:+91${leaders.secretary.phone.replace(/[^0-9]/g, '')}`;
+                if (phoneText) phoneText.textContent = leaders.secretary.phone ? `+91 ${leaders.secretary.phone}` : 'Contact Office';
+            }
+
+            if (leaders.treasurer) {
+                const img = document.getElementById('reg-treasurer-img');
+                const name = document.getElementById('reg-treasurer-name');
+                const phone = document.getElementById('reg-treasurer-phone');
+                const phoneText = document.getElementById('reg-treasurer-phone-text');
+                const role = document.getElementById('reg-treasurer-role');
+                if (img) img.src = leaders.treasurer.image || 'images/logo.jpg';
+                if (name) name.textContent = leaders.treasurer.name;
+                if (role) role.textContent = `${chapterLabel} Treasurer`;
+                if (phone && leaders.treasurer.phone) phone.href = `tel:+91${leaders.treasurer.phone.replace(/[^0-9]/g, '')}`;
+                if (phoneText) phoneText.textContent = leaders.treasurer.phone ? `+91 ${leaders.treasurer.phone}` : 'Contact Office';
+            }
+        }
+
+        // 5. Live Pricing & UPI QR Calculator
+        function initGuestCounter() {
+            const guestInput = document.getElementById('reg-additional-guests');
+            const btnDec = document.getElementById('btn-decrease-guests');
+            const btnInc = document.getElementById('btn-increase-guests');
+
+            if (guestInput && btnDec && btnInc) {
+                btnDec.addEventListener('click', () => {
+                    let val = parseInt(guestInput.value || 0, 10);
+                    if (val > 0) {
+                        guestInput.value = val - 1;
+                        updatePriceCalculations();
+                    }
+                });
+                btnInc.addEventListener('click', () => {
+                    let val = parseInt(guestInput.value || 0, 10);
+                    if (val < 10) {
+                        guestInput.value = val + 1;
+                        updatePriceCalculations();
+                    }
+                });
+                guestInput.addEventListener('input', updatePriceCalculations);
+                guestInput.addEventListener('change', updatePriceCalculations);
+            }
+        }
+
+        function updatePriceCalculations() {
+            if (!currentEvent) return;
+            const price = parseFloat(currentEvent.price || 0);
+            const isPaid = price > 0;
+            const guestInput = document.getElementById('reg-additional-guests');
+            const guestCount = Math.max(0, parseInt(guestInput ? guestInput.value : 0, 10) || 0);
+
+            const totalSeats = 1 + guestCount;
+            const totalCost = isPaid ? (price * totalSeats) : 0;
+
+            const submitBtnText = document.getElementById('submit-btn-text');
+
+            if (isPaid) {
+                // Update breakdown rows
+                const calcGuestsRow = document.getElementById('calc-guests-row');
+                const calcGuestsCount = document.getElementById('calc-guests-count');
+                const calcGuestsCost = document.getElementById('calc-guests-cost');
+                const calcTotalCost = document.getElementById('calc-total-cost');
+                const qrTotal = document.getElementById('payment-qr-total');
+
+                if (guestCount > 0) {
+                    if (calcGuestsRow) calcGuestsRow.classList.remove('hidden');
+                    if (calcGuestsCount) calcGuestsCount.textContent = guestCount;
+                    if (calcGuestsCost) calcGuestsCost.textContent = (guestCount * price);
+                } else {
+                    if (calcGuestsRow) calcGuestsRow.classList.add('hidden');
+                }
+
+                if (calcTotalCost) calcTotalCost.textContent = totalCost;
+                if (qrTotal) qrTotal.textContent = totalCost;
+
+                if (submitBtnText) {
+                    submitBtnText.textContent = `Confirm & Submit Registration (₹${totalCost})`;
+                }
+
+                // Generate Dynamic UPI QR Code
+                const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${totalCost.toFixed(2)}&tn=${encodeURIComponent('TKL ' + (currentEvent.title || 'Event').substring(0, 20))}`;
+                const qrImg = document.getElementById('payment-qr-img');
+                if (qrImg) {
+                    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
+                }
+            } else {
+                if (submitBtnText) {
+                    submitBtnText.textContent = totalSeats > 1 
+                        ? `Confirm Free Passes (${totalSeats} Seats - ₹0)` 
+                        : `Confirm Free Registration (₹0)`;
+                }
+            }
+        }
+
+        // 6. Copy UPI ID helper
+        function initCopyUpi() {
+            const copyBtn = document.getElementById('copy-upi-btn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(UPI_ID).then(() => {
+                        const orig = copyBtn.textContent;
+                        copyBtn.textContent = 'Copied!';
+                        copyBtn.classList.replace('bg-blue-50', 'bg-emerald-600');
+                        copyBtn.classList.replace('text-blue-700', 'text-white');
+                        setTimeout(() => {
+                            copyBtn.textContent = orig;
+                            copyBtn.classList.replace('bg-emerald-600', 'bg-blue-50');
+                            copyBtn.classList.replace('text-white', 'text-blue-700');
+                        }, 2000);
+                    });
+                });
+            }
+        }
+
+        // 7. Dropzone for Screenshot Upload
+        function initDropzone() {
+            const dropzone = document.getElementById('receipt-dropzone');
+            const fileInput = document.getElementById('reg-screenshot');
+            const emptyState = document.getElementById('dropzone-empty');
+            const selectedState = document.getElementById('dropzone-selected');
+            const fileNameSpan = document.getElementById('selected-file-name');
+
+            if (dropzone && fileInput) {
+                dropzone.addEventListener('click', () => fileInput.click());
+
+                fileInput.addEventListener('change', () => {
+                    if (fileInput.files && fileInput.files[0]) {
+                        const file = fileInput.files[0];
+                        uploadedScreenshotMeta = { name: file.name, type: file.type };
+                        if (fileNameSpan) fileNameSpan.textContent = file.name;
+                        if (emptyState) emptyState.classList.add('hidden');
+                        if (selectedState) selectedState.classList.remove('hidden');
+
+                        // Convert to Base64 for dual write
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            uploadedScreenshotBase64 = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        // 8. Form Submission Handler
+        const form = document.getElementById('event-reg-form');
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!currentEvent) return;
+
+                const submitBtn = document.getElementById('submit-btn');
+                const submitBtnText = document.getElementById('submit-btn-text');
+                const origText = submitBtnText ? submitBtnText.textContent : 'Confirm';
+
+                const name = document.getElementById('reg-name').value.trim();
+                const email = document.getElementById('reg-email').value.trim();
+                const phone = document.getElementById('reg-phone').value.trim();
+                const pincode = document.getElementById('reg-pincode').value.trim();
+                const company = document.getElementById('reg-company').value.trim();
+                const role = document.getElementById('reg-role').value.trim();
+                const isExisting = document.getElementById('reg-existing-member').value;
+                const referredBy = document.getElementById('reg-referred-by').value.trim();
+                const guestInput = document.getElementById('reg-additional-guests');
+                const guestCount = parseInt(guestInput ? guestInput.value : 0, 10) || 0;
+
+                const price = parseFloat(currentEvent.price || 0);
+                const isPaid = price > 0;
+                const totalCost = isPaid ? (price * (1 + guestCount)) : 0;
+                const paymentStatus = isPaid ? 'Pending' : 'Free';
+
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    if (submitBtnText) submitBtnText.textContent = "Processing Registration...";
+                }
+
+                // Try Supabase Storage upload for screenshot if attached
+                let receiptUrl = '';
+                const fileInput = document.getElementById('reg-screenshot');
+                if (fileInput && fileInput.files && fileInput.files[0] && window.TKL_SUPABASE && window.TKL_SUPABASE.storage) {
+                    try {
+                        const file = fileInput.files[0];
+                        const cleanPhone = phone.replace(/[^0-9]/g, '');
+                        const path = `receipts/${cleanPhone}_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+                        const uploadRes = await window.TKL_SUPABASE.storage.uploadReceipt(file, path);
+                        if (uploadRes && uploadRes.publicUrl) {
+                            receiptUrl = uploadRes.publicUrl;
+                        }
+                    } catch (storageErr) {
+                        console.warn("Storage upload note:", storageErr);
+                    }
+                }
+
+                const refCode = `TKL-${Date.now().toString().slice(-6)}`;
+
+                const regPayload = {
+                    eventName: currentEvent.title,
+                    eventId: currentEvent.id,
+                    entryType: currentEvent.entry_type || (isPaid ? `Paid Entry ₹${price}` : 'Free Entry'),
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    pincode: pincode,
+                    company: company,
+                    role: role,
+                    isExistingMember: isExisting,
+                    referredBy: (isExisting === 'Yes' ? 'Existing TKL Member' : (referredBy || 'Direct Registration')),
+                    additionalGuests: guestCount,
+                    totalCost: totalCost,
+                    paymentStatus: paymentStatus,
+                    receiptUrl: receiptUrl,
+                    notes: `Ref Code: ${refCode}`
+                };
+
+                // 1. Save to Supabase / Local Storage
+                try {
+                    await window.TKL_SUPABASE.registrations.save(regPayload);
+                } catch (sbErr) {
+                    console.warn("Supabase save note:", sbErr);
+                }
+
+                // 2. Dual-write backup to Google Apps Script
+                try {
+                    const gScriptPayload = {
+                        formType: 'marketplace',
+                        ...regPayload
+                    };
+                    if (uploadedScreenshotBase64 && uploadedScreenshotMeta.name) {
+                        gScriptPayload.receiptData = uploadedScreenshotBase64;
+                        gScriptPayload.receiptMimeType = uploadedScreenshotMeta.type;
+                        gScriptPayload.receiptName = uploadedScreenshotMeta.name;
+                    }
+                    if (APPS_SCRIPT_URL && !APPS_SCRIPT_URL.includes("YOUR_DEPLOYED")) {
+                        fetch(APPS_SCRIPT_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(gScriptPayload)
+                        }).catch(e => console.warn("Google Script backup notice:", e));
+                    }
+                } catch (gErr) {
+                    console.warn("Google Apps Script dual-write note:", gErr);
+                }
+
+                // 3. Render Digital Pass Success View
+                renderSuccessPass({
+                    refCode,
+                    name,
+                    eventTitle: currentEvent.title,
+                    chapter: currentEvent.chapter,
+                    date: formatDateDisplay(currentEvent.event_date),
+                    time: currentEvent.event_time || '05:30 PM Onwards',
+                    venue: currentEvent.location_name || 'Chennai',
+                    seats: 1 + guestCount,
+                    totalCost: totalCost,
+                    status: isPaid ? 'Pending Verification' : 'Verified (Free Entry)'
+                });
+
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    if (submitBtnText) submitBtnText.textContent = origText;
+                }
+            });
+        }
+
+        // 9. Show Digital Pass
+        function renderSuccessPass(data) {
+            document.getElementById('pass-attendee-name').textContent = data.name;
+            document.getElementById('pass-ref-code').textContent = data.refCode;
+            document.getElementById('pass-status-text').textContent = data.status;
+            document.getElementById('pass-event-title').textContent = data.eventTitle;
+            document.getElementById('pass-event-chapter').textContent = data.chapter || 'Chapter Gathering';
+            document.getElementById('pass-date').textContent = data.date;
+            document.getElementById('pass-time').textContent = data.time;
+            document.getElementById('pass-venue').textContent = data.venue;
+            document.getElementById('pass-seats').textContent = `${data.seats} Delegate${data.seats > 1 ? 's' : ''}`;
+            document.getElementById('pass-amount').textContent = data.totalCost > 0 ? `₹${data.totalCost}` : 'Free Entry (₹0)';
+
+            document.getElementById('reg-form-wrapper').classList.add('hidden');
+            document.getElementById('reg-success-wrapper').classList.remove('hidden');
+
+            document.getElementById('registration-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Helper: Format Date string
+        function formatDateDisplay(dateStr) {
+            if (!dateStr) return 'TBA';
+            try {
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return dateStr;
+                return d.toLocaleDateString('en-IN', {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+</html>

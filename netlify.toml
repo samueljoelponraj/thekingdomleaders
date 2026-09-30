@@ -1,0 +1,11 @@
+# Netlify Configuration for The Kingdom Leaders (TKL)
+[build]
+  publish = "."
+  command = "node build-env.js"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
