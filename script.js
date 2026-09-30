@@ -353,25 +353,30 @@ function initSmoothScroll() {
  * Validates and handles contact form submission.
  */
 function initFormHandlers() {
+    // If contact.html provides its dedicated production submission handler, do not attach mock handler.
+    // The handler on contact.html manages Google Apps Script, Supabase, and Chapter WhatsApp routing.
     const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Extract values (supporting both registration form and legacy contact forms)
-            const fullNameEl = document.getElementById('reg-fullname') || contactForm.querySelector('input[type="text"]');
-            const nameVal = fullNameEl ? fullNameEl.value.trim() : '';
-            
-            if (fullNameEl && fullNameEl.hasAttribute('required') && !nameVal) {
-                alert('Please fill out all required fields.');
-                return;
-            }
+    if (!contactForm) return;
 
-            // Mock success alert (in production, connect to a backend api)
-            alert(`Thank you, ${nameVal || 'Member'}! Your registration has been submitted successfully. We will get back to you soon.`);
-            contactForm.reset();
-        });
+    // If on contact.html or custom handler is present, skip mock submission handler
+    if (window.location.pathname.includes('contact.html') || document.getElementById('reg-gender')) {
+        return;
     }
+
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const fullNameEl = document.getElementById('reg-fullname') || contactForm.querySelector('input[type="text"]');
+        const nameVal = fullNameEl ? fullNameEl.value.trim() : '';
+        
+        if (fullNameEl && fullNameEl.hasAttribute('required') && !nameVal) {
+            alert('Please fill out all required fields.');
+            return;
+        }
+
+        alert(`Thank you, ${nameVal || 'Member'}! Your registration has been submitted successfully. We will get back to you soon.`);
+        contactForm.reset();
+    });
 }
 
 /**

@@ -295,10 +295,14 @@
                     <!-- Section 1: Personal Profile -->
                     <div class="space-y-4">
                         <h4 class="text-xs uppercase font-bold tracking-wider text-blue-800 border-b border-blue-50 pb-2">1. Personal Profile</h4>
-                        <div class="grid md:grid-cols-2 gap-6">
+                        <div class="grid md:grid-cols-3 gap-6">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
                                 <input type="text" id="reg-fullname" required placeholder="Enter your full name" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-sm text-gray-800 bg-gray-50 focus:bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
+                                <input type="email" id="reg-email" required placeholder="name@example.com" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-sm text-gray-800 bg-gray-50 focus:bg-white">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Contact Number *</label>
@@ -663,26 +667,33 @@
         }
         
         if (contactForm) {
-            contactForm.addEventListener('submit', (e) => {
+            contactForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
                 const submitBtn = contactForm.querySelector('button[type="submit"]');
-                const originalBtnText = submitBtn.textContent;
+                const originalBtnText = submitBtn ? submitBtn.textContent : "Submit Registration";
                 
-                const fullnameVal = document.getElementById('reg-fullname').value;
-                const phoneVal = document.getElementById('reg-phone').value;
-                const genderVal = document.getElementById('reg-gender').value;
-                const churchVal = document.getElementById('reg-church').value;
-                const biznameVal = document.getElementById('reg-bizname').value;
-                const bizpinVal = document.getElementById('reg-bizpin').value;
-                const bizaddrVal = document.getElementById('reg-bizaddr').value;
-                const resaddrVal = document.getElementById('reg-resaddr').value;
-                const respinVal = document.getElementById('reg-respin').value;
-                const referredVal = document.getElementById('reg-referred').value;
+                // Safely extract input values
+                const fullnameVal = (document.getElementById('reg-fullname')?.value || '').trim();
+                const emailVal = (document.getElementById('reg-email')?.value || '').trim();
+                const phoneVal = (document.getElementById('reg-phone')?.value || '').trim();
+                const genderVal = (document.getElementById('reg-gender')?.value || '').trim();
+                const churchVal = (document.getElementById('reg-church')?.value || '').trim();
+                const biznameVal = (document.getElementById('reg-bizname')?.value || '').trim();
+                const bizpinVal = (document.getElementById('reg-bizpin')?.value || '').trim();
+                const bizaddrVal = (document.getElementById('reg-bizaddr')?.value || '').trim();
+                const resaddrVal = (document.getElementById('reg-resaddr')?.value || '').trim();
+                const respinVal = (document.getElementById('reg-respin')?.value || '').trim();
+                const referredVal = (document.getElementById('reg-referred')?.value || '').trim();
                 const chapterVal = (chapterSelect && chapterSelect.value) ? chapterSelect.value : 'Central Chapter';
                 
-                const leadWillingnessVal = document.querySelector('input[name="lead-willingness"]:checked').value;
-                const prayerTeamVal = document.querySelector('input[name="prayer-team"]:checked').value;
+                const leadRadio = document.querySelector('input[name="lead-willingness"]:checked');
+                const prayerRadio = document.querySelector('input[name="prayer-team"]:checked');
+                const leadWillingnessVal = leadRadio ? leadRadio.value : 'No';
+                const prayerTeamVal = prayerRadio ? prayerRadio.value : 'No';
+
+                // Safe email fallback so Supabase NOT NULL constraint is satisfied
+                const safeEmail = emailVal || (phoneVal ? `${phoneVal.replace(/\D/g, '')}@thekingdomleaders.in` : 'member@thekingdomleaders.in');
 
                 // UI Reset and Alert helper
                 const showSuccessUI = () => {
@@ -692,7 +703,7 @@
                     const modalChapterTitle = document.getElementById('modal-chapter-title');
                     const modalJoinBtn = document.getElementById('modal-join-btn');
 
-                    if (modalName) modalName.textContent = fullnameVal;
+                    if (modalName) modalName.textContent = fullnameVal || 'Member';
 
                     // Match region from selected chapter, or fallback to pincode
                     let region = "Global";
@@ -713,7 +724,7 @@
                     if (modalJoinBtn) modalJoinBtn.href = chapter.link;
                     if (modalWhatsappSection) modalWhatsappSection.classList.remove('hidden');
 
-                    // Open modal with animation
+                    // Open modal with smooth animation
                     if (modal && modalContent) {
                         modal.classList.remove('hidden');
                         setTimeout(() => {
@@ -723,69 +734,73 @@
                     }
                 };
 
-                submitBtn.disabled = true;
-                submitBtn.textContent = "Submitting registration...";
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Submitting registration...";
+                }
 
-                // Save to Supabase with Chapter clearly specified
-                if (window.TKL_SUPABASE && window.TKL_SUPABASE.registrations) {
-                    window.TKL_SUPABASE.registrations.save({
-                        eventName: `Member Network • ${chapterVal}`,
-                        entryType: 'Member Registration',
-                        fullName: fullnameVal,
+                // 1. Save to Supabase (centralized admin database)
+                try {
+                    if (window.TKL_SUPABASE && window.TKL_SUPABASE.registrations) {
+                        await window.TKL_SUPABASE.registrations.save({
+                            eventName: `Member Intake • ${chapterVal}`,
+                            entryType: 'Member Registration',
+                            fullName: fullnameVal,
+                            email: safeEmail,
+                            phone: phoneVal,
+                            pincode: respinVal || bizpinVal,
+                            company: biznameVal,
+                            role: `Church: ${churchVal} | Chapter: ${chapterVal}`,
+                            notes: `Chapter: ${chapterVal} | Email: ${emailVal} | Gender: ${genderVal} | Lead: ${leadWillingnessVal} | Prayer: ${prayerTeamVal} | BizAddr: ${bizaddrVal} | ResAddr: ${resaddrVal}`,
+                            referredBy: referredVal,
+                            paymentStatus: 'Free'
+                        });
+                    }
+                } catch (supaErr) {
+                    console.warn("[TKL Member Intake] Supabase notice:", supaErr);
+                }
+
+                // 2. Send to Google Apps Script / Google Sheets
+                if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "YOUR_DEPLOYED_WEB_APP_URL") {
+                    const payload = {
+                        formType: 'member',
+                        chapter: chapterVal,
+                        fullname: fullnameVal,
+                        email: safeEmail,
                         phone: phoneVal,
-                        pincode: respinVal || bizpinVal,
-                        company: biznameVal,
-                        role: `Church: ${churchVal} | Chapter: ${chapterVal}`,
-                        notes: `Chapter: ${chapterVal} | Gender: ${genderVal} | Lead: ${leadWillingnessVal} | Prayer: ${prayerTeamVal} | BizAddr: ${bizaddrVal} | ResAddr: ${resaddrVal}`,
-                        referredBy: referredVal,
-                        paymentStatus: 'Free'
-                    }).catch(e => console.warn("Supabase member save notice:", e));
+                        gender: genderVal,
+                        church: churchVal,
+                        bizname: biznameVal,
+                        bizpin: bizpinVal,
+                        bizaddr: bizaddrVal,
+                        resaddr: resaddrVal,
+                        respin: respinVal,
+                        referred: referredVal,
+                        leadWillingness: leadWillingnessVal,
+                        prayerTeam: prayerTeamVal
+                    };
+
+                    try {
+                        await fetch(APPS_SCRIPT_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                    } catch (err) {
+                        console.error('[TKL Member Intake] Google Apps Script post failed:', err);
+                    }
                 }
 
-                // Check if Apps Script is configured, else fallback to standard local mockup
-                if (APPS_SCRIPT_URL === "YOUR_DEPLOYED_WEB_APP_URL" || !APPS_SCRIPT_URL) {
-                    showSuccessUI();
+                // Show completion modal
+                showSuccessUI();
+
+                if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.textContent = originalBtnText;
-                    return;
                 }
-
-                const payload = {
-                    formType: 'member',
-                    chapter: chapterVal,
-                    fullname: fullnameVal,
-                    phone: phoneVal,
-                    gender: genderVal,
-                    church: churchVal,
-                    bizname: biznameVal,
-                    bizpin: bizpinVal,
-                    bizaddr: bizaddrVal,
-                    resaddr: resaddrVal,
-                    respin: respinVal,
-                    referred: referredVal,
-                    leadWillingness: leadWillingnessVal,
-                    prayerTeam: prayerTeamVal
-                };
-
-                fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                })
-                .then(() => {
-                    showSuccessUI();
-                })
-                .catch(err => {
-                    console.error('Submission failed:', err);
-                    showSuccessUI();
-                })
-                .finally(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalBtnText;
-                });
             });
         }
     });
