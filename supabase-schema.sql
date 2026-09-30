@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS public.registrations (
     event_id UUID REFERENCES public.events(id) ON DELETE SET NULL,
     entry_type TEXT,
     full_name TEXT NOT NULL,
-    email TEXT NOT NULL,
+    email TEXT DEFAULT '',
     phone TEXT NOT NULL,
     pincode TEXT,
     company TEXT,
@@ -59,6 +59,11 @@ CREATE TABLE IF NOT EXISTS public.registrations (
     payment_status TEXT DEFAULT 'Pending', -- 'Pending', 'Verified', 'Free', 'Rejected'
     notes TEXT
 );
+
+-- Ensure backwards-compatibility if table was already created
+ALTER TABLE public.registrations ALTER COLUMN email DROP NOT NULL;
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS chief_guest TEXT;
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS display_order INT DEFAULT 0;
 
 -- Indexes for lightning-fast queries in the Master Dashboard
 CREATE INDEX IF NOT EXISTS idx_registrations_event_name ON public.registrations(event_name);
@@ -105,23 +110,41 @@ CREATE POLICY "Admin view and manage registrations"
     WITH CHECK (true);
 
 -- ==============================================================================
--- 5. STORAGE BUCKET FOR PAYMENT PROOF / RECEIPT SCREENSHOTS
+-- 5. STORAGE BUCKETS FOR RECEIPTS & EVENT FLYERS
 -- ==============================================================================
+-- Receipts bucket for payment screenshots
 INSERT INTO storage.buckets (id, name, public) 
 VALUES ('receipts', 'receipts', true)
 ON CONFLICT (id) DO UPDATE SET public = true;
 
--- Allow public uploads of receipts from the registration forms
+-- Flyers bucket for event poster uploads in Master Admin
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('flyers', 'flyers', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+-- Allow public uploads of receipts from registration forms
 DROP POLICY IF EXISTS "Public Upload Receipts" ON storage.objects;
 CREATE POLICY "Public Upload Receipts" 
     ON storage.objects FOR INSERT 
     WITH CHECK (bucket_id = 'receipts');
 
--- Allow public read of receipts in Master Dashboard
+-- Allow public read of receipts
 DROP POLICY IF EXISTS "Public Read Receipts" ON storage.objects;
 CREATE POLICY "Public Read Receipts" 
     ON storage.objects FOR SELECT 
     USING (bucket_id = 'receipts');
+
+-- Allow uploads of flyers from Master Admin
+DROP POLICY IF EXISTS "Public Upload Flyers" ON storage.objects;
+CREATE POLICY "Public Upload Flyers" 
+    ON storage.objects FOR INSERT 
+    WITH CHECK (bucket_id = 'flyers');
+
+-- Allow public read of event flyers
+DROP POLICY IF EXISTS "Public Read Flyers" ON storage.objects;
+CREATE POLICY "Public Read Flyers" 
+    ON storage.objects FOR SELECT 
+    USING (bucket_id = 'flyers');
 
 -- ==============================================================================
 -- 6. SEED INITIAL EVENTS
