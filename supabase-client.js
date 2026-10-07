@@ -14,6 +14,7 @@
     const STORAGE_KEY_URL = 'tkl_supabase_url';
     const STORAGE_KEY_KEY = 'tkl_supabase_anon_key';
     const STORAGE_KEY_PASS = 'tkl_master_passcode';
+    const STORAGE_KEY_USER = 'tkl_master_user_id';
     const STORAGE_KEY_AUTH = 'tkl_admin_session';
 
     // In-memory fallback for file:/// security sandboxes or private browsing where web storage is restricted
@@ -89,15 +90,20 @@
         return (getEnv().SUPABASE_ANON_KEY || safeStorage.getItem(STORAGE_KEY_KEY) || DEFAULT_CONFIG.supabaseAnonKey || '').trim();
     }
 
+    function getMasterUserId() {
+        return (getEnv().MASTER_USER_ID || safeStorage.getItem(STORAGE_KEY_USER) || DEFAULT_CONFIG.masterUserId || 'admin@thekingdomleaders.org').trim();
+    }
+
     function getMasterPasscode() {
-        return (getEnv().MASTER_PASSCODE || safeStorage.getItem(STORAGE_KEY_PASS) || DEFAULT_CONFIG.masterPasscode || 'tkladmin2026').trim();
+        return (getEnv().MASTER_PASSCODE || safeStorage.getItem(STORAGE_KEY_PASS) || DEFAULT_CONFIG.masterPasscode || 'TKL#Admin$2026!Master').trim();
     }
 
     // Default Supabase project credentials (can be pre-filled, from Netlify env, or configured in Master Login)
     const DEFAULT_CONFIG = {
         supabaseUrl: '',
         supabaseAnonKey: '',
-        masterPasscode: 'tkladmin2026',
+        masterUserId: 'admin@thekingdomleaders.org',
+        masterPasscode: 'TKL#Admin$2026!Master',
         storageBucket: 'receipts'
     };
 
@@ -160,26 +166,31 @@
         get() {
             const url = getSupabaseUrl();
             const anonKey = getSupabaseAnonKey();
+            const masterUserId = getMasterUserId();
             const masterPasscode = getMasterPasscode();
             const fromNetlifyEnv = !!(getEnv().SUPABASE_URL && getEnv().SUPABASE_ANON_KEY);
             return {
                 url,
                 anonKey,
+                masterUserId,
                 masterPasscode,
                 isConfigured: !!(url && anonKey),
                 fromNetlifyEnv
             };
         },
-        save(url, anonKey, passcode) {
+        save(url, anonKey, passcode, userId) {
             if (url) safeStorage.setItem(STORAGE_KEY_URL, url.trim().replace(/\/$/, ''));
             if (anonKey) safeStorage.setItem(STORAGE_KEY_KEY, anonKey.trim());
             if (passcode) safeStorage.setItem(STORAGE_KEY_PASS, passcode.trim());
+            if (userId) safeStorage.setItem(STORAGE_KEY_USER, userId.trim());
             supabaseInstance = null; // Reset cached instance
             return true;
         },
         clear() {
             safeStorage.removeItem(STORAGE_KEY_URL);
             safeStorage.removeItem(STORAGE_KEY_KEY);
+            safeStorage.removeItem(STORAGE_KEY_PASS);
+            safeStorage.removeItem(STORAGE_KEY_USER);
             supabaseInstance = null;
         }
     };
@@ -188,17 +199,64 @@
      * Auth & Session Management for Master Login
      */
     const Auth = {
-        login(password) {
+        async login(userOrPass, maybePassword) {
+            let userId = '';
+            let password = '';
+            if (maybePassword !== undefined) {
+                userId = (userOrPass || '').trim();
+                password = (maybePassword || '').trim();
+            } else {
+                password = (userOrPass || '').trim();
+            }
+
+            const configuredUser = getMasterUserId();
             const currentPasscode = getMasterPasscode();
-            if (password === currentPasscode) {
+
+            const validUsers = [
+                configuredUser.toLowerCase(),
+                'admin@thekingdomleaders.org',
+                'admin',
+                'tkl_master_admin'
+            ];
+
+            const userMatches = !userId || validUsers.includes(userId.toLowerCase());
+            const passMatches = (password === currentPasscode);
+
+            if (userMatches && passMatches) {
                 safeSession.setItem(STORAGE_KEY_AUTH, JSON.stringify({
                     authenticated: true,
                     timestamp: Date.now(),
-                    role: 'master_admin'
+                    role: 'master_admin',
+                    userId: userId || configuredUser
                 }));
                 return { success: true };
             }
-            return { success: false, error: 'Invalid Master Passcode. Please try again.' };
+
+            // Also check Supabase Auth if client is active and user provided an email
+            if (userId && userId.includes('@')) {
+                const client = getClient();
+                if (client && client.auth) {
+                    try {
+                        const { data, error } = await client.auth.signInWithPassword({ email: userId, password });
+                        if (!error && data && data.user) {
+                            safeSession.setItem(STORAGE_KEY_AUTH, JSON.stringify({
+                                authenticated: true,
+                                timestamp: Date.now(),
+                                role: 'supabase_auth',
+                                user: data.user
+                            }));
+                            return { success: true, user: data.user };
+                        }
+                    } catch (e) {
+                        // ignore and fall through
+                    }
+                }
+            }
+
+            if (!userMatches) {
+                return { success: false, error: 'Invalid User ID. Please check your credentials.' };
+            }
+            return { success: false, error: 'Invalid Password. Please check your credentials.' };
         },
         async loginWithSupabaseUser(email, password) {
             const client = getClient();

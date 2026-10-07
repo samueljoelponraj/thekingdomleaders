@@ -153,18 +153,20 @@
                 <div id="login-error-box" class="hidden bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs p-3 rounded-xl"></div>
 
                 <div>
-                    <label for="master-passcode-input" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Master Admin Passcode</label>
+                    <label for="master-userid-input" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">User ID / Email</label>
+                    <input type="text" id="master-userid-input" required placeholder="admin@thekingdomleaders.org" autocomplete="username"
+                           class="glass-input w-full px-4 py-3 rounded-xl text-sm placeholder-slate-500">
+                </div>
+
+                <div>
+                    <label for="master-passcode-input" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Password</label>
                     <div class="relative">
-                        <input type="password" id="master-passcode-input" required placeholder="Enter master passcode" 
+                        <input type="password" id="master-passcode-input" required placeholder="Enter password" autocomplete="current-password"
                                class="glass-input w-full px-4 py-3 rounded-xl text-sm placeholder-slate-500 pr-10">
-                        <button type="button" id="toggle-passcode-visibility" class="absolute right-3 top-3 text-slate-400 hover:text-slate-200 focus:outline-none">
+                        <button type="button" id="toggle-passcode-visibility" class="absolute right-3 top-3 text-slate-400 hover:text-slate-200 focus:outline-none" aria-label="Toggle password visibility">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-400 mt-2 flex items-center justify-between">
-                        <span>Default: <code class="bg-slate-800 text-amber-300 px-1 py-0.5 rounded font-mono">tkladmin2026</code></span>
-                        <a href="#tab-settings" onclick="openDirectSettings()" class="text-blue-400 hover:underline">Change / Configure</a>
-                    </p>
                 </div>
 
                 <button type="submit" id="btn-login-submit" class="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 hover:from-blue-500 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl text-sm shadow-lg shadow-blue-900/30 transition-all flex items-center justify-center gap-2">
@@ -174,9 +176,8 @@
             </form>
 
             <div class="mt-6 pt-6 border-t border-white/10 text-center">
-                <p class="text-xs text-slate-500">
-                    Need Supabase connection setup? 
-                    <button type="button" onclick="openDirectSettings()" class="text-amber-400 hover:underline font-medium">Configure Supabase Keys</button>
+                <p class="text-[11px] text-slate-500 flex items-center justify-center gap-1.5">
+                    <span>🔒 Secured Executive Administration</span>
                 </p>
             </div>
         </div>
@@ -687,10 +688,17 @@
                     </div>
 
                     <div>
-                        <label for="cfg-master-passcode" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Master Portal Passcode</label>
-                        <input type="text" id="cfg-master-passcode" placeholder="Enter custom admin password" 
+                        <label for="cfg-master-userid" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Master Admin User ID / Email</label>
+                        <input type="text" id="cfg-master-userid" placeholder="admin@thekingdomleaders.org" 
                                class="glass-input w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-mono">
-                        <p class="text-[11px] text-slate-400 mt-1">Used to unlock this Master Login dashboard.</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Authorized User ID or admin email used to unlock this dashboard.</p>
+                    </div>
+
+                    <div>
+                        <label for="cfg-master-passcode" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Master Portal Password / Passcode</label>
+                        <input type="password" id="cfg-master-passcode" placeholder="Enter custom admin password" 
+                               class="glass-input w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-mono">
+                        <p class="text-[11px] text-slate-400 mt-1">Secret passcode used to unlock this Master Login dashboard.</p>
                     </div>
 
                     <div class="pt-2 flex flex-wrap items-center gap-3">
@@ -1050,6 +1058,7 @@
         // 3. Login Handlers
         function initLoginHandlers() {
             const form = document.getElementById('master-login-form');
+            const userInput = document.getElementById('master-userid-input');
             const passcode = document.getElementById('master-passcode-input');
             const errBox = document.getElementById('login-error-box');
             const toggleBtn = document.getElementById('toggle-passcode-visibility');
@@ -1062,29 +1071,50 @@
             }
 
             if (form) {
-                form.addEventListener('submit', (e) => {
+                form.addEventListener('submit', async (e) => {
                     if (e) {
                         e.preventDefault();
                         e.stopPropagation();
                     }
                     if (errBox) errBox.classList.add('hidden');
+                    const enteredUser = (userInput ? userInput.value : '').trim();
                     const enteredCode = (passcode ? passcode.value : '').trim();
+
+                    if (!enteredUser) {
+                        if (errBox) {
+                            errBox.textContent = 'Please enter your User ID or Email.';
+                            errBox.classList.remove('hidden');
+                        }
+                        if (userInput) userInput.focus();
+                        return false;
+                    }
+
+                    if (!enteredCode) {
+                        if (errBox) {
+                            errBox.textContent = 'Please enter your Password.';
+                            errBox.classList.remove('hidden');
+                        }
+                        if (passcode) passcode.focus();
+                        return false;
+                    }
 
                     let res;
                     if (window.TKL_SUPABASE && window.TKL_SUPABASE.auth && typeof window.TKL_SUPABASE.auth.login === 'function') {
-                        res = window.TKL_SUPABASE.auth.login(enteredCode);
+                        res = await window.TKL_SUPABASE.auth.login(enteredUser, enteredCode);
                     } else {
                         // Resilient fallback when scripts run in strict local offline environment
-                        res = (enteredCode === 'tkladmin2026')
+                        const validUser = ['admin@thekingdomleaders.org', 'admin', 'tkl_master_admin'].includes(enteredUser.toLowerCase());
+                        const validPass = (enteredCode === 'TKL#Admin$2026!Master');
+                        res = (validUser && validPass)
                             ? { success: true }
-                            : { success: false, error: 'Invalid Master Passcode. Default is tkladmin2026' };
+                            : { success: false, error: 'Invalid User ID or Password. Please try again.' };
                     }
 
                     if (res && res.success) {
                         initAuthView();
                     } else {
                         if (errBox) {
-                            errBox.textContent = (res && res.error) || 'Invalid Master Passcode. Please try again.';
+                            errBox.textContent = (res && res.error) || 'Invalid User ID or Password. Please try again.';
                             errBox.classList.remove('hidden');
                         }
                     }
@@ -1133,11 +1163,12 @@
         }
 
         function openDirectSettings() {
-            if (window.TKL_SUPABASE && window.TKL_SUPABASE.auth && typeof window.TKL_SUPABASE.auth.login === 'function') {
-                window.TKL_SUPABASE.auth.login('tkladmin2026'); // temporary access for config
+            if (window.TKL_SUPABASE && window.TKL_SUPABASE.auth && typeof window.TKL_SUPABASE.auth.isAuthenticated === 'function') {
+                if (window.TKL_SUPABASE.auth.isAuthenticated()) {
+                    initAuthView();
+                    switchTab('settings');
+                }
             }
-            initAuthView();
-            switchTab('settings');
         }
 
         // 5. Dashboard Data Loader
@@ -2230,7 +2261,9 @@
             const cfg = window.TKL_SUPABASE.config.get();
             document.getElementById('cfg-supabase-url').value = cfg.url || '';
             document.getElementById('cfg-supabase-key').value = cfg.anonKey || '';
-            document.getElementById('cfg-master-passcode').value = cfg.masterPasscode || 'tkladmin2026';
+            const userEl = document.getElementById('cfg-master-userid');
+            if (userEl) userEl.value = cfg.masterUserId || 'admin@thekingdomleaders.org';
+            document.getElementById('cfg-master-passcode').value = cfg.masterPasscode || 'TKL#Admin$2026!Master';
 
             if (cfg.fromNetlifyEnv) {
                 const resBox = document.getElementById('test-connection-result');
@@ -2243,9 +2276,11 @@
         function saveSupabaseSettings() {
             const url = document.getElementById('cfg-supabase-url').value;
             const key = document.getElementById('cfg-supabase-key').value;
+            const userEl = document.getElementById('cfg-master-userid');
+            const userId = userEl ? userEl.value : '';
             const passcode = document.getElementById('cfg-master-passcode').value;
 
-            window.TKL_SUPABASE.config.save(url, key, passcode);
+            window.TKL_SUPABASE.config.save(url, key, passcode, userId);
             alert('Supabase credentials & settings updated successfully!');
             initSupabaseHealth();
             reloadCurrentData();

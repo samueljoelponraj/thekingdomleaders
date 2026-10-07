@@ -6,12 +6,14 @@ const fs = require('fs');
 
 const envUrl = process.env.SUPABASE_URL || '';
 const envKey = process.env.SUPABASE_ANON_KEY || '';
+const envUserId = process.env.MASTER_USER_ID || '';
 const envPasscode = process.env.MASTER_PASSCODE || '';
 
 const content = `// Generated automatically during Netlify build.
 window.TKL_ENV = {
   SUPABASE_URL: "${envUrl.trim()}",
   SUPABASE_ANON_KEY: "${envKey.trim()}",
+  MASTER_USER_ID: "${envUserId.trim()}",
   MASTER_PASSCODE: "${envPasscode.trim()}"
 };
 `;
