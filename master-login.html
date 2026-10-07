@@ -2186,8 +2186,17 @@
 
         async function deleteEventRecord(id) {
             if (!confirm('Are you sure you want to permanently delete this event? This will remove it from all chapter pages.')) return;
-            await window.TKL_SUPABASE.events.delete(id);
-            await loadEvents();
+            try {
+                const res = await window.TKL_SUPABASE.events.delete(id);
+                if (res && res.error) {
+                    console.warn('[TKL] Supabase deletion notice:', res.error);
+                }
+                await loadEvents();
+                updateDashboardMetrics();
+            } catch (err) {
+                console.error('[TKL] Delete error:', err);
+                await loadEvents();
+            }
         }
 
         // 10. Dashboard Metrics Summary

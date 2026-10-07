@@ -60,10 +60,25 @@ CREATE TABLE IF NOT EXISTS public.registrations (
     notes TEXT
 );
 
--- Ensure backwards-compatibility if table was already created
+-- Ensure backwards-compatibility and safe deletes if table was already created
 ALTER TABLE public.registrations ALTER COLUMN email DROP NOT NULL;
 ALTER TABLE public.events ADD COLUMN IF NOT EXISTS chief_guest TEXT;
 ALTER TABLE public.events ADD COLUMN IF NOT EXISTS display_order INT DEFAULT 0;
+
+-- Ensure foreign key does not block event deletion
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.table_constraints 
+        WHERE constraint_name = 'registrations_event_id_fkey' 
+        AND table_name = 'registrations'
+    ) THEN
+        ALTER TABLE public.registrations DROP CONSTRAINT registrations_event_id_fkey;
+        ALTER TABLE public.registrations 
+            ADD CONSTRAINT registrations_event_id_fkey 
+            FOREIGN KEY (event_id) REFERENCES public.events(id) ON DELETE SET NULL;
+    END IF;
+END $$;
 
 -- Indexes for lightning-fast queries in the Master Dashboard
 CREATE INDEX IF NOT EXISTS idx_registrations_event_name ON public.registrations(event_name);
@@ -82,13 +97,27 @@ ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.registrations ENABLE ROW LEVEL SECURITY;
 
 -- EVENTS POLICIES
--- Anyone can view active events on the website
 DROP POLICY IF EXISTS "Public can view active events" ON public.events;
 CREATE POLICY "Public can view active events" 
     ON public.events FOR SELECT 
     USING (true);
 
--- Allow Master Admin full CRUD on events
+DROP POLICY IF EXISTS "Allow delete events" ON public.events;
+CREATE POLICY "Allow delete events" 
+    ON public.events FOR DELETE 
+    USING (true);
+
+DROP POLICY IF EXISTS "Allow update events" ON public.events;
+CREATE POLICY "Allow update events" 
+    ON public.events FOR UPDATE 
+    USING (true)
+    WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow insert events" ON public.events;
+CREATE POLICY "Allow insert events" 
+    ON public.events FOR INSERT 
+    WITH CHECK (true);
+
 DROP POLICY IF EXISTS "Admin full access on events" ON public.events;
 CREATE POLICY "Admin full access on events" 
     ON public.events FOR ALL 
@@ -96,13 +125,16 @@ CREATE POLICY "Admin full access on events"
     WITH CHECK (true);
 
 -- REGISTRATIONS POLICIES
--- Website visitors can submit registration forms freely
 DROP POLICY IF EXISTS "Public can insert registrations" ON public.registrations;
 CREATE POLICY "Public can insert registrations" 
     ON public.registrations FOR INSERT 
     WITH CHECK (true);
 
--- Master Admin can view, update and manage registrations
+DROP POLICY IF EXISTS "Allow delete registrations" ON public.registrations;
+CREATE POLICY "Allow delete registrations" 
+    ON public.registrations FOR DELETE 
+    USING (true);
+
 DROP POLICY IF EXISTS "Admin view and manage registrations" ON public.registrations;
 CREATE POLICY "Admin view and manage registrations" 
     ON public.registrations FOR ALL 

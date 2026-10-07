@@ -16,6 +16,30 @@
     const STORAGE_KEY_PASS = 'tkl_master_passcode';
     const STORAGE_KEY_USER = 'tkl_master_user_id';
     const STORAGE_KEY_AUTH = 'tkl_admin_session';
+    const STORAGE_KEY_DELETED_EVENTS = 'tkl_deleted_event_ids';
+
+    function isUUID(val) {
+        return typeof val === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val.trim());
+    }
+
+    function getDeletedEventIds() {
+        try {
+            const raw = safeStorage.getItem(STORAGE_KEY_DELETED_EVENTS);
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function addDeletedEventId(id) {
+        if (!id) return;
+        const strId = String(id).trim();
+        const list = getDeletedEventIds();
+        if (!list.includes(strId)) {
+            list.push(strId);
+            safeStorage.setItem(STORAGE_KEY_DELETED_EVENTS, JSON.stringify(list));
+        }
+    }
 
     // In-memory fallback for file:/// security sandboxes or private browsing where web storage is restricted
     const memoryStore = {};
@@ -443,7 +467,7 @@
          */
         async delete(id) {
             const client = getClient();
-            if (client && id && typeof id === 'string' && id.includes('-')) {
+            if (client && id && typeof id === 'string' && isUUID(id)) {
                 try {
                     const { error } = await client
                         .from('registrations')
@@ -468,37 +492,41 @@
          * Fetch events with optional chapter filtering
          */
         async getAll(activeOnly = false, chapter = null) {
+            const deletedIds = getDeletedEventIds();
             const client = getClient();
-            if (!client) {
-                return getLocalEvents(activeOnly, chapter);
+            let events = null;
+
+            if (client) {
+                try {
+                    let query = client
+                        .from('events')
+                        .select('*')
+                        .order('event_date', { ascending: true });
+
+                    if (activeOnly) {
+                        query = query.eq('is_active', true);
+                    }
+
+                    if (chapter && chapter !== 'all') {
+                        // Match chapter name or keyword (e.g. 'central', 'west', 'south', 'north', 'east')
+                        query = query.ilike('chapter', `%${chapter}%`);
+                    }
+
+                    const { data, error } = await query;
+                    if (error) throw error;
+                    events = data || [];
+                } catch (err) {
+                    console.warn('[TKL Supabase] Fetching events failed, falling back to defaults:', err);
+                    events = null;
+                }
             }
 
-            try {
-                let query = client
-                    .from('events')
-                    .select('*')
-                    .order('event_date', { ascending: true });
-
-                if (activeOnly) {
-                    query = query.eq('is_active', true);
-                }
-
-                if (chapter && chapter !== 'all') {
-                    // Match chapter name or keyword (e.g. 'central', 'west', 'south', 'north', 'east')
-                    query = query.ilike('chapter', `%${chapter}%`);
-                }
-
-                const { data, error } = await query;
-                if (error) throw error;
-
-                if (!data || data.length === 0) {
-                    return getLocalEvents(activeOnly, chapter);
-                }
-                return data;
-            } catch (err) {
-                console.warn('[TKL Supabase] Fetching events failed, falling back to defaults:', err);
-                return getLocalEvents(activeOnly, chapter);
+            if (events === null) {
+                events = getLocalEvents(activeOnly, chapter);
             }
+
+            // Always ensure blacklisted deleted event IDs are excluded
+            return (events || []).filter(e => !deletedIds.includes(String(e.id)));
         },
 
         /**
@@ -619,21 +647,74 @@
          * Delete an event
          */
         async delete(id) {
+            if (!id) return { success: false, error: 'Event ID is required' };
+            const strId = String(id).trim();
+
+            // 1. Permanently blacklist in deleted events registry so it never shows anywhere
+            addDeletedEventId(strId);
+
+            // 2. Remove from local storage events
+            try {
+                let local = [];
+                const raw = safeStorage.getItem('tkl_local_events');
+                if (raw) local = JSON.parse(raw);
+                local = local.filter(e => String(e.id) !== strId);
+                safeStorage.setItem('tkl_local_events', JSON.stringify(local));
+            } catch (e) {}
+
             const client = getClient();
-            if (client && id && typeof id === 'string' && id.includes('-')) {
-                try {
-                    const { error } = await client
-                        .from('events')
-                        .delete()
-                        .eq('id', id);
-                    if (error) throw error;
-                } catch (err) {
-                    console.error('[TKL Supabase] Error deleting event:', err);
+            let supabaseSuccess = true;
+            let supabaseError = null;
+
+            if (client) {
+                if (isUUID(strId)) {
+                    try {
+                        // Dissociate registrations first to prevent foreign key errors
+                        try {
+                            await client
+                                .from('registrations')
+                                .update({ event_id: null })
+                                .eq('event_id', strId);
+                        } catch (fkErr) {
+                            console.warn('[TKL Supabase] Registrations FK dissociation note:', fkErr);
+                        }
+
+                        const { error } = await client
+                            .from('events')
+                            .delete()
+                            .eq('id', strId);
+
+                        if (error) {
+                            supabaseSuccess = false;
+                            supabaseError = error.message;
+                            console.error('[TKL Supabase] Error deleting event from Supabase:', error);
+                        }
+                    } catch (err) {
+                        supabaseSuccess = false;
+                        supabaseError = err.message;
+                        console.error('[TKL Supabase] Error deleting event:', err);
+                    }
+                } else {
+                    // Non-UUID ID (e.g. local seeds). Also clean up from Supabase by title if present
+                    try {
+                        const localEv = (getLocalEvents() || []).find(e => String(e.id) === strId);
+                        if (localEv && localEv.title) {
+                            await client
+                                .from('events')
+                                .delete()
+                                .eq('title', localEv.title);
+                        }
+                    } catch (e) {
+                        // non-critical title delete
+                    }
                 }
             }
-            const local = getLocalEvents().filter(e => e.id !== id);
-            safeStorage.setItem('tkl_local_events', JSON.stringify(local));
-            return { success: true };
+
+            return {
+                success: true,
+                supabaseSuccess,
+                error: supabaseError
+            };
         }
     };
 
@@ -973,14 +1054,18 @@
     }
 
     function getLocalEvents(activeOnly = false, chapter = null) {
-        let events = [];
+        let events = null;
         try {
             const raw = safeStorage.getItem('tkl_local_events');
-            if (raw) events = JSON.parse(raw);
-        } catch (e) {}
+            if (raw !== null) {
+                events = JSON.parse(raw);
+            }
+        } catch (e) {
+            events = null;
+        }
 
-        if (!events || events.length === 0) {
-            // Seed initial events for all chapters
+        if (events === null) {
+            // Seed initial events for all chapters on first run only
             events = [
                 {
                     id: 'event-central-m1',
@@ -1076,7 +1161,8 @@
             safeStorage.setItem('tkl_local_events', JSON.stringify(events));
         }
 
-        let filtered = events;
+        const deletedIds = getDeletedEventIds();
+        let filtered = (events || []).filter(e => !deletedIds.includes(String(e.id)));
         if (activeOnly) {
             filtered = filtered.filter(e => e.is_active !== false);
         }
