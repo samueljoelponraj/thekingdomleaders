@@ -398,8 +398,11 @@
                         <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </div>
 
-                    <!-- Filter Dropdowns: Chapter & Payment Status -->
-                    <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
+                        <!-- Specific Event Filter Dropdown -->
+                        <select id="filter-specific-event-select" onchange="filterRegistrations()" class="glass-input px-3.5 py-2.5 rounded-xl text-xs font-semibold cursor-pointer border border-white/10 bg-slate-900/90 text-slate-200">
+                            <option value="all">🎪 All Events & Forms</option>
+                        </select>
+
                         <!-- Chapter Filter Dropdown -->
                         <select id="filter-chapter-select" onchange="onChapterDropdownChange()" class="glass-input px-3 py-2.5 rounded-xl text-xs font-semibold cursor-pointer border border-white/10 bg-slate-900/90 text-slate-200">
                             <option value="all">📍 All Chapters (Central, West, etc.)</option>
@@ -408,6 +411,7 @@
                             <option value="south">South (Medavakkam Hub)</option>
                             <option value="north">North (Rayapuram Hub)</option>
                             <option value="east">East (Adyar Hub)</option>
+                            <option value="nagercoil">Nagercoil (Nagercoil Hub)</option>
                             <option value="global">Global / Non-Metro Hub</option>
                         </select>
 
@@ -452,6 +456,10 @@
                     <button type="button" id="mch-pill-east" onclick="setMemberChapterSubFilter('east')"
                             class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-teal-500/50 transition-all">
                         East (<span id="mch-count-east">0</span>)
+                    </button>
+                    <button type="button" id="mch-pill-nagercoil" onclick="setMemberChapterSubFilter('nagercoil')"
+                            class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-cyan-500/50 transition-all">
+                        Nagercoil (<span id="mch-count-nagercoil">0</span>)
                     </button>
                     <button type="button" id="mch-pill-global" onclick="setMemberChapterSubFilter('global')"
                             class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-slate-500/50 transition-all">
@@ -518,8 +526,8 @@
                 </div>
             </div>
 
-            <!-- 5 Dedicated Chapter Control Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+            <!-- Dedicated Chapter Control Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
                 <!-- 1. Central Chapter -->
                 <div onclick="if(!event.target.closest('a, button')) filterEventsByChapter('central')" title="Click to filter Central Chapter events" class="glass-card rounded-xl p-4 border border-orange-500/30 bg-gradient-to-b from-orange-950/20 to-slate-900/60 flex flex-col justify-between hover:border-orange-500/60 hover:bg-orange-950/30 transition-all cursor-pointer group transform hover:-translate-y-0.5">
                     <div>
@@ -624,6 +632,27 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- 6. Nagercoil Chapter -->
+                <div onclick="if(!event.target.closest('a, button')) filterEventsByChapter('nagercoil')" title="Click to filter Nagercoil Chapter events" class="glass-card rounded-xl p-4 border border-teal-500/30 bg-gradient-to-b from-teal-950/20 to-slate-900/60 flex flex-col justify-between hover:border-teal-500/60 hover:bg-teal-950/30 transition-all cursor-pointer group transform hover:-translate-y-0.5">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                            <span id="badge-count-nagercoil" class="text-[10px] font-bold bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-500/30">0 events</span>
+                        </div>
+                        <h3 class="font-bold text-white text-sm group-hover:text-cyan-300 transition-colors">Nagercoil Chapter</h3>
+                        <p class="text-[11px] text-cyan-300 font-medium">Nagercoil Hub</p>
+                        <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Sugumar, Jebastin</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-white/5 space-y-1.5">
+                        <a href="events-nagercoil.html" target="_blank" class="w-full text-center block text-[11px] font-semibold bg-white/5 hover:bg-white/10 text-cyan-300 py-1.5 px-2 rounded-lg border border-cyan-500/30 transition-colors">
+                            View Live Page ↗
+                        </a>
+                        <button type="button" onclick="openEventModal('Nagercoil Chapter')" class="w-full text-center text-[11px] font-bold bg-cyan-600 hover:bg-cyan-500 text-white py-1.5 px-2 rounded-lg transition-colors">
+                            + Add Nagercoil Event
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Filter & Search Controls for Events -->
@@ -644,6 +673,7 @@
                         <option value="south">South Chapter (Medavakkam)</option>
                         <option value="north">North Chapter (Rayapuram)</option>
                         <option value="east">East Chapter (Adyar)</option>
+                        <option value="nagercoil">Nagercoil Chapter</option>
                     </select>
 
                     <!-- Status Filter Dropdown -->
@@ -865,7 +895,8 @@
                             <option value="South Chapter">South Chapter (Medavakkam Hub)</option>
                             <option value="North Chapter">North Chapter (Rayapuram Hub)</option>
                             <option value="East Chapter">East Chapter (Adyar Hub)</option>
-                            <option value="All Chapters">All Chapters (All Chennai Summit)</option>
+                            <option value="Nagercoil Chapter">Nagercoil Chapter (Nagercoil Hub)</option>
+                            <option value="All Chapters">All Chapters (All Regional Summit)</option>
                         </select>
                     </div>
 
@@ -1201,6 +1232,7 @@
             if (text.includes('south')) return 'south';
             if (text.includes('north')) return 'north';
             if (text.includes('east')) return 'east';
+            if (text.includes('nagercoil')) return 'nagercoil';
             const pin = (reg.pincode || '').trim();
             if (window.TKL_SUPABASE && window.TKL_SUPABASE.pincodeMap && window.TKL_SUPABASE.pincodeMap[pin]) {
                 return window.TKL_SUPABASE.pincodeMap[pin].toLowerCase();
@@ -1305,6 +1337,7 @@
                 { id: 'south', active: 'bg-purple-500/25 text-purple-300 border-purple-500/60 font-bold shadow-sm ring-1 ring-purple-500/30' },
                 { id: 'north', active: 'bg-blue-500/25 text-blue-300 border-blue-500/60 font-bold shadow-sm ring-1 ring-blue-500/30' },
                 { id: 'east', active: 'bg-teal-500/25 text-teal-300 border-teal-500/60 font-bold shadow-sm ring-1 ring-teal-500/30' },
+                { id: 'nagercoil', active: 'bg-cyan-500/25 text-cyan-300 border-cyan-500/60 font-bold shadow-sm ring-1 ring-cyan-500/30' },
                 { id: 'global', active: 'bg-slate-500/25 text-slate-200 border-slate-400/60 font-bold shadow-sm ring-1 ring-slate-400/30' }
             ];
 
@@ -1331,6 +1364,7 @@
             const countSouth = allRegistrations.filter(r => getRegChapter(r) === 'south').length;
             const countNorth = allRegistrations.filter(r => getRegChapter(r) === 'north').length;
             const countEast = allRegistrations.filter(r => getRegChapter(r) === 'east').length;
+            const countNagercoil = allRegistrations.filter(r => getRegChapter(r) === 'nagercoil').length;
 
             // Member-specific chapter counts
             const mchAll = countMember;
@@ -1339,6 +1373,7 @@
             const mchSouth = memberRegistrations.filter(r => getRegChapter(r) === 'south').length;
             const mchNorth = memberRegistrations.filter(r => getRegChapter(r) === 'north').length;
             const mchEast = memberRegistrations.filter(r => getRegChapter(r) === 'east').length;
+            const mchNagercoil = memberRegistrations.filter(r => getRegChapter(r) === 'nagercoil').length;
             const mchGlobal = memberRegistrations.filter(r => getRegChapter(r) === 'global').length;
 
             const setBadge = (id, count) => {
@@ -1355,6 +1390,7 @@
             setBadge('badge-filter-south', countSouth);
             setBadge('badge-filter-north', countNorth);
             setBadge('badge-filter-east', countEast);
+            setBadge('badge-count-nagercoil', countNagercoil);
 
             // Member Chapter sub-pills
             setBadge('mch-count-all', mchAll);
@@ -1363,6 +1399,7 @@
             setBadge('mch-count-south', mchSouth);
             setBadge('mch-count-north', mchNorth);
             setBadge('mch-count-east', mchEast);
+            setBadge('mch-count-nagercoil', mchNagercoil);
             setBadge('mch-count-global', mchGlobal);
         }
 
@@ -1372,6 +1409,7 @@
 
             allRegistrations = await window.TKL_SUPABASE.registrations.getAll();
             updateFilterCardCounts();
+            populateEventFilterDropdown();
             filterRegistrations();
             updateDashboardMetrics();
         }
@@ -1486,6 +1524,7 @@
         function filterRegistrations() {
             const query = (document.getElementById('search-regs-input')?.value || '').toLowerCase().trim();
             const eventFilter = activeRegFilter.toLowerCase();
+            const specificEventFilter = (document.getElementById('filter-specific-event-select')?.value || 'all').toLowerCase().trim();
             const statusFilter = (document.getElementById('filter-status-select')?.value || 'all').toLowerCase();
             const chapterFilter = (document.getElementById('filter-chapter-select')?.value || activeMemberChapter || 'all').toLowerCase();
 
@@ -1510,8 +1549,18 @@
                 } else if (eventFilter === 'event') {
                     matchEvent = !isMember;
                 } else {
-                    // Top chapter card clicked (central, west, south, north, east)
+                    // Top chapter card clicked (central, west, south, north, east, nagercoil)
                     matchEvent = (regChapter === eventFilter) || (r.event_name || '').toLowerCase().includes(eventFilter);
+                }
+
+                // Dedicated Specific Event Dropdown filter
+                let matchSpecificEvent = true;
+                if (specificEventFilter !== 'all') {
+                    const regEventName = (r.event_name || '').toLowerCase().trim();
+                    const regEventId = (r.event_id || '').toLowerCase().trim();
+                    matchSpecificEvent = (regEventId && regEventId === specificEventFilter) ||
+                                         regEventName.includes(specificEventFilter) ||
+                                         (specificEventFilter.includes(regEventName) && regEventName.length > 3);
                 }
 
                 let matchChapter = true;
@@ -1522,10 +1571,61 @@
                 const matchStatus = statusFilter === 'all' || 
                     (r.payment_status && r.payment_status.toLowerCase() === statusFilter);
 
-                return matchQuery && matchEvent && matchChapter && matchStatus;
+                return matchQuery && matchEvent && matchSpecificEvent && matchChapter && matchStatus;
             });
 
             renderRegistrations(filtered);
+        }
+
+        // Dynamically populate the Event Filter dropdown with all available events and forms
+        function populateEventFilterDropdown() {
+            const select = document.getElementById('filter-specific-event-select');
+            if (!select) return;
+            const currentVal = (select.value || 'all').toLowerCase();
+
+            const eventMap = new Map(); // key -> display label
+
+            (allEvents || []).forEach(e => {
+                if (e.title) {
+                    const key = e.title.trim().toLowerCase();
+                    const label = e.title.trim() + (e.chapter ? ` (${e.chapter})` : '');
+                    if (!eventMap.has(key)) eventMap.set(key, label);
+                }
+            });
+
+            (allRegistrations || []).forEach(r => {
+                if (r.event_name) {
+                    const key = r.event_name.trim().toLowerCase();
+                    if (!eventMap.has(key)) eventMap.set(key, r.event_name.trim());
+                }
+            });
+
+            let optionsHtml = '<option value="all">🎪 All Events & Forms</option>';
+            eventMap.forEach((label, key) => {
+                optionsHtml += `<option value="${escapeHtml(key)}">${escapeHtml(label)}</option>`;
+            });
+
+            select.innerHTML = optionsHtml;
+            if (currentVal && eventMap.has(currentVal)) {
+                select.value = currentVal;
+            }
+        }
+
+        // Quick jump from an Event card to view only registrations for that event
+        function filterRegsByEvent(eventTitle) {
+            switchTab('regs');
+            populateEventFilterDropdown();
+            const select = document.getElementById('filter-specific-event-select');
+            if (select) {
+                const searchKey = (eventTitle || '').trim().toLowerCase();
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value.toLowerCase().includes(searchKey) || searchKey.includes(select.options[i].value.toLowerCase())) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            filterRegistrations();
         }
 
         function filterByMetric(type) {
@@ -1697,6 +1797,7 @@
             allEvents = await window.TKL_SUPABASE.events.getAll();
             filterEvents();
             updateDashboardMetrics();
+            populateEventFilterDropdown();
         }
 
         function debounceFilterEvents() {
@@ -1812,9 +1913,10 @@
                                     <button type="button" onclick="copyFormLink('${regUrl}')" class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-slate-200 text-[11px] font-semibold transition-colors flex items-center gap-1" title="Copy Registration Form Link">
                                         <span>📋 Copy</span>
                                     </button>
-                                    <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">
-                                        ${eventRegs.length} Regs
-                                    </span>
+                                    <button type="button" onclick="event.stopPropagation(); filterRegsByEvent('${escapeHtml(ev.title)}')" class="px-2.5 py-1 rounded-full bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold transition-all flex items-center gap-1" title="Click to view and filter registrations for this event">
+                                        <span>📊 ${eventRegs.length} Regs</span>
+                                        <span class="text-[9px] underline">Filter</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -2042,6 +2144,9 @@
             } else if (chapter.includes('east')) {
                 if (!venueInput.value) venueInput.value = 'Adyar Hub, Chennai';
                 defaultFlyer = 'images/logo.jpg';
+            } else if (chapter.includes('nagercoil')) {
+                if (!venueInput.value) venueInput.value = 'Nagercoil Hub, Kanyakumari District';
+                defaultFlyer = 'images/logo.jpg';
             }
 
             // If no custom flyer has been selected/uploaded yet, show the chapter default
@@ -2115,56 +2220,97 @@
 
         async function handleEventFormSubmit(e) {
             e.preventDefault();
-            const id = document.getElementById('event-form-id').value;
-            let regUrl = (document.getElementById('event-reg-url').value || '').trim();
-
-            if (id) {
-                // If regUrl is empty or was legacy default, point to dynamic registration form
-                if (!regUrl || regUrl === 'register-central.html' || regUrl === 'register-west.html') {
-                    regUrl = `register.html?id=${id}`;
-                }
-                const data = {
-                    title: document.getElementById('event-title').value.trim(),
-                    chapter: document.getElementById('event-chapter').value,
-                    status: document.getElementById('event-status').value,
-                    event_date: document.getElementById('event-date').value,
-                    event_time: document.getElementById('event-time').value,
-                    location_name: document.getElementById('event-venue').value,
-                    location_address: document.getElementById('event-address').value,
-                    price: parseFloat(document.getElementById('event-price').value || 0),
-                    entry_type: document.getElementById('event-entry-type').value,
-                    chief_guest: document.getElementById('event-guest').value,
-                    flyer_url: document.getElementById('event-flyer-url').value,
-                    registration_url: regUrl,
-                    description: document.getElementById('event-description').value
-                };
-                await window.TKL_SUPABASE.events.update(id, data);
-            } else {
-                const newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('ev-' + Date.now());
-                if (!regUrl || regUrl === 'register-central.html' || regUrl === 'register-west.html') {
-                    regUrl = `register.html?id=${newId}`;
-                }
-                const data = {
-                    id: newId,
-                    title: document.getElementById('event-title').value.trim(),
-                    chapter: document.getElementById('event-chapter').value,
-                    status: document.getElementById('event-status').value,
-                    event_date: document.getElementById('event-date').value,
-                    event_time: document.getElementById('event-time').value,
-                    location_name: document.getElementById('event-venue').value,
-                    location_address: document.getElementById('event-address').value,
-                    price: parseFloat(document.getElementById('event-price').value || 0),
-                    entry_type: document.getElementById('event-entry-type').value,
-                    chief_guest: document.getElementById('event-guest').value,
-                    flyer_url: document.getElementById('event-flyer-url').value,
-                    registration_url: regUrl,
-                    description: document.getElementById('event-description').value
-                };
-                await window.TKL_SUPABASE.events.create(data);
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Save Event';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>Saving Event... ⏳</span>';
             }
 
-            closeEventModal();
-            await loadEvents();
+            try {
+                const id = document.getElementById('event-form-id').value;
+                let regUrl = (document.getElementById('event-reg-url').value || '').trim();
+
+                function makeSafeUUID() {
+                    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+                        try { return crypto.randomUUID(); } catch (err) {}
+                    }
+                    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                        const r = (Math.random() * 16) | 0;
+                        const v = c === 'x' ? r : ((r & 0x3) | 0x8);
+                        return v.toString(16);
+                    });
+                }
+
+                if (id) {
+                    if (!regUrl || regUrl === 'register-central.html' || regUrl === 'register-west.html') {
+                        regUrl = `register.html?id=${id}`;
+                    }
+                    const data = {
+                        title: document.getElementById('event-title').value.trim(),
+                        chapter: document.getElementById('event-chapter').value,
+                        status: document.getElementById('event-status').value,
+                        event_date: document.getElementById('event-date').value,
+                        event_time: document.getElementById('event-time').value,
+                        location_name: document.getElementById('event-venue').value,
+                        location_address: document.getElementById('event-address').value,
+                        price: parseFloat(document.getElementById('event-price').value || 0),
+                        entry_type: document.getElementById('event-entry-type').value,
+                        chief_guest: document.getElementById('event-guest').value,
+                        flyer_url: document.getElementById('event-flyer-url').value,
+                        registration_url: regUrl,
+                        description: document.getElementById('event-description').value
+                    };
+                    const res = await window.TKL_SUPABASE.events.update(id, data);
+                    if (res && res.error) {
+                        alert('Notice updating event in Supabase: ' + res.error + '\n(Saved locally as fallback)');
+                    }
+                } else {
+                    const newId = makeSafeUUID();
+                    if (!regUrl || regUrl === 'register-central.html' || regUrl === 'register-west.html') {
+                        regUrl = `register.html?id=${newId}`;
+                    }
+                    const data = {
+                        id: newId,
+                        title: document.getElementById('event-title').value.trim(),
+                        chapter: document.getElementById('event-chapter').value,
+                        status: document.getElementById('event-status').value,
+                        event_date: document.getElementById('event-date').value,
+                        event_time: document.getElementById('event-time').value,
+                        location_name: document.getElementById('event-venue').value,
+                        location_address: document.getElementById('event-address').value,
+                        price: parseFloat(document.getElementById('event-price').value || 0),
+                        entry_type: document.getElementById('event-entry-type').value,
+                        chief_guest: document.getElementById('event-guest').value,
+                        flyer_url: document.getElementById('event-flyer-url').value,
+                        registration_url: regUrl,
+                        description: document.getElementById('event-description').value
+                    };
+                    const res = await window.TKL_SUPABASE.events.create(data);
+                    if (res && res.error && !res.data) {
+                        alert('Error saving event: ' + res.error);
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalBtnText;
+                        }
+                        return;
+                    }
+                }
+
+                closeEventModal();
+                await loadEvents();
+                updateDashboardMetrics();
+                populateEventFilterDropdown();
+                alert('Event successfully saved and published! 📅');
+            } catch (err) {
+                console.error('Error submitting event form:', err);
+                alert('Error submitting event: ' + (err.message || err));
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+            }
         }
 
         function copyFormLink(url) {

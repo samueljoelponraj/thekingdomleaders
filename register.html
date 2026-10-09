@@ -304,6 +304,26 @@
                 </div>
             </div>
 
+            <!-- Event Filter & Switcher Bar for Public Registrations -->
+            <div id="other-events-bar" class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-md mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-xl flex-shrink-0 shadow-sm border border-blue-100">
+                        🎯
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-blue-900 block">Registration Event Selector</span>
+                        <h4 class="text-sm sm:text-base font-bold text-slate-900">Choose Event / Chapter Gathering:</h4>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1 max-w-2xl justify-end">
+                    <select id="event-selector-dropdown" onchange="if(this.value) window.location.href='register.html?id=' + encodeURIComponent(this.value)" class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm font-semibold bg-slate-50 text-slate-800 cursor-pointer focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                        <option value="">-- Switch Event --</option>
+                    </select>
+                    <div id="events-quick-pills" class="flex flex-wrap items-center gap-2"></div>
+                </div>
+            </div>
+
             <!-- Active Registration Container -->
             <div id="active-reg-container" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
@@ -688,19 +708,56 @@
                     <div class="flex-1 h-px bg-gradient-to-r from-blue-200 to-transparent"></div>
                 </div>
 
-                <!-- City President: Praveen Joshua -->
-                <div class="bg-slate-50 rounded-2xl p-5 sm:p-7 border border-slate-200/80 shadow-sm flex flex-col sm:flex-row items-center gap-6 relative overflow-hidden group hover:shadow-md transition-all">
-                    <div class="w-36 h-44 sm:w-40 sm:h-48 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0 p-1.5 flex items-center justify-center">
-                        <img src="images/Praveen joshua.jpeg" alt="Praveen Joshua - City President" class="w-full h-full object-contain max-h-full transition-transform duration-300 group-hover:scale-105">
-                    </div>
-                    <div class="text-center sm:text-left flex-1 min-w-0">
+                <!-- City Executive Leadership Grid (President, Secretary, Treasurer) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- City President: Praveen Joshua -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200/80 shadow-sm flex flex-col items-center text-center relative overflow-hidden group hover:shadow-md transition-all">
+                        <div class="w-32 h-36 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0 p-1.5 flex items-center justify-center mb-3">
+                            <img src="images/Praveen joshua.jpeg" alt="Praveen Joshua - City President" class="w-full h-full object-contain max-h-full transition-transform duration-300 group-hover:scale-105">
+                        </div>
                         <span class="inline-block py-0.5 px-2.5 rounded-full bg-blue-100 text-blue-900 text-[10px] font-extrabold uppercase tracking-wider mb-1.5">
                             City President
                         </span>
-                        <h4 class="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">Praveen Joshua</h4>
-                        <p class="text-xs sm:text-sm font-bold text-blue-800 mb-2">City President - Chennai Region</p>
-                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-light max-w-2xl">
-                            Leading strategic direction, chapter expansion, and kingdom business initiatives across Chennai.
+                        <h4 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Praveen Joshua</h4>
+                        <p class="text-xs font-bold text-blue-800 mb-1">City President - Chennai</p>
+                        <p class="text-[11px] text-slate-600 font-light leading-relaxed">
+                            Leading strategic direction and chapter expansion across Chennai.
+                        </p>
+                    </div>
+
+                    <!-- City Secretary: Mr. Devaraj -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200/80 shadow-sm flex flex-col items-center text-center relative overflow-hidden group hover:shadow-md transition-all">
+                        <div class="w-32 h-36 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0 p-1.5 flex items-center justify-center mb-3">
+                            <img src="images/chapter learder images/devaraj_secretary.jpg" alt="Mr. Devaraj - City Secretary" class="w-full h-full object-contain max-h-full transition-transform duration-300 group-hover:scale-105">
+                        </div>
+                        <span class="inline-block py-0.5 px-2.5 rounded-full bg-blue-100 text-blue-900 text-[10px] font-extrabold uppercase tracking-wider mb-1.5">
+                            City Secretary
+                        </span>
+                        <h4 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Mr. Devaraj</h4>
+                        <p class="text-xs font-bold text-blue-800 mb-1">City Secretary - Chennai</p>
+                        <a href="tel:+919560644447" class="text-[11px] text-blue-800 font-semibold hover:underline inline-flex items-center gap-1 mt-0.5">
+                            <span>📞 +91 95606 44447</span>
+                        </a>
+                        <p class="text-[11px] text-slate-600 font-light leading-relaxed mt-1">
+                            Overseeing city administration and chapter operational coordination.
+                        </p>
+                    </div>
+
+                    <!-- City Treasurer: Mr. Jebasingh -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200/80 shadow-sm flex flex-col items-center text-center relative overflow-hidden group hover:shadow-md transition-all">
+                        <div class="w-32 h-36 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0 p-1.5 flex items-center justify-center mb-3">
+                            <img src="images/chapter learder images/jebasing.jpeg" alt="Mr. Jebasingh - City Treasurer" class="w-full h-full object-contain max-h-full transition-transform duration-300 group-hover:scale-105">
+                        </div>
+                        <span class="inline-block py-0.5 px-2.5 rounded-full bg-blue-100 text-blue-900 text-[10px] font-extrabold uppercase tracking-wider mb-1.5">
+                            City Treasurer
+                        </span>
+                        <h4 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Mr. Jebasingh</h4>
+                        <p class="text-xs font-bold text-blue-800 mb-1">City Treasurer - Chennai</p>
+                        <a href="tel:+919841498500" class="text-[11px] text-blue-800 font-semibold hover:underline inline-flex items-center gap-1 mt-0.5">
+                            <span>📞 +91 98414 98500</span>
+                        </a>
+                        <p class="text-[11px] text-slate-600 font-light leading-relaxed mt-1">
+                            Managing treasury compliance, stewardship, and event resources.
                         </p>
                     </div>
                 </div>
@@ -887,24 +944,35 @@
         // 3. Render Event Switcher Bar
         function renderOtherEventsBar(upcomingEvents, activeId) {
             const bar = document.getElementById('other-events-bar');
+            const dropdown = document.getElementById('event-selector-dropdown');
             const pills = document.getElementById('events-quick-pills');
-            if (!bar || !pills || upcomingEvents.length <= 1) return;
+            if (!bar) return;
 
-            bar.classList.remove('hidden');
-            pills.innerHTML = upcomingEvents.map(ev => {
-                const isSelected = String(ev.id) === String(activeId);
-                const priceLabel = parseFloat(ev.price || 0) > 0 ? `₹${ev.price}` : 'Free';
-                return `
-                    <a href="register.html?id=${ev.id}" class="text-xs font-semibold px-3 py-1.5 rounded-full transition-all flex items-center gap-1.5 whitespace-nowrap ${
-                        isSelected 
-                        ? 'bg-blue-600 text-white shadow-md' 
-                        : 'bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white'
-                    }">
-                        <span>📍 ${escapeHtml(ev.chapter || 'Event')}</span>
-                        <span class="text-[10px] opacity-75">(${priceLabel})</span>
-                    </a>
-                `;
-            }).join('');
+            // Populate dropdown with all upcoming & active events
+            if (dropdown && upcomingEvents.length > 0) {
+                dropdown.innerHTML = upcomingEvents.map(ev => {
+                    const priceLabel = parseFloat(ev.price || 0) > 0 ? `₹${ev.price}` : 'Free';
+                    const isSelected = String(ev.id) === String(activeId) ? 'selected' : '';
+                    return `<option value="${escapeHtml(ev.id)}" ${isSelected}>📍 ${escapeHtml(ev.title)} (${escapeHtml(ev.chapter || 'Chapter')} - ${priceLabel})</option>`;
+                }).join('');
+            }
+
+            if (pills && upcomingEvents.length > 0) {
+                pills.innerHTML = upcomingEvents.slice(0, 4).map(ev => {
+                    const isSelected = String(ev.id) === String(activeId);
+                    const priceLabel = parseFloat(ev.price || 0) > 0 ? `₹${ev.price}` : 'Free';
+                    return `
+                        <a href="register.html?id=${ev.id}" class="text-xs font-semibold px-3 py-1.5 rounded-full transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                            isSelected 
+                            ? 'bg-blue-600 text-white shadow-md' 
+                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        }">
+                            <span>📍 ${escapeHtml(ev.chapter || 'Event')}</span>
+                            <span class="text-[10px] opacity-75">(${priceLabel})</span>
+                        </a>
+                    `;
+                }).join('');
+            }
         }
 
         // 4. Render Event Details onto Page
@@ -1034,6 +1102,7 @@
             else if (raw.includes('south')) chapterKey = 'south';
             else if (raw.includes('north')) chapterKey = 'north';
             else if (raw.includes('east')) chapterKey = 'east';
+            else if (raw.includes('nagercoil')) chapterKey = 'nagercoil';
             else if (raw.includes('central')) chapterKey = 'central';
 
             const chapterMeta = window.TKL_SUPABASE && window.TKL_SUPABASE.chapters ? window.TKL_SUPABASE.chapters[chapterKey] : null;

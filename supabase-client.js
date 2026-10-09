@@ -22,6 +22,19 @@
         return typeof val === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val.trim());
     }
 
+    function generateUUID() {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+            try {
+                return crypto.randomUUID();
+            } catch (e) {}
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = (Math.random() * 16) | 0;
+            const v = c === 'x' ? r : ((r & 0x3) | 0x8);
+            return v.toString(16);
+        });
+    }
+
     function getDeletedEventIds() {
         try {
             const raw = safeStorage.getItem(STORAGE_KEY_DELETED_EVENTS);
@@ -523,6 +536,15 @@
 
             if (events === null) {
                 events = getLocalEvents(activeOnly, chapter);
+            } else {
+                // Merge any newly created local events that aren't yet in Supabase
+                const local = getLocalEvents(activeOnly, chapter);
+                const existingIds = new Set(events.map(e => String(e.id)));
+                local.forEach(le => {
+                    if (!existingIds.has(String(le.id))) {
+                        events.push(le);
+                    }
+                });
             }
 
             // Always ensure blacklisted deleted event IDs are excluded
@@ -568,7 +590,7 @@
          */
         async create(eventData) {
             const client = getClient();
-            const eventId = eventData.id || ((typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('ev-' + Date.now()));
+            const eventId = (eventData.id && isUUID(eventData.id)) ? eventData.id.trim() : generateUUID();
             const defaultRegUrl = `register.html?id=${eventId}`;
             const regUrl = (eventData.registration_url && eventData.registration_url.trim() && 
                             eventData.registration_url !== 'register-central.html' && 
@@ -601,7 +623,34 @@
                         .from('events')
                         .insert([newEvent])
                         .select();
-                    if (error) throw error;
+                    if (error) {
+                        // Resilient retry if an optional column (e.g. chief_guest or subtitle) is missing from database schema
+                        if (error.message && (error.message.includes('column') || error.message.includes('schema'))) {
+                            console.warn('[TKL Supabase] Retrying event insert without optional columns...', error);
+                            const minimalEvent = {
+                                id: eventId,
+                                title: newEvent.title,
+                                chapter: newEvent.chapter,
+                                event_date: newEvent.event_date,
+                                event_time: newEvent.event_time,
+                                location_name: newEvent.location_name,
+                                location_address: newEvent.location_address,
+                                description: newEvent.description,
+                                price: newEvent.price,
+                                entry_type: newEvent.entry_type,
+                                flyer_url: newEvent.flyer_url,
+                                registration_url: newEvent.registration_url,
+                                status: newEvent.status,
+                                is_active: newEvent.is_active
+                            };
+                            const retryRes = await client.from('events').insert([minimalEvent]).select();
+                            if (retryRes.error) throw retryRes.error;
+                            saveLocalEvent(newEvent);
+                            return { success: true, data: retryRes.data[0] || newEvent };
+                        }
+                        throw error;
+                    }
+                    saveLocalEvent(newEvent);
                     return { success: true, data: data[0] };
                 } catch (err) {
                     console.error('[TKL Supabase] Error creating event:', err);
@@ -999,6 +1048,23 @@
                 secretary: { name: 'Gnanapragasam', phone: '99416 35869', image: 'images/chapter learder images/gnanapragasam.jpeg' },
                 treasurer: { name: 'V. Paul Sarangapani', phone: '97911 23466', image: 'images/chapter learder images/sarangapani.jpeg' }
             }
+        },
+        nagercoil: {
+            id: 'nagercoil',
+            name: 'Nagercoil Chapter',
+            sector: 'Kanyakumari District / South TN Sector',
+            hub: 'Nagercoil Hub',
+            tagline: 'Kingdom Business Network, Southern Regional Expansion & Youth Mentorship',
+            color: 'teal',
+            badgeBg: 'bg-teal-100 text-teal-800 border-teal-200',
+            accentGradient: 'from-teal-600 to-cyan-700',
+            pageUrl: 'events-nagercoil.html',
+            registrationUrl: 'register.html?chapter=nagercoil',
+            leaders: {
+                president: { name: 'Sugumar', phone: '', image: 'images/chapter learder images/sugumar state presdient.png' },
+                secretary: { name: 'Jebastin', phone: '', image: 'images/chapter learder images/jebastin state secretary.png' },
+                treasurer: { name: 'To be announced', phone: '', image: 'images/logo.jpg' }
+            }
         }
     };
 
@@ -1046,6 +1112,7 @@
         if (text.includes('south')) return 'south';
         if (text.includes('north')) return 'north';
         if (text.includes('east')) return 'east';
+        if (text.includes('nagercoil')) return 'nagercoil';
 
         if (pincode && PINCODE_MAP[pincode]) {
             return PINCODE_MAP[pincode].toLowerCase();
@@ -1175,7 +1242,7 @@
 
     function saveLocalEvent(event) {
         const events = getLocalEvents();
-        event.id = event.id || 'loc-ev-' + Date.now();
+        event.id = (event.id && isUUID(event.id)) ? event.id : generateUUID();
         event.created_at = new Date().toISOString();
         if (!event.registration_url || event.registration_url === 'register-central.html' || event.registration_url === 'register-west.html') {
             event.registration_url = `register.html?id=${event.id}`;
@@ -1212,6 +1279,22 @@
                 role: 'City President - Chennai Region',
                 description: 'Leading strategic direction, chapter expansion, and kingdom business initiatives across Chennai.',
                 image: 'images/Praveen joshua.jpeg'
+            },
+            secretary: {
+                name: 'Mr. Devaraj',
+                title: 'City Secretary',
+                role: 'City Secretary - Chennai Region',
+                description: 'City administration, chapter coordination, and marketplace operations across Chennai.',
+                phone: '95606 44447',
+                image: 'images/chapter learder images/devaraj_secretary.jpg'
+            },
+            treasurer: {
+                name: 'Mr. Jebasingh',
+                title: 'City Treasurer',
+                role: 'City Treasurer - Chennai Region',
+                description: 'Financial management, compliance, and stewardship across Chennai chapters.',
+                phone: '98414 98500',
+                image: 'images/chapter learder images/jebasing.jpeg'
             }
         }
     };

@@ -44,7 +44,45 @@
   <!-- Chapters & Leadership Directory -->
   <url>
     <loc>https://thekingdomleaders.in/chapters.html</loc>
-    <lastmod>2026-09-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Individual Chapter Hubs -->
+  <url>
+    <loc>https://thekingdomleaders.in/events-nagercoil.html</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://thekingdomleaders.in/events-south.html</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://thekingdomleaders.in/events-east.html</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://thekingdomleaders.in/events-west.html</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://thekingdomleaders.in/events-central.html</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://thekingdomleaders.in/events-north.html</loc>
+    <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
