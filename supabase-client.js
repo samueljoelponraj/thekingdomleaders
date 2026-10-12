@@ -497,6 +497,41 @@
     };
 
     /**
+    /**
+     * UPI Helper Functions for Events
+     */
+    function formatSubtitleWithUpi(cleanSubtitle, upiId) {
+        const base = (cleanSubtitle || '').replace(/\[UPI:\s*[^\]]+\]/gi, '').trim();
+        const upi = (upiId || '').trim();
+        if (!upi) return base;
+        return base ? `${base} [UPI: ${upi}]` : `[UPI: ${upi}]`;
+    }
+
+    function normalizeEventData(ev) {
+        if (!ev) return ev;
+        const normalized = { ...ev };
+        if (!normalized.upi_id || !String(normalized.upi_id).trim()) {
+            const sub = normalized.subtitle || '';
+            const match = sub.match(/\[UPI:\s*([^\]]+)\]/i);
+            if (match && match[1]) {
+                normalized.upi_id = match[1].trim();
+            } else {
+                const desc = normalized.description || '';
+                const descMatch = desc.match(/\[UPI:\s*([^\]]+)\]/i);
+                if (descMatch && descMatch[1]) {
+                    normalized.upi_id = descMatch[1].trim();
+                } else {
+                    normalized.upi_id = '9841498500@upi';
+                }
+            }
+        }
+        if (normalized.subtitle) {
+            normalized.subtitle = normalized.subtitle.replace(/\[UPI:\s*[^\]]+\]/gi, '').trim();
+        }
+        return normalized;
+    }
+
+    /**
      * Database Operations: Events Management
      */
     const Events = {
@@ -520,19 +555,20 @@
                     }
 
                     if (chapter && chapter !== 'all') {
-                        // Match chapter name or keyword (e.g. 'central', 'west', 'south', 'north', 'east')
                         query = query.ilike('chapter', `%${chapter}%`);
                     }
 
                     const { data, error } = await query;
                     if (error) throw error;
-                    return (data || []).filter(e => !deletedIds.includes(String(e.id)));
+                    return (data || [])
+                        .filter(e => !deletedIds.includes(String(e.id)))
+                        .map(normalizeEventData);
                 } catch (err) {
                     console.warn('[TKL Supabase] Fetching events from database failed, falling back to local storage:', err);
                 }
             }
 
-            return getLocalEvents(activeOnly, chapter);
+            return (getLocalEvents(activeOnly, chapter) || []).map(normalizeEventData);
         },
 
         /**
@@ -556,7 +592,7 @@
                         .select('*')
                         .eq('id', strId)
                         .maybeSingle();
-                    if (!error && data) return data;
+                    if (!error && data) return normalizeEventData(data);
                 } catch (e) {
                     console.warn('[TKL Supabase] Error fetching event by ID:', e);
                 }
@@ -566,7 +602,7 @@
                 String(e.id) === strId || 
                 (e.title && e.title.toLowerCase().trim() === decodeURIComponent(strId).toLowerCase().trim())
             );
-            return found || null;
+            return found ? normalizeEventData(found) : null;
         },
 
         /**
@@ -582,10 +618,13 @@
                             ? eventData.registration_url.trim() 
                             : defaultRegUrl;
 
+            const upiId = (eventData.upi_id && String(eventData.upi_id).trim()) ? String(eventData.upi_id).trim() : '9841498500@upi';
+            const subtitleWithUpi = formatSubtitleWithUpi(eventData.subtitle || '', upiId);
+
             const newEvent = {
                 id: eventId,
                 title: eventData.title || 'Untitled Gathering',
-                subtitle: eventData.subtitle || '',
+                subtitle: subtitleWithUpi,
                 chapter: eventData.chapter || 'Central Chapter',
                 event_date: eventData.event_date || eventData.eventDate || new Date().toISOString().split('T')[0],
                 event_time: eventData.event_time || eventData.eventTime || '05:30 PM Onwards',
@@ -596,24 +635,27 @@
                 entry_type: eventData.entry_type || eventData.entryType || (parseFloat(eventData.price || 0) > 0 ? 'Paid Entry' : 'Free Entry'),
                 flyer_url: eventData.flyer_url || eventData.flyerUrl || '',
                 registration_url: regUrl,
-                status: eventData.status || 'upcoming', // 'upcoming' or 'concluded'
+                status: eventData.status || 'upcoming',
                 is_active: eventData.is_active !== undefined ? eventData.is_active : (eventData.isActive !== false),
-                chief_guest: eventData.chief_guest || eventData.chiefGuest || ''
+                chief_guest: eventData.chief_guest || eventData.chiefGuest || '',
+                upi_id: upiId
             };
 
             if (client) {
                 try {
-                    const { data, error } = await client
+                    let { data, error } = await client
                         .from('events')
                         .insert([newEvent])
                         .select();
+
                     if (error) {
-                        // Resilient retry if an optional column (e.g. chief_guest or subtitle) is missing from database schema
+                        // Resilient retry if an optional column (e.g. upi_id or chief_guest) is missing from database schema
                         if (error.message && (error.message.includes('column') || error.message.includes('schema'))) {
-                            console.warn('[TKL Supabase] Retrying event insert without optional columns...', error);
+                            console.warn('[TKL Supabase] Retrying event insert without upi_id column...', error);
                             const minimalEvent = {
                                 id: eventId,
                                 title: newEvent.title,
+                                subtitle: subtitleWithUpi,
                                 chapter: newEvent.chapter,
                                 event_date: newEvent.event_date,
                                 event_time: newEvent.event_time,
@@ -625,17 +667,28 @@
                                 flyer_url: newEvent.flyer_url,
                                 registration_url: newEvent.registration_url,
                                 status: newEvent.status,
-                                is_active: newEvent.is_active
+                                is_active: newEvent.is_active,
+                                chief_guest: newEvent.chief_guest
                             };
                             const retryRes = await client.from('events').insert([minimalEvent]).select();
-                            if (retryRes.error) throw retryRes.error;
-                            saveLocalEvent(newEvent);
-                            return { success: true, data: retryRes.data[0] || newEvent };
+                            if (retryRes.error) {
+                                // Strip chief_guest as well if still failing
+                                delete minimalEvent.chief_guest;
+                                const retry2 = await client.from('events').insert([minimalEvent]).select();
+                                if (retry2.error) throw retry2.error;
+                                data = retry2.data;
+                            } else {
+                                data = retryRes.data;
+                            }
+                        } else {
+                            throw error;
                         }
-                        throw error;
                     }
+
                     saveLocalEvent(newEvent);
-                    return { success: true, data: data[0] };
+                    const savedItem = (data && data[0]) ? normalizeEventData(data[0]) : newEvent;
+                    savedItem.upi_id = upiId;
+                    return { success: true, data: savedItem };
                 } catch (err) {
                     console.error('[TKL Supabase] Error creating event:', err);
                     saveLocalEvent(newEvent);
@@ -652,30 +705,77 @@
          */
         async update(id, eventData) {
             const client = getClient();
+            const upiId = eventData.upi_id ? String(eventData.upi_id).trim() : null;
+            const payload = { ...eventData };
+
+            if (upiId) {
+                payload.upi_id = upiId;
+                // Synchronize into subtitle metadata for backward compatibility
+                payload.subtitle = formatSubtitleWithUpi(eventData.subtitle !== undefined ? eventData.subtitle : '', upiId);
+            }
+
             if (client && id && typeof id === 'string' && isUUID(id)) {
                 try {
-                    const { data, error } = await client
+                    let { data, error } = await client
                         .from('events')
-                        .update(eventData)
+                        .update(payload)
                         .eq('id', id)
                         .select();
-                    if (error) throw error;
-                    return { success: true, data: data[0] };
+
+                    if (error && error.message && error.message.includes('column') && error.message.includes('upi_id')) {
+                        console.warn('[TKL Supabase] Database table lacks upi_id column; retrying with subtitle fallback...', error);
+                        const fallbackPayload = { ...payload };
+                        delete fallbackPayload.upi_id;
+                        const retry = await client
+                            .from('events')
+                            .update(fallbackPayload)
+                            .eq('id', id)
+                            .select();
+                        if (retry.error) throw retry.error;
+                        data = retry.data;
+                    } else if (error) {
+                        throw error;
+                    }
+
+                    const local = getLocalEvents();
+                    const idx = local.findIndex(e => e.id === id);
+                    if (idx !== -1) {
+                        local[idx] = { ...local[idx], ...payload };
+                        safeStorage.setItem('tkl_local_events', JSON.stringify(local));
+                    }
+
+                    const updatedItem = (data && data[0]) ? normalizeEventData(data[0]) : payload;
+                    if (upiId) updatedItem.upi_id = upiId;
+                    return { success: true, data: updatedItem };
                 } catch (err) {
                     console.error('[TKL Supabase] Error updating event by UUID:', err);
                 }
             } else if (client && id) {
-                // If not a UUID, attempt to update by title in Supabase
                 try {
                     const localEv = (getLocalEvents() || []).find(e => String(e.id) === String(id));
                     const targetTitle = (localEv && localEv.title) || eventData.title;
                     if (targetTitle) {
-                        const { data, error } = await client
+                        let { data, error } = await client
                             .from('events')
-                            .update(eventData)
+                            .update(payload)
                             .eq('title', targetTitle)
                             .select();
-                        if (!error && data && data.length > 0) return { success: true, data: data[0] };
+                        if (error && error.message && error.message.includes('upi_id')) {
+                            const fallbackPayload = { ...payload };
+                            delete fallbackPayload.upi_id;
+                            const retry = await client
+                                .from('events')
+                                .update(fallbackPayload)
+                                .eq('title', targetTitle)
+                                .select();
+                            data = retry.data;
+                            error = retry.error;
+                        }
+                        if (!error && data && data.length > 0) {
+                            const item = normalizeEventData(data[0]);
+                            if (upiId) item.upi_id = upiId;
+                            return { success: true, data: item };
+                        }
                     }
                 } catch (err) {
                     console.error('[TKL Supabase] Error updating event by title:', err);
@@ -686,7 +786,7 @@
             const local = getLocalEvents();
             const idx = local.findIndex(e => e.id === id);
             if (idx !== -1) {
-                local[idx] = { ...local[idx], ...eventData };
+                local[idx] = { ...local[idx], ...payload };
                 safeStorage.setItem('tkl_local_events', JSON.stringify(local));
             }
             return { success: true };
@@ -1099,7 +1199,7 @@
             const ch = chapter.toLowerCase();
             filtered = filtered.filter(e => (e.chapter || '').toLowerCase().includes(ch));
         }
-        return filtered;
+        return (filtered || []).map(normalizeEventData);
     }
 
     function saveLocalEvent(event) {

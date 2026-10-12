@@ -731,6 +731,13 @@
                         <p class="text-[11px] text-slate-400 mt-1">Secret passcode used to unlock this Master Login dashboard.</p>
                     </div>
 
+                    <div>
+                        <label for="cfg-default-upi" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Default Payment UPI ID</label>
+                        <input type="text" id="cfg-default-upi" placeholder="9841498500@upi" 
+                               class="glass-input w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-mono text-amber-200">
+                        <p class="text-[11px] text-slate-400 mt-1">Default UPI address auto-filled when creating new events. Can also be customized per event.</p>
+                    </div>
+
                     <div class="pt-2 flex flex-wrap items-center gap-3">
                         <button type="button" onclick="testCurrentSupabaseConnection()" class="bg-slate-800 hover:bg-slate-700 text-white font-medium px-4 py-2.5 rounded-xl text-xs border border-white/10 transition-colors flex items-center gap-2">
                             <span>🔍 Test Supabase Connection</span>
@@ -936,6 +943,17 @@
                     <div>
                         <label for="event-entry-type" class="block text-xs font-semibold text-slate-300 mb-1">Entry Label</label>
                         <input type="text" id="event-entry-type" placeholder="e.g. Free Entry (Dinner Included)" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="event-upi-id" class="block text-xs font-semibold text-slate-300">
+                                💳 Event Payment UPI ID (QR Code & Pass Checkout)
+                            </label>
+                            <span class="text-[10px] text-amber-400">Scan & Pay Recipient</span>
+                        </div>
+                        <input type="text" id="event-upi-id" placeholder="e.g. 9841498500@upi or yourname@okhdfcbank" value="9841498500@upi" class="glass-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm font-mono text-amber-200">
+                        <p class="text-[10px] text-slate-400 mt-1">This UPI ID is displayed on the public event pass checkout and generates the dynamic UPI payment QR code.</p>
                     </div>
 
                     <div class="sm:col-span-2">
@@ -1899,7 +1917,8 @@
                                 <div>🕔 <strong>Time:</strong> ${escapeHtml(ev.event_time || 'N/A')}</div>
                                 <div class="col-span-2 truncate">📍 <strong>Venue:</strong> ${escapeHtml(ev.location_name || 'Chennai')}</div>
                                 <div>🏷️ <strong>Fee:</strong> ${priceTag}</div>
-                                <div>🎤 <strong>Guest:</strong> ${escapeHtml(ev.chief_guest || '—')}</div>
+                                <div>💳 <strong>UPI:</strong> <span class="font-mono text-amber-300">${escapeHtml(ev.upi_id || '9841498500@upi')}</span></div>
+                                <div class="col-span-2">🎤 <strong>Guest:</strong> ${escapeHtml(ev.chief_guest || '—')}</div>
                             </div>
 
                             <!-- Dedicated Registration Form Bar -->
@@ -2106,6 +2125,7 @@
             document.getElementById('event-edit-form').reset();
             clearEventFlyer();
             document.getElementById('event-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('event-upi-id').value = localStorage.getItem('tkl_default_upi') || '9841498500@upi';
             document.getElementById('event-reg-url').value = '';
             document.getElementById('event-reg-url').placeholder = 'Auto-generates: register.html?id=... (Leave blank or enter custom URL)';
 
@@ -2201,6 +2221,7 @@
             document.getElementById('event-address').value = ev.location_address || '';
             document.getElementById('event-price').value = ev.price || 0;
             document.getElementById('event-entry-type').value = ev.entry_type || '';
+            document.getElementById('event-upi-id').value = ev.upi_id || localStorage.getItem('tkl_default_upi') || '9841498500@upi';
             document.getElementById('event-guest').value = ev.chief_guest || '';
             document.getElementById('event-flyer-url').value = ev.flyer_url || '';
             document.getElementById('event-reg-url').value = ev.registration_url || '';
@@ -2232,6 +2253,7 @@
             try {
                 const id = document.getElementById('event-form-id').value;
                 let regUrl = (document.getElementById('event-reg-url').value || '').trim();
+                const eventUpi = (document.getElementById('event-upi-id')?.value || '9841498500@upi').trim();
 
                 function makeSafeUUID() {
                     if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -2258,6 +2280,7 @@
                         location_address: document.getElementById('event-address').value,
                         price: parseFloat(document.getElementById('event-price').value || 0),
                         entry_type: document.getElementById('event-entry-type').value,
+                        upi_id: eventUpi,
                         chief_guest: document.getElementById('event-guest').value,
                         flyer_url: document.getElementById('event-flyer-url').value,
                         registration_url: regUrl,
@@ -2283,6 +2306,7 @@
                         location_address: document.getElementById('event-address').value,
                         price: parseFloat(document.getElementById('event-price').value || 0),
                         entry_type: document.getElementById('event-entry-type').value,
+                        upi_id: eventUpi,
                         chief_guest: document.getElementById('event-guest').value,
                         flyer_url: document.getElementById('event-flyer-url').value,
                         registration_url: regUrl,
@@ -2421,6 +2445,8 @@
             const userEl = document.getElementById('cfg-master-userid');
             if (userEl) userEl.value = cfg.masterUserId || 'admin@thekingdomleaders.org';
             document.getElementById('cfg-master-passcode').value = cfg.masterPasscode || 'TKL#Admin$2026!Master';
+            const defaultUpiEl = document.getElementById('cfg-default-upi');
+            if (defaultUpiEl) defaultUpiEl.value = localStorage.getItem('tkl_default_upi') || '9841498500@upi';
 
             if (cfg.fromNetlifyEnv) {
                 const resBox = document.getElementById('test-connection-result');
@@ -2436,6 +2462,10 @@
             const userEl = document.getElementById('cfg-master-userid');
             const userId = userEl ? userEl.value : '';
             const passcode = document.getElementById('cfg-master-passcode').value;
+            const defaultUpiEl = document.getElementById('cfg-default-upi');
+            if (defaultUpiEl && defaultUpiEl.value.trim()) {
+                localStorage.setItem('tkl_default_upi', defaultUpiEl.value.trim());
+            }
 
             window.TKL_SUPABASE.config.save(url, key, passcode, userId);
             alert('Supabase credentials & settings updated successfully!');

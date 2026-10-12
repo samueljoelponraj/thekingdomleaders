@@ -857,7 +857,7 @@
         let uploadedScreenshotMeta = {};
 
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCtGqXfpABUNY9-tE1ZwJwmp-C6GtcMdjxxLifuU2BRf98UgcHr6-wPwkQYBno0N3r/exec";
-        const UPI_ID = '9841498500@upi';
+        let currentEventUpiId = '9841498500@upi';
         const PAYEE_NAME = 'The Kingdom Leaders';
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -1122,6 +1122,11 @@
                 screenshotGroup.classList.add('hidden');
             }
 
+            // Dynamically set Event UPI ID on registration pass
+            currentEventUpiId = (ev && ev.upi_id && ev.upi_id.trim()) ? ev.upi_id.trim() : '9841498500@upi';
+            const upiIdText = document.getElementById('upi-id-text');
+            if (upiIdText) upiIdText.textContent = currentEventUpiId;
+
             // Update Chapter Leadership Board dynamically
             renderChapterLeadersForEvent(ev.chapter || ev.title || '');
 
@@ -1250,8 +1255,9 @@
                     submitBtnText.textContent = `Confirm & Submit Registration (₹${totalCost})`;
                 }
 
-                // Generate Dynamic UPI QR Code
-                const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${totalCost.toFixed(2)}&tn=${encodeURIComponent('TKL ' + (currentEvent.title || 'Event').substring(0, 20))}`;
+                // Generate Dynamic UPI QR Code with Event's specific UPI ID
+                const activeUpi = currentEventUpiId || '9841498500@upi';
+                const upiLink = `upi://pay?pa=${encodeURIComponent(activeUpi)}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${totalCost.toFixed(2)}&tn=${encodeURIComponent('TKL ' + (currentEvent.title || 'Event').substring(0, 20))}`;
                 const qrImg = document.getElementById('payment-qr-img');
                 if (qrImg) {
                     qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
@@ -1270,7 +1276,8 @@
             const copyBtn = document.getElementById('copy-upi-btn');
             if (copyBtn) {
                 copyBtn.addEventListener('click', () => {
-                    navigator.clipboard.writeText(UPI_ID).then(() => {
+                    const upiToCopy = currentEventUpiId || '9841498500@upi';
+                    navigator.clipboard.writeText(upiToCopy).then(() => {
                         const orig = copyBtn.textContent;
                         copyBtn.textContent = 'Copied!';
                         copyBtn.classList.replace('bg-blue-50', 'bg-emerald-600');

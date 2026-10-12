@@ -31,9 +31,12 @@ CREATE TABLE IF NOT EXISTS public.events (
     registration_url TEXT DEFAULT 'register-central.html',
     status TEXT DEFAULT 'upcoming', -- 'upcoming', 'concluded', 'draft'
     is_active BOOLEAN DEFAULT true,
-    display_order INT DEFAULT 0,
-    chief_guest TEXT
+    chief_guest TEXT,
+    upi_id TEXT DEFAULT '9841498500@upi'
 );
+
+-- Safe migration for existing events table:
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS upi_id TEXT DEFAULT '9841498500@upi';
 
 -- ==============================================================================
 -- 3. REGISTRATIONS TABLE
