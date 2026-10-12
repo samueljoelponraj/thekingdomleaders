@@ -137,8 +137,8 @@
 
     // Default Supabase project credentials (can be pre-filled, from Netlify env, or configured in Master Login)
     const DEFAULT_CONFIG = {
-        supabaseUrl: '',
-        supabaseAnonKey: '',
+        supabaseUrl: 'https://wbetzpupfslfntdjxpcg.supabase.co',
+        supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndiZXR6cHVwZnNsZm50ZGp4cGNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NjE3NjgsImV4cCI6MjEwNjIzNzc2OH0.XPEH78fqfiBkDwrg5jYVWUfpD3Y0KaTDgA4_KM-S51M',
         masterUserId: 'admin@thekingdomleaders.org',
         masterPasscode: 'TKL#Admin$2026!Master',
         storageBucket: 'receipts'

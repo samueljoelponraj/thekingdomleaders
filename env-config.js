@@ -1,7 +1,7 @@
 // Generated automatically during Netlify build.
 window.TKL_ENV = {
-  SUPABASE_URL: "",
-  SUPABASE_ANON_KEY: "",
-  MASTER_USER_ID: "",
-  MASTER_PASSCODE: ""
+  SUPABASE_URL: "https://wbetzpupfslfntdjxpcg.supabase.co",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndiZXR6cHVwZnNsZm50ZGp4cGNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NjE3NjgsImV4cCI6MjEwNjIzNzc2OH0.XPEH78fqfiBkDwrg5jYVWUfpD3Y0KaTDgA4_KM-S51M",
+  MASTER_USER_ID: "admin@thekingdomleaders.org",
+  MASTER_PASSCODE: "TKL#Admin$2026!Master"
 };

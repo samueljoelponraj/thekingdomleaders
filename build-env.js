@@ -4,10 +4,15 @@
  */
 const fs = require('fs');
 
-const envUrl = process.env.SUPABASE_URL || '';
-const envKey = process.env.SUPABASE_ANON_KEY || '';
-const envUserId = process.env.MASTER_USER_ID || '';
-const envPasscode = process.env.MASTER_PASSCODE || '';
+const defaultUrl = 'https://wbetzpupfslfntdjxpcg.supabase.co';
+const defaultKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndiZXR6cHVwZnNsZm50ZGp4cGNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NjE3NjgsImV4cCI6MjEwNjIzNzc2OH0.XPEH78fqfiBkDwrg5jYVWUfpD3Y0KaTDgA4_KM-S51M';
+const defaultUserId = 'admin@thekingdomleaders.org';
+const defaultPasscode = 'TKL#Admin$2026!Master';
+
+const envUrl = process.env.SUPABASE_URL || defaultUrl;
+const envKey = process.env.SUPABASE_ANON_KEY || defaultKey;
+const envUserId = process.env.MASTER_USER_ID || defaultUserId;
+const envPasscode = process.env.MASTER_PASSCODE || defaultPasscode;
 
 const content = `// Generated automatically during Netlify build.
 window.TKL_ENV = {
