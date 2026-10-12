@@ -912,21 +912,15 @@
                     currentEvent = allUpcomingEvents[0];
                 }
 
-                // Ultimate fallback
+                // If still no event, pick any available event from database
+                if (!currentEvent && allEvents.length > 0) {
+                    currentEvent = allEvents[0];
+                }
+
+                // If no event found in database, render honest empty state
                 if (!currentEvent) {
-                    currentEvent = allEvents[0] || {
-                        id: 'default-gathering',
-                        title: 'The Kingdom Leaders Gathering',
-                        chapter: 'Chennai Central Chapter',
-                        event_date: new Date().toISOString().split('T')[0],
-                        event_time: '05:30 PM Onwards',
-                        location_name: 'Chennai Hub',
-                        location_address: 'Chennai, Tamil Nadu',
-                        price: 0,
-                        entry_type: 'Free Entry',
-                        status: 'upcoming',
-                        description: 'Join marketplace leaders, entrepreneurs, and professionals.'
-                    };
+                    renderNoEventsState();
+                    return;
                 }
 
                 // Populate multi-event switcher bar if multiple upcoming events exist
@@ -937,7 +931,47 @@
 
             } catch (err) {
                 console.error("Error loading event data:", err);
-                document.getElementById('hero-event-title').textContent = "Event Registration";
+                renderNoEventsState();
+            }
+        }
+
+        // Empty state when no events exist in database
+        function renderNoEventsState() {
+            document.title = "Event Registrations | The Kingdom Leaders";
+            const heroTitle = document.getElementById('hero-event-title');
+            if (heroTitle) heroTitle.textContent = "No Events Currently Scheduled";
+            const heroSub = document.getElementById('hero-event-subtitle');
+            if (heroSub) heroSub.textContent = "There are currently no active gatherings open for registration. Please check back soon or follow our chapter updates.";
+            const heroBadge = document.getElementById('hero-badge-text');
+            if (heroBadge) heroBadge.textContent = "No Active Events";
+            const pulseDot = document.getElementById('status-pulse-dot');
+            if (pulseDot) {
+                pulseDot.classList.replace('bg-emerald-400', 'bg-slate-400');
+                pulseDot.classList.remove('animate-pulse');
+            }
+
+            const ribbonDate = document.getElementById('ribbon-date');
+            if (ribbonDate) ribbonDate.textContent = "To Be Announced";
+            const ribbonTime = document.getElementById('ribbon-time');
+            if (ribbonTime) ribbonTime.textContent = "--:--";
+            const ribbonVenue = document.getElementById('ribbon-venue');
+            if (ribbonVenue) ribbonVenue.textContent = "All Chapters";
+            const ribbonEntry = document.getElementById('ribbon-entry');
+            if (ribbonEntry) ribbonEntry.textContent = "Registration Closed";
+
+            const otherEventsBar = document.getElementById('other-events-bar');
+            if (otherEventsBar) otherEventsBar.classList.add('hidden');
+
+            const activeRegContainer = document.getElementById('active-reg-container');
+            if (activeRegContainer) activeRegContainer.classList.add('hidden');
+
+            const concludedNotice = document.getElementById('concluded-notice');
+            if (concludedNotice) {
+                concludedNotice.classList.remove('hidden');
+                const title = document.getElementById('concluded-event-title');
+                if (title) title.textContent = "No Active Registrations";
+                const desc = document.getElementById('concluded-event-desc');
+                if (desc) desc.textContent = "New marketplace leader gatherings and chapter assemblies will be posted here as soon as they are announced by chapter leadership.";
             }
         }
 

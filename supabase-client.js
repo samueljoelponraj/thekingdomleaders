@@ -433,17 +433,7 @@
 
                 const { data, error } = await query;
                 if (error) throw error;
-
-                // Merge with any offline local registrations
-                const local = getLocalRegistrations();
-                const combined = [...(data || [])];
-                local.forEach(loc => {
-                    if (!combined.some(c => c.id === loc.id || (c.email === loc.email && c.created_at === loc.created_at))) {
-                        combined.push(loc);
-                    }
-                });
-
-                return combined;
+                return data || [];
             } catch (err) {
                 console.error('[TKL Supabase] Failed to fetch registrations:', err);
                 return getLocalRegistrations();
@@ -536,28 +526,13 @@
 
                     const { data, error } = await query;
                     if (error) throw error;
-                    events = data || [];
+                    return (data || []).filter(e => !deletedIds.includes(String(e.id)));
                 } catch (err) {
-                    console.warn('[TKL Supabase] Fetching events failed, falling back to defaults:', err);
-                    events = null;
+                    console.warn('[TKL Supabase] Fetching events from database failed, falling back to local storage:', err);
                 }
             }
 
-            if (events === null) {
-                events = getLocalEvents(activeOnly, chapter);
-            } else {
-                // Merge any newly created local events that aren't yet in Supabase
-                const local = getLocalEvents(activeOnly, chapter);
-                const existingIds = new Set(events.map(e => String(e.id)));
-                local.forEach(le => {
-                    if (!existingIds.has(String(le.id))) {
-                        events.push(le);
-                    }
-                });
-            }
-
-            // Always ensure blacklisted deleted event IDs are excluded
-            return (events || []).filter(e => !deletedIds.includes(String(e.id)));
+            return getLocalEvents(activeOnly, chapter);
         },
 
         /**
@@ -935,48 +910,7 @@
             const raw = safeStorage.getItem('tkl_local_registrations');
             if (raw) return JSON.parse(raw);
         } catch (e) {}
-
-        // Default initial sample registration for demonstration
-        return [
-            {
-                id: 'demo-reg-1',
-                created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-                event_name: 'Grand Launch: West Chapter',
-                entry_type: 'Free Entry (Dinner Included)',
-                full_name: 'Johnathan Samuel',
-                email: 'johnathan.s@example.com',
-                phone: '9841400000',
-                pincode: '600125',
-                company: 'Faith Innovations Corp',
-                role: 'Managing Director',
-                is_existing_member: 'No',
-                referred_by: 'Church Announcement',
-                additional_guests: 1,
-                total_cost: 0,
-                payment_status: 'Free',
-                receipt_url: '',
-                notes: 'Attending West Chapter launch'
-            },
-            {
-                id: 'demo-reg-2',
-                created_at: new Date(Date.now() - 3600000 * 12).toISOString(),
-                event_name: 'Chennai Central Chapter Meeting - 1',
-                entry_type: 'Paid Entry ₹250 (Dinner Included)',
-                full_name: 'Esther Rani',
-                email: 'esther.rani@example.com',
-                phone: '9840123456',
-                pincode: '600037',
-                company: 'Grace Technologies',
-                role: 'Tech Lead',
-                is_existing_member: 'Yes',
-                referred_by: 'Existing TKL Member',
-                additional_guests: 1,
-                total_cost: 500,
-                payment_status: 'Verified',
-                receipt_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=80',
-                notes: 'UPI Verified'
-            }
-        ];
+        return [];
     }
 
     function saveLocalRegistration(item) {
@@ -1146,129 +1080,14 @@
     }
 
     function getLocalEvents(activeOnly = false, chapter = null) {
-        let events = null;
+        let events = [];
         try {
             const raw = safeStorage.getItem('tkl_local_events');
             if (raw !== null) {
                 events = JSON.parse(raw);
             }
         } catch (e) {
-            events = null;
-        }
-
-        if (events === null) {
-            // Seed initial events for all chapters on first run only
-            events = [
-                {
-                    id: 'b8a7c290-7d31-41b9-813f-c689d1519001',
-                    title: 'Central Chapter Meeting 1',
-                    subtitle: 'Marketplace Fellowship & Business Networking',
-                    chapter: 'Central Chapter',
-                    event_date: '2026-09-18',
-                    event_time: '05:30 PM Onwards',
-                    location_name: 'Praise Evangelical Church, Mugalivakkam',
-                    location_address: 'Mugalivakkam Main Rd, Chennai - 600125',
-                    description: 'Marketplace leaders and entrepreneurs gathering for business networking, dinner fellowship, and purposeful expansion.',
-                    price: 250,
-                    entry_type: 'Paid Entry ₹250 (Dinner Included)',
-                    flyer_url: 'images/central chapter meeting 1.jpeg',
-                    registration_url: 'register-central.html',
-                    status: 'concluded',
-                    is_active: true,
-                    chief_guest: 'Pastor K.Joshua Stephen'
-                },
-                {
-                    id: 'b8a7c290-7d31-41b9-813f-c689d1519002',
-                    title: 'Grand Launch: West Chapter',
-                    subtitle: 'Free Registration with Fellowship Dinner Included',
-                    chapter: 'West Chapter',
-                    event_date: '2026-09-18',
-                    event_time: '05:30 PM Onwards',
-                    location_name: 'Praise Evangelical Church, Mugalivakkam',
-                    location_address: 'Mugalivakkam Main Rd, Chennai - 600125',
-                    description: 'The monumental Grand Launch of The Kingdom Leaders West Chapter bringing together marketplace leaders, business founders, and youth.',
-                    price: 0,
-                    entry_type: 'Free Entry (Dinner Included)',
-                    flyer_url: 'images/west lanch free reg.png',
-                    registration_url: 'register-west.html',
-                    status: 'concluded',
-                    is_active: true,
-                    chief_guest: 'Pastor K.Joshua Stephen'
-                },
-                {
-                    id: 'b8a7c290-7d31-41b9-813f-c689d1519003',
-                    title: 'South Chapter: Marketplace Gathering & Networking',
-                    subtitle: 'Civic Leadership & Business Mentorship Session',
-                    chapter: 'South Chapter',
-                    event_date: '2026-10-15',
-                    event_time: '06:00 PM - 08:30 PM',
-                    location_name: 'Medavakkam Hub Fellowship Hall',
-                    location_address: 'Medavakkam Main Rd, Chennai - 600100',
-                    description: 'Monthly gathering of Christian professionals, founders, and civil service aspirants in South Chennai for strategic networking and prayer fellowship.',
-                    price: 0,
-                    entry_type: 'Free Entry (High Tea Included)',
-                    flyer_url: 'images/logo.jpg',
-                    registration_url: 'events-south.html#register',
-                    status: 'upcoming',
-                    is_active: true,
-                    chief_guest: 'Isaac Selvin Raj (President)'
-                },
-                {
-                    id: 'b8a7c290-7d31-41b9-813f-c689d1519004',
-                    title: 'North Chapter: Business & Kingdom Leadership Meet',
-                    subtitle: 'Connecting Maritime, Logistics & Trade Leaders',
-                    chapter: 'North Chapter',
-                    event_date: '2026-10-22',
-                    event_time: '05:30 PM - 08:00 PM',
-                    location_name: 'Rayapuram Fellowship Centre',
-                    location_address: 'Rayapuram, Chennai - 600013',
-                    description: 'Empowering trade, logistics, and retail business owners across North Chennai through kingdom business principles and strategic partnerships.',
-                    price: 0,
-                    entry_type: 'Free Entry (Fellowship Dinner Included)',
-                    flyer_url: 'images/logo.jpg',
-                    registration_url: 'events-north.html#register',
-                    status: 'upcoming',
-                    is_active: true,
-                    chief_guest: 'Pastor Jacob Bagyadoss (Founder)'
-                },
-                {
-                    id: 'b8a7c290-7d31-41b9-813f-c689d1519005',
-                    title: 'East Chapter: Tech Innovators & Professionals Meet',
-                    subtitle: 'Creative Founders & Technology Leaders Gathering',
-                    chapter: 'East Chapter',
-                    event_date: '2026-10-29',
-                    event_time: '06:00 PM - 08:30 PM',
-                    location_name: 'Adyar Executive Forum',
-                    location_address: 'Adyar, Chennai - 600020',
-                    description: 'Quarterly assembly of software professionals, digital agency founders, and creative leaders exploring ethical innovation and kingdom expansion.',
-                    price: 150,
-                    entry_type: 'Entry ₹150 (Dinner Included)',
-                    flyer_url: 'images/logo.jpg',
-                    registration_url: 'events-east.html#register',
-                    status: 'upcoming',
-                    is_active: true,
-                    chief_guest: 'Saravanan (President)'
-                },
-                {
-                    id: 'b8a7c290-7d31-41b9-813f-c689d1519006',
-                    title: 'Nagercoil Chapter: Inaugural Marketplace Gathering',
-                    subtitle: 'Connecting Southern Tamil Nadu Christian Entrepreneurs & Leaders',
-                    chapter: 'Nagercoil Chapter',
-                    event_date: '2026-11-08',
-                    event_time: '05:30 PM - 08:30 PM',
-                    location_name: 'Nagercoil Fellowship Hall, Kanyakumari',
-                    location_address: 'Kottar / Main Town, Nagercoil - 629002',
-                    description: 'Grand inaugural gathering of business owners, founders, and leaders across Kanyakumari district.',
-                    price: 0,
-                    entry_type: 'Free Entry (Fellowship Dinner Included)',
-                    flyer_url: 'images/logo.jpg',
-                    registration_url: 'events-nagercoil.html#register',
-                    status: 'upcoming',
-                    is_active: true,
-                    chief_guest: 'Sugumar (President) & Jebastin (Secretary)'
-                }
-            ];
-            safeStorage.setItem('tkl_local_events', JSON.stringify(events));
+            events = [];
         }
 
         const deletedIds = getDeletedEventIds();
