@@ -1789,6 +1789,8 @@
                 return { slug: 'north', page: 'events-north.html', name: 'North Chapter', color: 'border-blue-500/40 text-blue-400 bg-blue-500/10' };
             } else if (raw.includes('east')) {
                 return { slug: 'east', page: 'events-east.html', name: 'East Chapter', color: 'border-teal-500/40 text-teal-400 bg-teal-500/10' };
+            } else if (raw.includes('nagercoil')) {
+                return { slug: 'nagercoil', page: 'events-nagercoil.html', name: 'Nagercoil Chapter', color: 'border-cyan-500/40 text-cyan-400 bg-cyan-500/10' };
             }
             return { slug: 'all', page: 'events.html', name: chapterRaw || 'Combined', color: 'border-slate-500/40 text-slate-300 bg-slate-500/10' };
         }

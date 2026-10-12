@@ -349,21 +349,21 @@
         async save(record) {
             const client = getClient();
             const payload = {
-                event_name: record.eventName || record.event_name || 'The Kingdom Leaders Gathering',
-                event_id: (record.eventId || record.event_id) && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(record.eventId || record.event_id) ? (record.eventId || record.event_id) : null,
-                entry_type: record.entryType || (record.totalCost > 0 ? 'Paid Entry' : 'Free Entry'),
-                full_name: (record.name || record.fullName || '').trim(),
+                event_name: record.eventName || record.event_name || record.eventTitle || 'The Kingdom Leaders Gathering',
+                event_id: (record.eventId || record.event_id) && isUUID(record.eventId || record.event_id) ? (record.eventId || record.event_id).trim() : null,
+                entry_type: record.entryType || record.entry_type || (parseFloat(record.totalCost || record.total_cost || 0) > 0 ? 'Paid Entry' : 'Free Entry'),
+                full_name: (record.full_name || record.fullName || record.name || '').trim(),
                 email: (record.email || (record.phone ? `${String(record.phone).replace(/\D/g, '')}@thekingdomleaders.in` : 'member@thekingdomleaders.in')).trim(),
                 phone: (record.phone || '').trim(),
                 pincode: record.pincode || '',
                 company: record.company || record.org || '',
                 role: record.role || '',
-                is_existing_member: record.isExistingMember || 'No',
-                referred_by: record.referredBy || '',
-                additional_guests: parseInt(record.additionalGuests || 0, 10),
-                total_cost: parseFloat(record.totalCost || 0),
-                receipt_url: record.receiptUrl || '',
-                payment_status: record.paymentStatus || (parseFloat(record.totalCost || 0) > 0 ? 'Pending' : 'Free'),
+                is_existing_member: record.isExistingMember || record.is_existing_member || 'No',
+                referred_by: record.referredBy || record.referred_by || '',
+                additional_guests: parseInt(record.additionalGuests || record.additional_guests || 0, 10),
+                total_cost: parseFloat(record.totalCost || record.total_cost || 0),
+                receipt_url: record.receiptUrl || record.receipt_url || '',
+                payment_status: record.paymentStatus || record.payment_status || (parseFloat(record.totalCost || record.total_cost || 0) > 0 ? 'Pending' : 'Free'),
                 notes: record.notes || ''
             };
 
@@ -376,6 +376,15 @@
                         .select();
 
                     if (error) {
+                        // If foreign key constraint failed on event_id, retry with event_id: null
+                        if (error.code === '23503' && payload.event_id) {
+                            console.warn('[TKL Supabase] event_id not present in Supabase events table. Retrying insert with event_id: null...');
+                            const retryPayload = { ...payload, event_id: null };
+                            const retryRes = await client.from('registrations').insert([retryPayload]).select();
+                            if (!retryRes.error) {
+                                return { success: true, data: retryRes.data[0] || retryPayload };
+                            }
+                        }
                         console.error('[TKL Supabase] Error saving registration:', error);
                         // Store locally as safe fallback
                         saveLocalRegistration(payload);
@@ -668,7 +677,7 @@
          */
         async update(id, eventData) {
             const client = getClient();
-            if (client && id && typeof id === 'string' && id.includes('-')) {
+            if (client && id && typeof id === 'string' && isUUID(id)) {
                 try {
                     const { data, error } = await client
                         .from('events')
@@ -678,7 +687,23 @@
                     if (error) throw error;
                     return { success: true, data: data[0] };
                 } catch (err) {
-                    console.error('[TKL Supabase] Error updating event:', err);
+                    console.error('[TKL Supabase] Error updating event by UUID:', err);
+                }
+            } else if (client && id) {
+                // If not a UUID, attempt to update by title in Supabase
+                try {
+                    const localEv = (getLocalEvents() || []).find(e => String(e.id) === String(id));
+                    const targetTitle = (localEv && localEv.title) || eventData.title;
+                    if (targetTitle) {
+                        const { data, error } = await client
+                            .from('events')
+                            .update(eventData)
+                            .eq('title', targetTitle)
+                            .select();
+                        if (!error && data && data.length > 0) return { success: true, data: data[0] };
+                    }
+                } catch (err) {
+                    console.error('[TKL Supabase] Error updating event by title:', err);
                 }
             }
 
@@ -1135,8 +1160,8 @@
             // Seed initial events for all chapters on first run only
             events = [
                 {
-                    id: 'event-central-m1',
-                    title: 'Chennai Central Chapter Meeting - 1',
+                    id: 'b8a7c290-7d31-41b9-813f-c689d1519001',
+                    title: 'Central Chapter Meeting 1',
                     subtitle: 'Marketplace Fellowship & Business Networking',
                     chapter: 'Central Chapter',
                     event_date: '2026-09-18',
@@ -1153,7 +1178,7 @@
                     chief_guest: 'Pastor K.Joshua Stephen'
                 },
                 {
-                    id: 'event-west-launch',
+                    id: 'b8a7c290-7d31-41b9-813f-c689d1519002',
                     title: 'Grand Launch: West Chapter',
                     subtitle: 'Free Registration with Fellowship Dinner Included',
                     chapter: 'West Chapter',
@@ -1171,7 +1196,7 @@
                     chief_guest: 'Pastor K.Joshua Stephen'
                 },
                 {
-                    id: 'event-south-gathering',
+                    id: 'b8a7c290-7d31-41b9-813f-c689d1519003',
                     title: 'South Chapter: Marketplace Gathering & Networking',
                     subtitle: 'Civic Leadership & Business Mentorship Session',
                     chapter: 'South Chapter',
@@ -1189,7 +1214,7 @@
                     chief_guest: 'Isaac Selvin Raj (President)'
                 },
                 {
-                    id: 'event-north-summit',
+                    id: 'b8a7c290-7d31-41b9-813f-c689d1519004',
                     title: 'North Chapter: Business & Kingdom Leadership Meet',
                     subtitle: 'Connecting Maritime, Logistics & Trade Leaders',
                     chapter: 'North Chapter',
@@ -1207,7 +1232,7 @@
                     chief_guest: 'Pastor Jacob Bagyadoss (Founder)'
                 },
                 {
-                    id: 'event-east-meet',
+                    id: 'b8a7c290-7d31-41b9-813f-c689d1519005',
                     title: 'East Chapter: Tech Innovators & Professionals Meet',
                     subtitle: 'Creative Founders & Technology Leaders Gathering',
                     chapter: 'East Chapter',
@@ -1223,6 +1248,24 @@
                     status: 'upcoming',
                     is_active: true,
                     chief_guest: 'Saravanan (President)'
+                },
+                {
+                    id: 'b8a7c290-7d31-41b9-813f-c689d1519006',
+                    title: 'Nagercoil Chapter: Inaugural Marketplace Gathering',
+                    subtitle: 'Connecting Southern Tamil Nadu Christian Entrepreneurs & Leaders',
+                    chapter: 'Nagercoil Chapter',
+                    event_date: '2026-11-08',
+                    event_time: '05:30 PM - 08:30 PM',
+                    location_name: 'Nagercoil Fellowship Hall, Kanyakumari',
+                    location_address: 'Kottar / Main Town, Nagercoil - 629002',
+                    description: 'Grand inaugural gathering of business owners, founders, and leaders across Kanyakumari district.',
+                    price: 0,
+                    entry_type: 'Free Entry (Fellowship Dinner Included)',
+                    flyer_url: 'images/logo.jpg',
+                    registration_url: 'events-nagercoil.html#register',
+                    status: 'upcoming',
+                    is_active: true,
+                    chief_guest: 'Sugumar (President) & Jebastin (Secretary)'
                 }
             ];
             safeStorage.setItem('tkl_local_events', JSON.stringify(events));
