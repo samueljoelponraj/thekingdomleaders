@@ -1214,25 +1214,8 @@
         return event;
     }
 
-    // State & City Leadership Directory
-    const STATE_AND_CITY_LEADERSHIP = {
-        state: {
-            region: 'Tamil Nadu',
-            president: {
-                name: 'Sugumar',
-                title: 'State President',
-                role: 'State President - Tamil Nadu',
-                description: 'Spearheading state-level kingdom vision, regional chapter expansion, and strategic governance across Tamil Nadu.',
-                image: 'images/chapter learder images/sugumar state presdient.png'
-            },
-            secretary: {
-                name: 'Jebastin',
-                title: 'State Secretary',
-                role: 'State Secretary - Tamil Nadu',
-                description: 'Overseeing state administration, inter-chapter operational coordination, and organizational communication.',
-                image: 'images/chapter learder images/jebastin state secretary.png'
-            }
-        },
+    // City Leadership Directory
+    const CITY_LEADERSHIP = {
         city: {
             region: 'Chennai Region',
             president: {
@@ -1273,7 +1256,7 @@
         registrations: Registrations,
         events: Events,
         chapters: CHAPTERS_METADATA,
-        leadership: STATE_AND_CITY_LEADERSHIP,
+        leadership: CITY_LEADERSHIP,
         detectChapter: detectRegistrationChapter,
         pincodeMap: PINCODE_MAP,
         uploadReceipt: uploadReceiptFile,
