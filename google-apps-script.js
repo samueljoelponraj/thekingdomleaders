@@ -112,6 +112,56 @@ function doPost(e) {
         data.leadWillingness || "",
         data.prayerTeam || ""
       ]);
+    } else if (formType === 'student') {
+      // Setup Sheet: Student Registrations (Standards VIII to XII)
+      const SHEET_STUDENT = "Student Registrations (VIII-XII)";
+      sheet = ss.getSheetByName(SHEET_STUDENT) || ss.insertSheet(SHEET_STUDENT);
+
+      // Initialize headers if empty
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow([
+          "Timestamp", "Registration Code", "Student Full Name", "Date of Birth", "Gender",
+          "Standard Currently Studying", "Residential Address", "Area / City",
+          "Parent / Guardian Name", "Relationship to Student", "Parent Mobile Number", "Alternative Contact Number",
+          "School Name", "School Address", "School Location / Area",
+          "Civil Services Awareness", "Judiciary Awareness", "Marketplace Leadership Awareness",
+          "Political Leadership Awareness", "Leadership Willingness", "Preferred Area of Interest",
+          "Referral Source", "Referrer Full Name", "Referrer Mobile",
+          "Parent / Guardian Consent", "Coaching Interest"
+        ]);
+        sheet.getRange(1, 1, 1, 26).setFontWeight("bold").setBackground("#D9E2EC");
+        sheet.setFrozenRows(1);
+      }
+
+      // Append student record
+      sheet.appendRow([
+        new Date(),
+        data.registration_code || "",
+        data.student_name || "",
+        data.date_of_birth || "",
+        data.gender || "",
+        data.standard || "",
+        data.residential_address || "",
+        data.area_city || "",
+        data.parent_name || "",
+        data.parent_relationship || "",
+        "'" + (data.parent_mobile || ""),
+        "'" + (data.alt_contact_number || ""),
+        data.school_name || "",
+        data.school_address || "",
+        data.school_location || "",
+        data.civil_services_awareness || "",
+        data.judiciary_awareness || "",
+        data.marketplace_awareness || "",
+        data.political_awareness || "",
+        data.leadership_willingness || "",
+        data.preferred_interest_area || "",
+        data.referral_source || "",
+        data.referrer_name || "",
+        "'" + (data.referrer_mobile || ""),
+        data.parent_consent ? "I Agree" : "No",
+        data.coaching_interest || ""
+      ]);
     } else {
       throw new Error("Invalid form type specified");
     }

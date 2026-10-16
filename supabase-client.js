@@ -497,6 +497,91 @@
     };
 
     /**
+     * Database Operations: Student Registrations (Standards VIII to XII)
+     */
+    const StudentRegistrations = {
+        /**
+         * Insert a new student registration record
+         */
+        async save(record) {
+            const client = getClient();
+            const code = record.registration_code || record.registrationCode || ('TKL-STU-' + Math.floor(100000 + Math.random() * 900000));
+            const payload = {
+                registration_code: code,
+                student_name: (record.student_name || record.studentName || '').trim(),
+                date_of_birth: record.date_of_birth || record.dateOfBirth || '',
+                gender: record.gender || '',
+                standard: record.standard || '',
+                residential_address: (record.residential_address || record.residentialAddress || '').trim(),
+                area_city: (record.area_city || record.areaCity || '').trim(),
+                parent_name: (record.parent_name || record.parentName || '').trim(),
+                parent_relationship: record.parent_relationship || record.parentRelationship || '',
+                parent_mobile: (record.parent_mobile || record.parentMobile || '').trim(),
+                alt_contact_number: (record.alt_contact_number || record.altContactNumber || '').trim(),
+                school_name: (record.school_name || record.schoolName || '').trim(),
+                school_address: (record.school_address || record.schoolAddress || '').trim(),
+                school_location: (record.school_location || record.schoolLocation || '').trim(),
+                civil_services_awareness: record.civil_services_awareness || record.civilServicesAwareness || '',
+                judiciary_awareness: record.judiciary_awareness || record.judiciaryAwareness || '',
+                marketplace_awareness: record.marketplace_awareness || record.marketplaceAwareness || '',
+                political_awareness: record.political_awareness || record.politicalAwareness || '',
+                leadership_willingness: record.leadership_willingness || record.leadershipWillingness || '',
+                preferred_interest_area: record.preferred_interest_area || record.preferredInterestArea || '',
+                referral_source: record.referral_source || record.referralSource || '',
+                referrer_name: (record.referrer_name || record.referrerName || '').trim(),
+                referrer_mobile: (record.referrer_mobile || record.referrerMobile || '').trim(),
+                parent_consent: record.parent_consent !== undefined ? Boolean(record.parent_consent) : true,
+                coaching_interest: record.coaching_interest || record.coachingInterest || '',
+                status: record.status || 'Registered',
+                notes: record.notes || ''
+            };
+
+            if (client) {
+                try {
+                    const { data, error } = await client
+                        .from('student_registrations')
+                        .insert([payload])
+                        .select();
+
+                    if (error) {
+                        console.warn('[TKL Supabase] Supabase student registration save notice, saving locally:', error);
+                        saveLocalStudentRegistration(payload);
+                        return { success: true, data: payload, localOnly: true, note: error.message };
+                    }
+                    return { success: true, data: data && data[0] ? data[0] : payload };
+                } catch (err) {
+                    console.error('[TKL Supabase] Exception saving student registration:', err);
+                    saveLocalStudentRegistration(payload);
+                    return { success: true, data: payload, localOnly: true };
+                }
+            } else {
+                saveLocalStudentRegistration(payload);
+                return { success: true, data: payload, localOnly: true };
+            }
+        },
+
+        /**
+         * Fetch all student registrations
+         */
+        async getAll() {
+            const client = getClient();
+            if (client) {
+                try {
+                    const { data, error } = await client
+                        .from('student_registrations')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+
+                    if (!error && data) return data;
+                } catch (err) {
+                    console.warn('[TKL Supabase] Error fetching student registrations from DB:', err);
+                }
+            }
+            return getLocalStudentRegistrations();
+        }
+    };
+
+    /**
     /**
      * UPI Helper Functions for Events
      */
@@ -1021,6 +1106,22 @@
         safeStorage.setItem('tkl_local_registrations', JSON.stringify(list));
     }
 
+    function getLocalStudentRegistrations() {
+        try {
+            const raw = safeStorage.getItem('tkl_local_student_registrations');
+            if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return [];
+    }
+
+    function saveLocalStudentRegistration(item) {
+        const list = getLocalStudentRegistrations();
+        item.id = item.id || 'loc-stu-' + Date.now();
+        item.created_at = item.created_at || new Date().toISOString();
+        list.unshift(item);
+        safeStorage.setItem('tkl_local_student_registrations', JSON.stringify(list));
+    }
+
     // Chapter Metadata Directory
     const CHAPTERS_METADATA = {
         central: {
@@ -1254,6 +1355,7 @@
         config: Config,
         auth: Auth,
         registrations: Registrations,
+        studentRegistrations: StudentRegistrations,
         events: Events,
         chapters: CHAPTERS_METADATA,
         leadership: CITY_LEADERSHIP,

@@ -226,5 +226,66 @@ INSERT INTO public.events (
 )
 ON CONFLICT DO NOTHING;
 
+-- ==============================================================================
+-- 6. STUDENT REGISTRATIONS TABLE (Standards VIII to XII)
+-- Stores student nominations and registrations for leadership & awards
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.student_registrations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
+    registration_code TEXT,
+    student_name TEXT NOT NULL,
+    date_of_birth DATE NOT NULL,
+    gender TEXT NOT NULL,
+    standard TEXT NOT NULL,
+    residential_address TEXT NOT NULL,
+    area_city TEXT NOT NULL,
+    parent_name TEXT NOT NULL,
+    parent_relationship TEXT NOT NULL,
+    parent_mobile TEXT NOT NULL,
+    alt_contact_number TEXT,
+    school_name TEXT NOT NULL,
+    school_address TEXT NOT NULL,
+    school_location TEXT NOT NULL,
+    civil_services_awareness TEXT NOT NULL,
+    judiciary_awareness TEXT NOT NULL,
+    marketplace_awareness TEXT NOT NULL,
+    political_awareness TEXT NOT NULL,
+    leadership_willingness TEXT NOT NULL,
+    preferred_interest_area TEXT,
+    referral_source TEXT NOT NULL,
+    referrer_name TEXT,
+    referrer_mobile TEXT,
+    parent_consent BOOLEAN DEFAULT true,
+    coaching_interest TEXT,
+    status TEXT DEFAULT 'Registered',
+    notes TEXT
+);
+
+-- Indexes for student registrations
+CREATE INDEX IF NOT EXISTS idx_student_reg_code ON public.student_registrations(registration_code);
+CREATE INDEX IF NOT EXISTS idx_student_name ON public.student_registrations(student_name);
+CREATE INDEX IF NOT EXISTS idx_student_standard ON public.student_registrations(standard);
+CREATE INDEX IF NOT EXISTS idx_student_parent_mobile ON public.student_registrations(parent_mobile);
+
+-- Enable RLS
+ALTER TABLE public.student_registrations ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public can insert student registrations" ON public.student_registrations;
+CREATE POLICY "Public can insert student registrations" 
+    ON public.student_registrations FOR INSERT 
+    WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow select student registrations" ON public.student_registrations;
+CREATE POLICY "Allow select student registrations" 
+    ON public.student_registrations FOR SELECT 
+    USING (true);
+
+DROP POLICY IF EXISTS "Admin full access on student registrations" ON public.student_registrations;
+CREATE POLICY "Admin full access on student registrations" 
+    ON public.student_registrations FOR ALL 
+    USING (true)
+    WITH CHECK (true);
+
 -- Confirmation query
-SELECT 'Database setup completed successfully! TKL events and registrations tables are ready.' as status;
+SELECT 'Database setup completed successfully! TKL events, registrations, and student_registrations tables are ready.' as status;
