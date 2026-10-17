@@ -578,6 +578,54 @@
                 }
             }
             return getLocalStudentRegistrations();
+        },
+
+        /**
+         * Update a student registration record
+         */
+        async update(id, updates) {
+            const client = getClient();
+            if (client && id && typeof id === 'string' && isUUID(id)) {
+                try {
+                    const { data, error } = await client
+                        .from('student_registrations')
+                        .update(updates)
+                        .eq('id', id)
+                        .select();
+                    if (error) throw error;
+                    return { success: true, data };
+                } catch (err) {
+                    console.error('[TKL Supabase] Error updating student registration:', err);
+                }
+            }
+            const local = getLocalStudentRegistrations();
+            const idx = local.findIndex(r => r.id === id || r.registration_code === id);
+            if (idx !== -1) {
+                Object.assign(local[idx], updates);
+                safeStorage.setItem('tkl_local_student_registrations', JSON.stringify(local));
+            }
+            return { success: true };
+        },
+
+        /**
+         * Delete a student registration record
+         */
+        async delete(id) {
+            const client = getClient();
+            if (client && id && typeof id === 'string' && isUUID(id)) {
+                try {
+                    const { error } = await client
+                        .from('student_registrations')
+                        .delete()
+                        .eq('id', id);
+                    if (error) throw error;
+                } catch (err) {
+                    console.error('[TKL Supabase] Error deleting student registration:', err);
+                }
+            }
+            const local = getLocalStudentRegistrations().filter(r => r.id !== id && r.registration_code !== id);
+            safeStorage.setItem('tkl_local_student_registrations', JSON.stringify(local));
+            return { success: true };
         }
     };
 

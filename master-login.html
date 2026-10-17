@@ -245,6 +245,20 @@
                     <span id="stat-concluded-events" class="text-slate-400 font-semibold">0 Concluded</span>
                 </div>
             </div>
+
+            <!-- Metric 5: Student Nominations (Standards VIII to XII) -->
+            <div onclick="switchTab('students')" title="Click to view Student Nominations"
+                 class="glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-indigo-400/50 hover:bg-slate-800/60 transition-all duration-200 cursor-pointer relative overflow-hidden group transform hover:-translate-y-0.5 col-span-2 sm:col-span-1">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider group-hover:text-indigo-300 transition-colors">Student Nominations</span>
+                    <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center">🎓</div>
+                </div>
+                <div id="stat-total-students" class="text-2xl sm:text-3xl font-extrabold text-indigo-400 mt-2">0</div>
+                <div class="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
+                    <span id="stat-coaching-interested" class="text-emerald-400 font-semibold">0 Coaching</span> • 
+                    <span class="text-slate-300 font-medium">Std VIII-XII</span>
+                </div>
+            </div>
         </section>
 
         <!-- Main Tab Navigation -->
@@ -253,6 +267,10 @@
                 <button type="button" id="tab-btn-regs" onclick="switchTab('regs')" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 bg-blue-600 text-white shadow-md">
                     <span>📋 Registrations Form Data</span>
                     <span id="regs-badge-count" class="bg-blue-800 text-blue-100 text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+                </button>
+                <button type="button" id="tab-btn-students" onclick="switchTab('students')" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <span>🎓 Student Nominations (VIII - XII)</span>
+                    <span id="students-badge-count" class="bg-indigo-900/60 text-indigo-200 text-[10px] font-bold px-2 py-0.5 rounded-full border border-indigo-500/30">0</span>
                 </button>
                 <button type="button" id="tab-btn-events" onclick="switchTab('events')" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/60">
                     <span>📅 Manage Events Page</span>
@@ -271,6 +289,10 @@
                 <button type="button" id="btn-export-csv" onclick="exportRegistrationsToCSV()" class="hidden text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3 py-2 rounded-xl shadow-sm transition-all flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span>Export CSV</span>
+                </button>
+                <button type="button" id="btn-export-student-csv" onclick="exportStudentRegistrationsToCSV()" class="hidden text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-3 py-2 rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Export Students CSV</span>
                 </button>
                 <button type="button" id="btn-add-event" onclick="openEventModal()" class="hidden text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3.5 py-2 rounded-xl shadow-md transition-all flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -779,6 +801,96 @@
                 </div>
             </div>
         </section>
+
+        <!-- ==========================================
+             TAB CONTENT 4: STUDENT REGISTRATIONS (STANDARDS VIII TO XII)
+             ========================================== -->
+        <section id="tab-content-students" class="hidden space-y-4">
+            <!-- Header & Overview -->
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span>Student Nominations & Award Registrations</span>
+                        <span class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-mono uppercase">Standards VIII to XII</span>
+                    </h2>
+                    <p class="text-xs text-slate-400">Review student nominations, parent contacts, civil services awareness, leadership interest, and junior coaching enrollments.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="student-registration.html" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5">
+                        <span>🌐 Public Student Form</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+                    <button type="button" onclick="exportStudentRegistrationsToCSV()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 rounded-xl shadow-md transition-all flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        <span>Export Students CSV</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Controls for Students -->
+            <div class="glass-card rounded-2xl p-4 border border-white/10 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+                <!-- Search -->
+                <div class="relative flex-1">
+                    <input type="text" id="search-students-input" oninput="debounceFilterStudents()"
+                           placeholder="Search student name, parent, phone, school, area, or reg code..."
+                           class="glass-input w-full pl-9 pr-4 py-2 rounded-xl text-xs sm:text-sm placeholder-slate-500">
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+
+                <!-- Dropdowns -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    <!-- Standard Filter -->
+                    <select id="filter-student-standard-select" onchange="filterStudentRegistrations()"
+                            class="glass-input px-3 py-2 rounded-xl text-xs text-slate-300 font-medium">
+                        <option value="all">🎓 All Standards (8 - 12)</option>
+                        <option value="8th">8th Standard</option>
+                        <option value="9th">9th Standard</option>
+                        <option value="10th">10th Standard</option>
+                        <option value="11th">11th Standard</option>
+                        <option value="12th">12th Standard</option>
+                    </select>
+
+                    <!-- Coaching Interest Filter -->
+                    <select id="filter-student-coaching-select" onchange="filterStudentRegistrations()"
+                            class="glass-input px-3 py-2 rounded-xl text-xs text-slate-300 font-medium">
+                        <option value="all">🎯 All Coaching Status</option>
+                        <option value="interested">Interested in Coaching</option>
+                        <option value="not at present">Not at Present</option>
+                        <option value="know more">Wants to Know More</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Student Data Table -->
+            <div class="glass-card rounded-2xl border border-white/10 overflow-hidden shadow-xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="border-b border-white/10 bg-slate-900/80 text-slate-400 uppercase text-[10px] tracking-wider font-semibold">
+                                <th class="py-3 px-4">Reg Code / Date</th>
+                                <th class="py-3 px-4">Student Info</th>
+                                <th class="py-3 px-4">Standard</th>
+                                <th class="py-3 px-4">Parent / Guardian</th>
+                                <th class="py-3 px-4">School</th>
+                                <th class="py-3 px-4">Career Interest</th>
+                                <th class="py-3 px-4">Junior Coaching</th>
+                                <th class="py-3 px-4 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-regs-table-body" class="divide-y divide-white/5">
+                            <!-- Populated dynamically via renderStudentRegistrationsTable -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Empty state placeholder -->
+            <div id="no-students-found" class="hidden p-8 text-center glass-card rounded-2xl border border-white/10">
+                <div class="w-12 h-12 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3 text-xl">🎓</div>
+                <p class="text-sm font-semibold text-white">No student registrations match your search criteria.</p>
+                <p class="text-xs text-slate-400 mt-1">Try clearing your filters or search keywords.</p>
+            </div>
+        </section>
     </main>
 
     <!-- ==========================================
@@ -863,6 +975,190 @@
                     <button type="button" onclick="deleteActiveRegistration()" class="text-rose-400 hover:text-rose-300 text-xs hover:underline flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         <span>Delete Record</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: STUDENT NOMINATION PROFILE (VIII - XII)
+         ========================================== -->
+    <div id="modal-student-detail" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-3xl glass-panel rounded-2xl border border-white/20 shadow-2xl p-6 relative max-h-[92vh] overflow-y-auto space-y-4">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🎓</span>
+                        <h3 class="text-lg font-bold text-white">Student Leadership Nomination</h3>
+                        <span id="detail-student-standard-badge" class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full"></span>
+                    </div>
+                    <p id="detail-student-subtitle" class="text-xs text-slate-400 mt-0.5"></p>
+                </div>
+                <button type="button" onclick="closeStudentModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Profile Sections Grid -->
+            <div class="space-y-4 text-xs sm:text-sm">
+                <!-- Section 1: Student & Parent Core Info -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Student Details Card -->
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-white/10 space-y-2.5">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5 border-b border-white/5 pb-1.5">
+                            <span>👤</span> <span>Student Details</span>
+                        </h4>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">Student Full Name</span>
+                            <span id="detail-student-name" class="font-bold text-white text-base"></span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-slate-400 text-[10px] uppercase block">Date of Birth</span>
+                                <span id="detail-student-dob" class="font-medium text-slate-200"></span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 text-[10px] uppercase block">Gender</span>
+                                <span id="detail-student-gender" class="font-medium text-slate-200"></span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">Standard Studying</span>
+                            <span id="detail-student-standard" class="font-bold text-indigo-300"></span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">Residential Address</span>
+                            <span id="detail-student-address" class="text-slate-300"></span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">Area / City</span>
+                            <span id="detail-student-area" class="font-semibold text-slate-200"></span>
+                        </div>
+                    </div>
+
+                    <!-- Parent / Guardian Details Card -->
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-white/10 space-y-2.5">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5 border-b border-white/5 pb-1.5">
+                            <span>👨‍👩‍👧</span> <span>Parent / Guardian Details</span>
+                        </h4>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">Parent / Guardian Name</span>
+                            <span id="detail-student-parent-name" class="font-bold text-white text-base"></span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">Relationship to Student</span>
+                            <span id="detail-student-relationship" class="font-medium text-slate-200"></span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">Parent Mobile Number</span>
+                            <a id="detail-student-parent-mobile" href="#" class="font-bold text-blue-400 hover:underline"></a>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">Alternative Contact Number</span>
+                            <span id="detail-student-alt-mobile" class="text-slate-300"></span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">Parent / Guardian Consent</span>
+                            <span id="detail-student-consent" class="font-semibold text-emerald-400"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: School Details -->
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-white/10 space-y-2">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5 border-b border-white/5 pb-1.5">
+                        <span>🏫</span> <span>School Information</span>
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="sm:col-span-2">
+                            <span class="text-slate-400 text-[10px] uppercase block">School Name</span>
+                            <span id="detail-student-school-name" class="font-semibold text-white"></span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">School Location / Area</span>
+                            <span id="detail-student-school-location" class="font-semibold text-amber-300"></span>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <span class="text-slate-400 text-[10px] uppercase block">School Full Postal Address</span>
+                            <span id="detail-student-school-address" class="text-slate-300"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Leadership & Sector Awareness (Q14-Q19) -->
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-white/10 space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-blue-400 flex items-center gap-1.5 border-b border-white/5 pb-1.5">
+                        <span>🏛️</span> <span>Leadership & Governance Awareness (Questions 14 - 19)</span>
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div class="bg-slate-950/60 p-3 rounded-lg border border-white/5">
+                            <span class="text-slate-400 text-[10px] uppercase block">14. Civil Services / Bureaucratic Role</span>
+                            <span id="detail-student-civil" class="font-medium text-slate-200 mt-1 block"></span>
+                        </div>
+                        <div class="bg-slate-950/60 p-3 rounded-lg border border-white/5">
+                            <span class="text-slate-400 text-[10px] uppercase block">15. Judiciary & Legal Justice System</span>
+                            <span id="detail-student-judiciary" class="font-medium text-slate-200 mt-1 block"></span>
+                        </div>
+                        <div class="bg-slate-950/60 p-3 rounded-lg border border-white/5">
+                            <span class="text-slate-400 text-[10px] uppercase block">16. Marketplace & Corporate Governance</span>
+                            <span id="detail-student-marketplace" class="font-medium text-slate-200 mt-1 block"></span>
+                        </div>
+                        <div class="bg-slate-950/60 p-3 rounded-lg border border-white/5">
+                            <span class="text-slate-400 text-[10px] uppercase block">17. Political Leadership & Civic Governance</span>
+                            <span id="detail-student-political" class="font-medium text-slate-200 mt-1 block"></span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
+                        <div class="bg-slate-950/60 p-3 rounded-lg border border-white/5">
+                            <span class="text-slate-400 text-[10px] uppercase block">18. Willingness to Serve as a Leader</span>
+                            <span id="detail-student-willingness" class="font-semibold text-emerald-300 mt-1 block"></span>
+                        </div>
+                        <div class="bg-slate-950/60 p-3 rounded-lg border border-white/5">
+                            <span class="text-slate-400 text-[10px] uppercase block">19. Preferred Pillar / Interest Area</span>
+                            <span id="detail-student-preference" class="font-bold text-amber-300 mt-1 block"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Referral & Coaching Program (Q20-Q24) -->
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-white/10 space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1.5 border-b border-white/5 pb-1.5">
+                        <span>🎯</span> <span>Referral Source & Junior Foundation Coaching (Questions 20 - 24)</span>
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">20. How Did You Hear About TKL?</span>
+                            <span id="detail-student-referral-source" class="font-semibold text-white"></span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase block">21-22. Referrer Contact (Name & Phone)</span>
+                            <span id="detail-student-referrer-info" class="text-slate-300"></span>
+                        </div>
+                        <div class="sm:col-span-2 bg-gradient-to-r from-indigo-950/60 to-purple-950/40 p-3 rounded-xl border border-indigo-500/30">
+                            <span class="text-indigo-300 text-[11px] font-bold uppercase tracking-wider block">24. Junior IAS / Civil Services Foundation Coaching Interest</span>
+                            <div id="detail-student-coaching" class="text-sm font-extrabold text-white mt-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer Actions -->
+            <div class="border-t border-white/10 pt-4 flex flex-wrap items-center justify-between gap-3">
+                <button type="button" onclick="printStudentNominationProfile()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 px-4 py-2 rounded-xl transition-all flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    <span>Print Student Nomination</span>
+                </button>
+
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="deleteActiveStudentRegistration()" class="text-rose-400 hover:text-rose-300 text-xs hover:underline flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        <span>Delete Student Record</span>
+                    </button>
+                    <button type="button" onclick="closeStudentModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 hover:bg-slate-700 text-white font-semibold">
+                        Close
                     </button>
                 </div>
             </div>
@@ -1183,10 +1479,11 @@
 
         // 4. Tab Switching
         function switchTab(tab) {
-            const tabs = ['regs', 'events', 'settings'];
+            const tabs = ['regs', 'students', 'events', 'settings'];
             tabs.forEach(t => {
                 const btn = document.getElementById(`tab-btn-${t}`);
                 const content = document.getElementById(`tab-content-${t}`);
+                if (!btn || !content) return;
                 if (t === tab) {
                     btn.className = 'tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 bg-blue-600 text-white shadow-md';
                     content.classList.remove('hidden');
@@ -1198,16 +1495,24 @@
 
             // Action button visibility
             const exportBtn = document.getElementById('btn-export-csv');
+            const exportStudentBtn = document.getElementById('btn-export-student-csv');
             const addEventBtn = document.getElementById('btn-add-event');
             if (tab === 'regs') {
-                exportBtn.classList.remove('hidden');
-                addEventBtn.classList.add('hidden');
+                if (exportBtn) exportBtn.classList.remove('hidden');
+                if (exportStudentBtn) exportStudentBtn.classList.add('hidden');
+                if (addEventBtn) addEventBtn.classList.add('hidden');
+            } else if (tab === 'students') {
+                if (exportBtn) exportBtn.classList.add('hidden');
+                if (exportStudentBtn) exportStudentBtn.classList.remove('hidden');
+                if (addEventBtn) addEventBtn.classList.add('hidden');
             } else if (tab === 'events') {
-                exportBtn.classList.add('hidden');
-                addEventBtn.classList.remove('hidden');
+                if (exportBtn) exportBtn.classList.add('hidden');
+                if (exportStudentBtn) exportStudentBtn.classList.add('hidden');
+                if (addEventBtn) addEventBtn.classList.remove('hidden');
             } else {
-                exportBtn.classList.add('hidden');
-                addEventBtn.classList.add('hidden');
+                if (exportBtn) exportBtn.classList.add('hidden');
+                if (exportStudentBtn) exportStudentBtn.classList.add('hidden');
+                if (addEventBtn) addEventBtn.classList.add('hidden');
             }
         }
 
@@ -1225,13 +1530,14 @@
             switchTab('regs');
             await Promise.all([
                 loadRegistrations(),
+                loadStudentRegistrations(),
                 loadEvents(),
                 loadSettingsFields()
             ]);
         }
 
         async function reloadCurrentData() {
-            await Promise.all([loadRegistrations(), loadEvents()]);
+            await Promise.all([loadRegistrations(), loadStudentRegistrations(), loadEvents()]);
             await initSupabaseHealth();
         }
 
@@ -1787,6 +2093,383 @@
             const link = document.createElement('a');
             link.setAttribute('href', encodedUri);
             link.setAttribute('download', `TKL_Registrations_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // ==========================================
+        // 8B. Student Registrations Management (Standards VIII to XII)
+        // ==========================================
+        let allStudentRegistrations = [];
+        let activeStudentId = null;
+        let studentDebounceTimer = null;
+
+        async function loadStudentRegistrations() {
+            const tbody = document.getElementById('student-regs-table-body');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-slate-400">Loading student nominations from database...</td></tr>';
+            }
+
+            try {
+                if (window.TKL_SUPABASE && window.TKL_SUPABASE.studentRegistrations) {
+                    allStudentRegistrations = await window.TKL_SUPABASE.studentRegistrations.getAll();
+                } else {
+                    allStudentRegistrations = [];
+                }
+            } catch (err) {
+                console.error('[TKL Master] Error loading student registrations:', err);
+                allStudentRegistrations = [];
+            }
+
+            filterStudentRegistrations();
+            updateDashboardMetrics();
+        }
+
+        function debounceFilterStudents() {
+            clearTimeout(studentDebounceTimer);
+            studentDebounceTimer = setTimeout(filterStudentRegistrations, 250);
+        }
+
+        function filterStudentRegistrations() {
+            const query = (document.getElementById('search-students-input')?.value || '').toLowerCase().trim();
+            const standardFilter = (document.getElementById('filter-student-standard-select')?.value || 'all').toLowerCase();
+            const coachingFilter = (document.getElementById('filter-student-coaching-select')?.value || 'all').toLowerCase();
+
+            const filtered = allStudentRegistrations.filter(item => {
+                const matchQuery = !query ||
+                    (item.student_name && item.student_name.toLowerCase().includes(query)) ||
+                    (item.registration_code && item.registration_code.toLowerCase().includes(query)) ||
+                    (item.parent_name && item.parent_name.toLowerCase().includes(query)) ||
+                    (item.parent_mobile && item.parent_mobile.includes(query)) ||
+                    (item.school_name && item.school_name.toLowerCase().includes(query)) ||
+                    (item.area_city && item.area_city.toLowerCase().includes(query)) ||
+                    (item.preferred_interest_area && item.preferred_interest_area.toLowerCase().includes(query));
+
+                const stdText = (item.standard || '').toLowerCase();
+                const matchStandard = standardFilter === 'all' || stdText.includes(standardFilter);
+
+                const coachingText = (item.coaching_interest || '').toLowerCase();
+                const matchCoaching = coachingFilter === 'all' || coachingText.includes(coachingFilter);
+
+                return matchQuery && matchStandard && matchCoaching;
+            });
+
+            renderStudentRegistrationsTable(filtered);
+        }
+
+        function renderStudentRegistrationsTable(items) {
+            const tbody = document.getElementById('student-regs-table-body');
+            const noFound = document.getElementById('no-students-found');
+            const badgeCount = document.getElementById('students-badge-count');
+
+            if (badgeCount) badgeCount.textContent = items.length;
+
+            if (items.length === 0) {
+                if (tbody) tbody.innerHTML = '';
+                if (noFound) noFound.classList.remove('hidden');
+                return;
+            }
+
+            if (noFound) noFound.classList.add('hidden');
+
+            if (tbody) {
+                tbody.innerHTML = items.map(s => {
+                    const dateStr = s.created_at ? new Date(s.created_at).toLocaleDateString('en-IN', {
+                        day: '2-digit', month: 'short', year: 'numeric'
+                    }) : 'N/A';
+
+                    const regCode = s.registration_code || 'TKL-STU';
+                    const coaching = (s.coaching_interest || '').toLowerCase();
+                    let coachingBadge = '';
+                    if (coaching.includes('interested') && !coaching.includes('not')) {
+                        coachingBadge = '<span class="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full">IAS Coaching ✅</span>';
+                    } else if (coaching.includes('know more')) {
+                        coachingBadge = '<span class="inline-flex items-center gap-1 bg-blue-500/20 text-blue-300 border border-blue-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full">Inquire ℹ️</span>';
+                    } else {
+                        coachingBadge = '<span class="inline-flex items-center gap-1 bg-slate-800 text-slate-400 border border-white/10 text-[10px] font-medium px-2 py-0.5 rounded-full">Not Now</span>';
+                    }
+
+                    const standard = s.standard || 'Std VIII-XII';
+                    const stdBadgeColor = standard.includes('12th') ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+                                        : standard.includes('11th') ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30'
+                                        : standard.includes('10th') ? 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+                                        : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+
+                    const safeId = escapeHtml(s.id || s.registration_code || '');
+
+                    return `
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3 px-4">
+                                <span class="font-mono text-[11px] font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 block w-max">${escapeHtml(regCode)}</span>
+                                <span class="text-[10px] text-slate-400 mt-1 block">${dateStr}</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="font-bold text-white text-xs sm:text-sm flex items-center gap-1.5">
+                                    <span>${escapeHtml(s.student_name || 'N/A')}</span>
+                                    <span class="text-[10px] text-slate-400">(${escapeHtml(s.gender || '')})</span>
+                                </div>
+                                <div class="text-[11px] text-slate-400">DOB: ${escapeHtml(s.date_of_birth || 'N/A')} • ${escapeHtml(s.area_city || '')}</div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border ${stdBadgeColor}">
+                                    ${escapeHtml(standard)}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="font-semibold text-slate-200 text-xs">${escapeHtml(s.parent_name || 'N/A')} <span class="text-[10px] text-slate-400 font-normal">(${escapeHtml(s.parent_relationship || '')})</span></div>
+                                <a href="tel:${escapeHtml(s.parent_mobile || '')}" class="text-[11px] text-blue-400 hover:underline block">${escapeHtml(s.parent_mobile || 'N/A')}</a>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="font-medium text-white text-xs max-w-[180px] truncate" title="${escapeHtml(s.school_name || '')}">${escapeHtml(s.school_name || 'N/A')}</div>
+                                <div class="text-[10px] text-slate-400 max-w-[180px] truncate">${escapeHtml(s.school_location || '')}</div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-xs text-amber-200 font-medium">${escapeHtml(s.preferred_interest_area || 'Civil Services')}</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                ${coachingBadge}
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <div class="flex items-center justify-center gap-1.5">
+                                    <button type="button" onclick="viewStudentDetail('${safeId}')"
+                                            class="bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/40 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all">
+                                        View
+                                    </button>
+                                    <button type="button" onclick="deleteStudentRegistration('${safeId}')"
+                                            class="p-1 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors" title="Delete Student Record">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+
+        function viewStudentDetail(id) {
+            const student = allStudentRegistrations.find(s => s.id === id || s.registration_code === id);
+            if (!student) return;
+
+            activeStudentId = student.id || student.registration_code;
+
+            const dateStr = student.created_at ? new Date(student.created_at).toLocaleDateString('en-IN', {
+                day: '2-digit', month: 'short', year: 'numeric'
+            }) : 'N/A';
+
+            document.getElementById('detail-student-subtitle').textContent = `Registration Code: ${student.registration_code || 'TKL-STU'} • Submitted: ${dateStr}`;
+            document.getElementById('detail-student-standard-badge').textContent = student.standard || 'Standard VIII - XII';
+
+            document.getElementById('detail-student-name').textContent = student.student_name || 'N/A';
+            document.getElementById('detail-student-dob').textContent = student.date_of_birth || 'N/A';
+            document.getElementById('detail-student-gender').textContent = student.gender || 'N/A';
+            document.getElementById('detail-student-standard').textContent = student.standard || 'N/A';
+            document.getElementById('detail-student-address').textContent = student.residential_address || 'N/A';
+            document.getElementById('detail-student-area').textContent = student.area_city || 'N/A';
+
+            document.getElementById('detail-student-parent-name').textContent = student.parent_name || 'N/A';
+            document.getElementById('detail-student-relationship').textContent = student.parent_relationship || 'Parent';
+            const phoneEl = document.getElementById('detail-student-parent-mobile');
+            phoneEl.textContent = student.parent_mobile || 'N/A';
+            phoneEl.href = student.parent_mobile ? `tel:${student.parent_mobile}` : '#';
+            document.getElementById('detail-student-alt-mobile').textContent = student.alt_contact_number || 'None provided';
+            document.getElementById('detail-student-consent').textContent = student.parent_consent ? 'Consent Granted ✅' : 'No';
+
+            document.getElementById('detail-student-school-name').textContent = student.school_name || 'N/A';
+            document.getElementById('detail-student-school-location').textContent = student.school_location || 'N/A';
+            document.getElementById('detail-student-school-address').textContent = student.school_address || 'N/A';
+
+            document.getElementById('detail-student-civil').textContent = student.civil_services_awareness || 'N/A';
+            document.getElementById('detail-student-judiciary').textContent = student.judiciary_awareness || 'N/A';
+            document.getElementById('detail-student-marketplace').textContent = student.marketplace_awareness || 'N/A';
+            document.getElementById('detail-student-political').textContent = student.political_awareness || 'N/A';
+            document.getElementById('detail-student-willingness').textContent = student.leadership_willingness || 'N/A';
+            document.getElementById('detail-student-preference').textContent = student.preferred_interest_area || 'Civil Services / Governance';
+
+            document.getElementById('detail-student-referral-source').textContent = student.referral_source || 'Website / Social Media';
+            const refInfo = [student.referrer_name, student.referrer_mobile].filter(Boolean).join(' • ');
+            document.getElementById('detail-student-referrer-info').textContent = refInfo || 'Direct Registration / Not Applicable';
+
+            const coachingEl = document.getElementById('detail-student-coaching');
+            coachingEl.textContent = student.coaching_interest || 'Not Specified';
+
+            document.getElementById('modal-student-detail').classList.remove('hidden');
+        }
+
+        function closeStudentModal() {
+            document.getElementById('modal-student-detail').classList.add('hidden');
+            activeStudentId = null;
+        }
+
+        async function deleteStudentRegistration(id) {
+            if (!confirm('Are you sure you want to permanently delete this student registration record?')) return;
+            try {
+                if (window.TKL_SUPABASE && window.TKL_SUPABASE.studentRegistrations) {
+                    await window.TKL_SUPABASE.studentRegistrations.delete(id);
+                }
+                await loadStudentRegistrations();
+            } catch (err) {
+                console.error('[TKL Master] Error deleting student registration:', err);
+                await loadStudentRegistrations();
+            }
+        }
+
+        async function deleteActiveStudentRegistration() {
+            if (!activeStudentId) return;
+            await deleteStudentRegistration(activeStudentId);
+            closeStudentModal();
+        }
+
+        function printStudentNominationProfile() {
+            const student = allStudentRegistrations.find(s => s.id === activeStudentId || s.registration_code === activeStudentId);
+            if (!student) {
+                window.print();
+                return;
+            }
+
+            const printWin = window.open('', '_blank', 'width=800,height=900');
+            if (!printWin) {
+                window.print();
+                return;
+            }
+
+            printWin.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Student Nomination - ${escapeHtml(student.student_name)}</title>
+                    <style>
+                        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; padding: 30px; color: #1e293b; }
+                        .header { border-bottom: 2px solid #2563eb; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+                        h1 { margin: 0; font-size: 20px; color: #1e3a8a; }
+                        .code { font-family: monospace; font-size: 14px; font-weight: bold; color: #2563eb; background: #eff6ff; padding: 4px 10px; border-radius: 4px; }
+                        .section { margin-bottom: 18px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; }
+                        .section-title { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #475569; letter-spacing: 0.05em; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; }
+                        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; }
+                        .full-width { grid-column: span 2; }
+                        .label { color: #64748b; font-size: 11px; text-transform: uppercase; display: block; }
+                        .val { font-weight: 600; color: #0f172a; margin-top: 2px; }
+                        @media print { body { padding: 0; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div>
+                            <h1>The Kingdom Leaders (TKL)</h1>
+                            <div style="font-size: 12px; color: #64748b;">Student Leadership & Civil Services Registration (Standards VIII to XII)</div>
+                        </div>
+                        <div class="code">${escapeHtml(student.registration_code || 'TKL-STU')}</div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">1. Student Details</div>
+                        <div class="grid">
+                            <div><span class="label">Full Name</span><div class="val">${escapeHtml(student.student_name || 'N/A')}</div></div>
+                            <div><span class="label">Standard</span><div class="val">${escapeHtml(student.standard || 'N/A')}</div></div>
+                            <div><span class="label">Date of Birth</span><div class="val">${escapeHtml(student.date_of_birth || 'N/A')}</div></div>
+                            <div><span class="label">Gender</span><div class="val">${escapeHtml(student.gender || 'N/A')}</div></div>
+                            <div class="full-width"><span class="label">Residential Address</span><div class="val">${escapeHtml(student.residential_address || 'N/A')}, ${escapeHtml(student.area_city || '')}</div></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">2. Parent / Guardian Details</div>
+                        <div class="grid">
+                            <div><span class="label">Parent Name</span><div class="val">${escapeHtml(student.parent_name || 'N/A')} (${escapeHtml(student.parent_relationship || 'Parent')})</div></div>
+                            <div><span class="label">Mobile Number</span><div class="val">${escapeHtml(student.parent_mobile || 'N/A')}</div></div>
+                            <div><span class="label">Alt Contact</span><div class="val">${escapeHtml(student.alt_contact_number || 'N/A')}</div></div>
+                            <div><span class="label">Parent Consent</span><div class="val">${student.parent_consent ? 'Consent Granted' : 'No'}</div></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">3. School Information</div>
+                        <div class="grid">
+                            <div class="full-width"><span class="label">School Name</span><div class="val">${escapeHtml(student.school_name || 'N/A')}</div></div>
+                            <div class="full-width"><span class="label">School Address</span><div class="val">${escapeHtml(student.school_address || 'N/A')}, ${escapeHtml(student.school_location || '')}</div></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">4. Governance & Leadership Awareness</div>
+                        <div class="grid">
+                            <div><span class="label">Civil Services / IAS</span><div class="val">${escapeHtml(student.civil_services_awareness || 'N/A')}</div></div>
+                            <div><span class="label">Judiciary System</span><div class="val">${escapeHtml(student.judiciary_awareness || 'N/A')}</div></div>
+                            <div><span class="label">Marketplace Governance</span><div class="val">${escapeHtml(student.marketplace_awareness || 'N/A')}</div></div>
+                            <div><span class="label">Political Leadership</span><div class="val">${escapeHtml(student.political_awareness || 'N/A')}</div></div>
+                            <div><span class="label">Leadership Willingness</span><div class="val">${escapeHtml(student.leadership_willingness || 'N/A')}</div></div>
+                            <div><span class="label">Preferred Pillar</span><div class="val">${escapeHtml(student.preferred_interest_area || 'Civil Services')}</div></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">5. Junior IAS / Civil Services Foundation Coaching</div>
+                        <div class="grid">
+                            <div class="full-width"><span class="label">Coaching Interest</span><div class="val" style="color: #2563eb; font-size: 14px;">${escapeHtml(student.coaching_interest || 'N/A')}</div></div>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWin.document.close();
+            setTimeout(() => {
+                printWin.print();
+            }, 300);
+        }
+
+        // Export Students to CSV
+        function exportStudentRegistrationsToCSV() {
+            if (allStudentRegistrations.length === 0) {
+                alert('No student registrations available to export.');
+                return;
+            }
+
+            const headers = [
+                'Registration Code', 'Date Registered', 'Student Full Name', 'Date of Birth', 'Gender',
+                'Standard', 'Residential Address', 'Area / City',
+                'Parent Name', 'Parent Relationship', 'Parent Mobile', 'Alt Contact Number',
+                'School Name', 'School Address', 'School Location',
+                'Civil Services Awareness', 'Judiciary Awareness', 'Marketplace Awareness', 'Political Awareness',
+                'Leadership Willingness', 'Preferred Pillar',
+                'Referral Source', 'Referrer Name', 'Referrer Mobile',
+                'Parent Consent', 'Junior IAS Coaching Interest'
+            ];
+
+            const rows = allStudentRegistrations.map(s => [
+                `"${(s.registration_code || '').replace(/"/g, '""')}"`,
+                s.created_at ? new Date(s.created_at).toISOString().split('T')[0] : '',
+                `"${(s.student_name || '').replace(/"/g, '""')}"`,
+                `"${(s.date_of_birth || '').replace(/"/g, '""')}"`,
+                `"${(s.gender || '').replace(/"/g, '""')}"`,
+                `"${(s.standard || '').replace(/"/g, '""')}"`,
+                `"${(s.residential_address || '').replace(/"/g, '""')}"`,
+                `"${(s.area_city || '').replace(/"/g, '""')}"`,
+                `"${(s.parent_name || '').replace(/"/g, '""')}"`,
+                `"${(s.parent_relationship || '').replace(/"/g, '""')}"`,
+                `'${s.parent_mobile || ''}`,
+                `'${s.alt_contact_number || ''}`,
+                `"${(s.school_name || '').replace(/"/g, '""')}"`,
+                `"${(s.school_address || '').replace(/"/g, '""')}"`,
+                `"${(s.school_location || '').replace(/"/g, '""')}"`,
+                `"${(s.civil_services_awareness || '').replace(/"/g, '""')}"`,
+                `"${(s.judiciary_awareness || '').replace(/"/g, '""')}"`,
+                `"${(s.marketplace_awareness || '').replace(/"/g, '""')}"`,
+                `"${(s.political_awareness || '').replace(/"/g, '""')}"`,
+                `"${(s.leadership_willingness || '').replace(/"/g, '""')}"`,
+                `"${(s.preferred_interest_area || '').replace(/"/g, '""')}"`,
+                `"${(s.referral_source || '').replace(/"/g, '""')}"`,
+                `"${(s.referrer_name || '').replace(/"/g, '""')}"`,
+                `'${s.referrer_mobile || ''}`,
+                s.parent_consent ? 'Yes' : 'No',
+                `"${(s.coaching_interest || '').replace(/"/g, '""')}"`
+            ]);
+
+            const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', `TKL_Student_Registrations_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -2435,6 +3118,22 @@
             if (badgeSouth) badgeSouth.textContent = `${southCount} event${southCount === 1 ? '' : 's'}`;
             if (badgeNorth) badgeNorth.textContent = `${northCount} event${northCount === 1 ? '' : 's'}`;
             if (badgeEast) badgeEast.textContent = `${eastCount} event${eastCount === 1 ? '' : 's'}`;
+
+            // Student Nominations (Standards VIII to XII) metrics
+            const totalStudents = (typeof allStudentRegistrations !== 'undefined') ? allStudentRegistrations.length : 0;
+            const coachingInterested = (typeof allStudentRegistrations !== 'undefined') 
+                ? allStudentRegistrations.filter(s => {
+                    const c = (s.coaching_interest || '').toLowerCase();
+                    return c.includes('interested') && !c.includes('not');
+                }).length 
+                : 0;
+
+            const statStudentsEl = document.getElementById('stat-total-students');
+            if (statStudentsEl) statStudentsEl.textContent = totalStudents;
+            const statCoachingEl = document.getElementById('stat-coaching-interested');
+            if (statCoachingEl) statCoachingEl.textContent = `${coachingInterested} Coaching`;
+            const stuBadgeCountEl = document.getElementById('students-badge-count');
+            if (stuBadgeCountEl) stuBadgeCountEl.textContent = totalStudents;
         }
 
         // 11. Settings & Supabase Configuration
