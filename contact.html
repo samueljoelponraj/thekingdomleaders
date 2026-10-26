@@ -381,6 +381,8 @@
                                 <option value="South Chapter">South Chapter (Medavakkam Hub)</option>
                                 <option value="North Chapter">North Chapter (Rayapuram Hub)</option>
                                 <option value="East Chapter">East Chapter (Adyar Hub)</option>
+                                <option value="ECR Chapter">ECR Chapter (Thiruvanmiyur - Kanathur Corridor)</option>
+                                <option value="Red Hills Chapter">Red Hills Chapter (Red Hills Hub)</option>
                                 <option value="Global Chapter">Global / Other Tamil Nadu Region</option>
                             </select>
                         </div>
@@ -546,31 +548,53 @@
         
         // Pincode mapping engine & database
         const PINCODE_MAP = {
-            "600011": "North", "600052": "North", "600103": "North", "600120": "North", "600057": "North",
-            "600003": "North", "600001": "North", "600061": "North", "600068": "North", "600066": "North",
-            "600082": "North", "600021": "North", "600060": "North", "600051": "North", "600110": "North",
-            "600118": "North", "600067": "North", "600104": "North", "600013": "North", "600081": "North",
-            "600019": "North", "600039": "North",
-            "600074": "West", "600109": "West", "600058": "West", "600009": "West", "600122": "West",
-            "600050": "West", "600095": "West", "600125": "West", "600116": "West", "600038": "West",
-            "600070": "West", "600075": "West", "600098": "West", "600056": "West", "600062": "West",
-            "600053": "West", "600128": "West", "600077": "West", "600026": "West",
-            "600030": "Central", "600102": "Central", "600101": "Central", "600106": "Central", "600023": "Central",
-            "600031": "Central", "600006": "Central", "600084": "Central", "600008": "Central", "600007": "Central",
-            "600033": "Central", "600015": "Central", "600086": "Central", "600089": "Central",
-            "600087": "Central", "600010": "Central", "600024": "Central", "600094": "Central", "600107": "Central",
-            "600099": "Central", "600034": "Central", "600012": "Central", "600029": "Central", "600092": "Central",
-            "600078": "Central", "600017": "Central", "600083": "Central", "600018": "Central", "600076": "Central",
+            // North Chapter (Base: Royapuram)
+            "600013": "North", "600019": "North", "600081": "North", "600021": "North",
+            "600068": "North", "600057": "North", "600039": "North", "600011": "North",
+            "600103": "North", "600120": "North", "600003": "North", "600001": "North",
+            "600082": "North", "600110": "North", "600118": "North", "600104": "North",
+
+            // Red Hills Chapter
+            "600052": "Red Hills", "600066": "Red Hills", "600060": "Red Hills",
+            "600051": "Red Hills", "600067": "Red Hills", "600099": "Red Hills",
+
+            // West Chapter (Ambattur -> Avadi -> Poonamallee -> Thiruvallur)
+            "600053": "West", "600098": "West", "600054": "West", "600062": "West",
+            "600072": "West", "600056": "West", "600077": "West", "600071": "West",
+            "602024": "West", "602001": "West", "602002": "West", "602003": "West",
+            "600124": "West", "600123": "West", "602105": "West", "602025": "West",
+            "600055": "West", "600074": "West", "600109": "West", "600058": "West",
+            "600009": "West", "600122": "West", "600050": "West", "600095": "West",
+            "600125": "West", "600116": "West", "600038": "West", "600070": "West",
+            "600128": "West", "600026": "West",
+
+            // Central Chapter (Kathipara, Porur, Anna Nagar, T Nagar)
+            "600030": "Central", "600102": "Central", "600101": "Central", "600106": "Central",
+            "600023": "Central", "600031": "Central", "600006": "Central", "600084": "Central",
+            "600008": "Central", "600007": "Central", "600033": "Central", "600015": "Central",
+            "600086": "Central", "600089": "Central", "600087": "Central", "600010": "Central",
+            "600024": "Central", "600094": "Central", "600107": "Central", "600034": "Central",
+            "600012": "Central", "600029": "Central", "600092": "Central", "600078": "Central",
+            "600017": "Central", "600083": "Central", "600018": "Central", "600076": "Central",
             "600049": "Central", "600093": "Central",
-            "600020": "East", "600014": "East", "600097": "East", "600115": "East", "600041": "East",
-            "600005": "East", "600090": "East", "600028": "East", "600004": "East", "600096": "East",
-            "600113": "East", "600088": "East", "600036": "East", "600016": "East", "600022": "East",
-            "600091": "East", "600042": "East", "600032": "East",
-            "603112": "South", "600063": "South", "600064": "South",
-            "600044": "South", "600027": "South", "600059": "South", "600130": "South",
-            "600048": "South", "600100": "South", "600117": "South", "600043": "South",
-            "600129": "South", "600073": "South", "600047": "South", "600119": "South", "600114": "South",
-            "600126": "South", "600045": "South"
+
+            // East Chapter (Velachery, Adambakkam, Adyar, Airport, Alandur, Kilkattalai, Madipakkam, Nanganallur, Perungudi, Taramani)
+            "600042": "East", "600088": "East", "600020": "East", "600027": "East",
+            "600016": "East", "600117": "East", "600091": "East", "600061": "East",
+            "600096": "East", "600113": "East", "600004": "East", "600005": "East",
+            "600014": "East", "600022": "East", "600028": "East", "600032": "East",
+            "600036": "East",
+
+            // ECR Chapter (Thiruvanmiyur to Kanathur Corridor)
+            "600041": "ECR", "600090": "ECR", "600115": "ECR", "600097": "ECR",
+            "603112": "ECR",
+
+            // South Chapter (Medavakkam, Tambaram, Pallavaram, Sithalapakkam, Padappai)
+            "600127": "South", "600126": "South", "600100": "South", "603103": "South",
+            "600119": "South", "600129": "South", "600043": "South", "600075": "South",
+            "600045": "South", "600059": "South", "600073": "South", "600048": "South",
+            "601301": "South", "600044": "South", "600047": "South", "600063": "South",
+            "600064": "South", "600114": "South", "600130": "South"
         };
 
         const CHAPTERS = {
@@ -578,6 +602,11 @@
                 name: "North Chennai Chapter",
                 link: "https://chat.whatsapp.com/FIi03URKnvuCpDM9BL8O0p?s=sh&p=a&ilr=1",
                 badge: '<img src="images/logo.jpg" alt="North Chapter" class="w-full h-full object-cover rounded-full border border-orange-200 shadow-sm">'
+            },
+            "Red Hills": {
+                name: "Red Hills Chapter",
+                link: "https://chat.whatsapp.com/FIi03URKnvuCpDM9BL8O0p?s=sh&p=a&ilr=1",
+                badge: '<img src="images/logo.jpg" alt="Red Hills Chapter" class="w-full h-full object-cover rounded-full border border-orange-200 shadow-sm">'
             },
             "South": {
                 name: "South Chennai Chapter",
@@ -588,6 +617,11 @@
                 name: "East Chennai Chapter",
                 link: "https://chat.whatsapp.com/IwkJ1YgnTzY2p94UlcxEjZ?s=sh&p=a&ilr=1",
                 badge: '<img src="images/logo.jpg" alt="East Chapter" class="w-full h-full object-cover rounded-full border border-orange-200 shadow-sm">'
+            },
+            "ECR": {
+                name: "ECR Chapter",
+                link: "https://chat.whatsapp.com/IwkJ1YgnTzY2p94UlcxEjZ?s=sh&p=a&ilr=1",
+                badge: '<img src="images/logo.jpg" alt="ECR Chapter" class="w-full h-full object-cover rounded-full border border-orange-200 shadow-sm">'
             },
             "West": {
                 name: "West Chennai Chapter",
@@ -713,6 +747,8 @@
                     else if (chLower.includes('east')) region = 'East';
                     else if (chLower.includes('west')) region = 'West';
                     else if (chLower.includes('central')) region = 'Central';
+                    else if (chLower.includes('ecr')) region = 'ECR';
+                    else if (chLower.includes('red hills') || chLower.includes('redhills')) region = 'Red Hills';
                     else {
                         const pin = respinVal.trim() || bizpinVal.trim();
                         if (pin && PINCODE_MAP[pin]) region = PINCODE_MAP[pin];

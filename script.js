@@ -436,17 +436,19 @@ function initChennaiMap() {
             secretary: { name: "Devarajan", phone: "95606 44447", image: "images/chapter learder images/devaraj_secretary.jpg", fitClass: "object-contain bg-gray-50 border border-gray-100" },
             treasurer: { name: "I. Jebasingh Immanuel", phone: "98414 98500", image: "images/chapter learder images/jebasing.jpeg", fitClass: "object-contain bg-gray-50 border border-gray-100" },
             colorClass: "border-l-purple-500",
-            tagClass: "bg-purple-100 text-purple-800"
+            tagClass: "bg-purple-100 text-purple-800",
+            coverage: "Medavakkam, Vengaivasal, Perumbakkam, Sithalapakkam, Ponmar, Navalur, Siruseri, Sholinganallur, Pallikaranai, Kovilambakkam, Pallavaram, Pammal, Tambaram, Selaiyur, Camp Road, Mudichur, Mannivakkam, Padappai, Santhosapuram."
         },
         west: {
             title: "West Chennai",
             sector: "West Sector",
             hub: "Ambattur Hub",
-            president: { name: "Elias Inbaraj", phone: "99402 23756", image: "images/chapter learder images/Elias Inbaraj.jpeg", fitClass: "object-cover object-top" },
+            president: { name: "Elias Inbaraj", phone: "98402 23756", image: "images/chapter learder images/Elias Inbaraj.jpeg", fitClass: "object-cover object-top" },
             secretary: { name: "Balachandar Thayalamani", phone: "84288 46088", image: "images/chapter learder images/Balachandar Thayalamani.jpeg", fitClass: "object-cover object-top" },
             treasurer: { name: "Rajan", phone: "88258 17389", image: "images/chapter learder images/Rajan.jpg", fitClass: "object-cover object-top" },
             colorClass: "border-l-red-500",
-            tagClass: "bg-red-100 text-red-800"
+            tagClass: "bg-red-100 text-red-800",
+            coverage: "Ambattur, Pattaravakkam, Avadi, Thirumullaivoyal, Pattabiram, Poonamallee, Kattupakkam, Thiruverkadu, Paruthipattu, Thiruninravur, Thiruvallur, Manavalanagar, Kakkalur, Thirumazhisai, Chembarambakkam, Nemilichery, Thandalam, Sevvapet, Veppampattu, Morai."
         },
         central: {
             title: "Central Chennai",
@@ -456,7 +458,8 @@ function initChennaiMap() {
             secretary: { name: "Kishore Abishek", phone: "81489 373830", image: "images/chapter learder images/kishore_secretary.jpeg", fitClass: "object-cover object-[center_25%]" },
             treasurer: { name: "Franklin", phone: "99401 50812", image: "images/chapter learder images/franklin_treasurer.jpeg", fitClass: "object-cover object-top" },
             colorClass: "border-l-yellow-500",
-            tagClass: "bg-yellow-100 text-yellow-800"
+            tagClass: "bg-yellow-100 text-yellow-800",
+            coverage: "Porur, Kathipara, Anna Nagar, Vadapalani, Koyambedu, T. Nagar, Kodambakkam, Aminjikarai, Kilpauk, Shenoy Nagar, Egmore, Saidapet, Ramapuram, Valasaravakkam."
         },
         north: {
             title: "North Chennai",
@@ -466,7 +469,8 @@ function initChennaiMap() {
             secretary: { name: "Gladson", phone: "80123 32113", image: "", fitClass: "" },
             treasurer: { name: "Justin", phone: "97511 98064", image: "", fitClass: "" },
             colorClass: "border-l-blue-500",
-            tagClass: "bg-blue-100 text-blue-800"
+            tagClass: "bg-blue-100 text-blue-800",
+            coverage: "Royapuram, Thiruvottiyur, Tondiarpet, Washermanpet, Manali, Kaladipet, Ennore, New Washermenpet, Korukkupet, Vyasarpadi, Perambur, Moolakadai, Kasimedu."
         },
         east: {
             title: "East Chennai",
@@ -476,13 +480,15 @@ function initChennaiMap() {
             secretary: { name: "Gnanapragasam", phone: "99416 35869", image: "images/chapter learder images/gnanapragasam.jpeg", fitClass: "object-cover object-top" },
             treasurer: { name: "V. Paul Sarangapani", phone: "97911 23466", image: "images/chapter learder images/sarangapani.jpeg", fitClass: "object-contain bg-gray-50 border border-gray-100" },
             colorClass: "border-l-green-500",
-            tagClass: "bg-green-100 text-green-800"
+            tagClass: "bg-green-100 text-green-800",
+            coverage: "Velachery, Adambakkam, Adyar, Airport, Alandur, Kilkattalai, Madipakkam, Nanganallur, Perungudi, Taramani."
         }
     };
 
     const detailsTag = document.getElementById('details-tag');
     const detailsRegion = document.getElementById('details-region');
     const detailsHub = document.getElementById('details-hub');
+    const detailsCoverage = document.getElementById('details-coverage');
     const detailsPresident = document.getElementById('details-president');
     const detailsSecretary = document.getElementById('details-secretary');
     const detailsTreasurer = document.getElementById('details-treasurer');
@@ -514,6 +520,7 @@ function initChennaiMap() {
         if (detailsTag) detailsTag.textContent = item.title;
         if (detailsRegion) detailsRegion.textContent = item.sector;
         if (detailsHub) detailsHub.textContent = item.hub;
+        if (detailsCoverage && item.coverage) detailsCoverage.textContent = item.coverage;
 
         const renderLeader = (leader, defaultRole) => {
             if (!leader || leader.name === "None") {
