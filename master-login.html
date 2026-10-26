@@ -431,6 +431,18 @@
                         <div class="text-xs font-bold text-white group-hover:text-rose-300 transition-colors truncate">Red Hills</div>
                         <div class="text-[10px] text-slate-400 truncate">Red Hills Hub</div>
                     </div>
+
+                    <!-- 11. Anna Nagar Chapter -->
+                    <div id="filter-card-annanagar" onclick="selectRegFilterCard('annanagar')"
+                         title="Click to filter Anna Nagar Chapter registrations"
+                         class="reg-filter-card glass-card p-3 rounded-xl border border-white/10 bg-slate-900/60 hover:border-indigo-500/50 hover:bg-indigo-950/20 cursor-pointer transition-all hover:-translate-y-0.5 shadow-sm group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-base">📍</span>
+                            <span id="badge-filter-annanagar" class="text-[10px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 px-1.5 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="text-xs font-bold text-white group-hover:text-indigo-300 transition-colors truncate">Anna Nagar</div>
+                        <div class="text-[10px] text-slate-400 truncate">Anna Nagar Hub</div>
+                    </div>
                 </div>
             </div>
 
@@ -459,6 +471,7 @@
                             <option value="east">East (Adyar Hub)</option>
                             <option value="ecr">ECR (Thiruvanmiyur - Kanathur)</option>
                             <option value="redhills">Red Hills (Red Hills Hub)</option>
+                            <option value="annanagar">Anna Nagar (Anna Nagar Hub)</option>
                             <option value="nagercoil">Nagercoil (Nagercoil Hub)</option>
                             <option value="global">Global / Non-Metro Hub</option>
                         </select>
@@ -512,6 +525,10 @@
                     <button type="button" id="mch-pill-redhills" onclick="setMemberChapterSubFilter('redhills')"
                             class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-rose-500/50 transition-all">
                         Red Hills (<span id="mch-count-redhills">0</span>)
+                    </button>
+                    <button type="button" id="mch-pill-annanagar" onclick="setMemberChapterSubFilter('annanagar')"
+                            class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-indigo-500/50 transition-all">
+                        Anna Nagar (<span id="mch-count-annanagar">0</span>)
                     </button>
                     <button type="button" id="mch-pill-nagercoil" onclick="setMemberChapterSubFilter('nagercoil')"
                             class="member-ch-pill text-xs px-2.5 py-1 rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800/80 border border-white/10 hover:border-cyan-500/50 transition-all">
@@ -751,6 +768,27 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- 9. Anna Nagar Chapter -->
+                <div onclick="if(!event.target.closest('a, button')) filterEventsByChapter('annanagar')" title="Click to filter Anna Nagar Chapter events" class="glass-card rounded-xl p-4 border border-indigo-500/30 bg-gradient-to-b from-indigo-950/20 to-slate-900/60 flex flex-col justify-between hover:border-indigo-500/60 hover:bg-indigo-950/30 transition-all cursor-pointer group transform hover:-translate-y-0.5">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-400 animate-pulse"></span>
+                            <span id="badge-count-annanagar" class="text-[10px] font-bold bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-500/30">0 events</span>
+                        </div>
+                        <h3 class="font-bold text-white text-sm group-hover:text-indigo-300 transition-colors">Anna Nagar Chapter</h3>
+                        <p class="text-[11px] text-indigo-300 font-medium">Anna Nagar Hub</p>
+                        <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">North-West Metro Corridor</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-white/5 space-y-1.5">
+                        <a href="events-chapter.html?chapter=annanagar" target="_blank" class="w-full text-center block text-[11px] font-semibold bg-white/5 hover:bg-white/10 text-indigo-300 py-1.5 px-2 rounded-lg border border-indigo-500/30 transition-colors">
+                            View Live Page ↗
+                        </a>
+                        <button type="button" onclick="openEventModal('Anna Nagar Chapter')" class="w-full text-center text-[11px] font-bold bg-indigo-600 hover:bg-indigo-500 text-white py-1.5 px-2 rounded-lg transition-colors">
+                            + Add Anna Nagar Event
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Filter & Search Controls for Events -->
@@ -773,6 +811,7 @@
                         <option value="east">East Chapter (Adyar)</option>
                         <option value="ecr">ECR Chapter (Thiruvanmiyur - Kanathur)</option>
                         <option value="redhills">Red Hills Chapter (Red Hills Hub)</option>
+                        <option value="annanagar">Anna Nagar Chapter (Anna Nagar Hub)</option>
                         <option value="nagercoil">Nagercoil Chapter</option>
                     </select>
 
@@ -1278,6 +1317,7 @@
                             <option value="East Chapter">East Chapter (Adyar Hub)</option>
                             <option value="ECR Chapter">ECR Chapter (Thiruvanmiyur - Kanathur Corridor)</option>
                             <option value="Red Hills Chapter">Red Hills Chapter (Red Hills Hub)</option>
+                            <option value="Anna Nagar Chapter">Anna Nagar Chapter (Anna Nagar Hub)</option>
                             <option value="Nagercoil Chapter">Nagercoil Chapter (Nagercoil Hub)</option>
                             <option value="All Chapters">All Chapters (All Regional Summit)</option>
                         </select>
@@ -1631,6 +1671,7 @@
                 return window.TKL_SUPABASE.detectChapter(reg);
             }
             const text = `${reg.event_name || ''} ${reg.chapter || ''} ${reg.role || ''} ${reg.notes || ''} ${reg.entry_type || ''}`.toLowerCase();
+            if (text.includes('anna nagar') || text.includes('annanagar')) return 'annanagar';
             if (text.includes('central')) return 'central';
             if (text.includes('west')) return 'west';
             if (text.includes('south')) return 'south';
@@ -1667,7 +1708,8 @@
                 { id: 'north', activeClass: 'border-2 border-blue-500 bg-blue-950/40 shadow-md ring-1 ring-blue-500/40 transform -translate-y-0.5' },
                 { id: 'east', activeClass: 'border-2 border-teal-500 bg-teal-950/40 shadow-md ring-1 ring-teal-500/40 transform -translate-y-0.5' },
                 { id: 'ecr', activeClass: 'border-2 border-cyan-500 bg-cyan-950/40 shadow-md ring-1 ring-cyan-500/40 transform -translate-y-0.5' },
-                { id: 'redhills', activeClass: 'border-2 border-rose-500 bg-rose-950/40 shadow-md ring-1 ring-rose-500/40 transform -translate-y-0.5' }
+                { id: 'redhills', activeClass: 'border-2 border-rose-500 bg-rose-950/40 shadow-md ring-1 ring-rose-500/40 transform -translate-y-0.5' },
+                { id: 'annanagar', activeClass: 'border-2 border-indigo-500 bg-indigo-950/40 shadow-md ring-1 ring-indigo-500/40 transform -translate-y-0.5' }
             ];
 
             cardsConfig.forEach(cfg => {
@@ -1683,7 +1725,7 @@
 
             // If a specific regional card was chosen directly, sync chapter dropdown
             const chSelect = document.getElementById('filter-chapter-select');
-            if (['central', 'west', 'south', 'north', 'east', 'ecr', 'redhills'].includes(filterKey)) {
+            if (['central', 'west', 'south', 'north', 'east', 'ecr', 'redhills', 'annanagar'].includes(filterKey)) {
                 if (chSelect) chSelect.value = filterKey;
                 activeMemberChapter = filterKey;
                 updateMemberChapterPillStyles(filterKey);
@@ -1708,7 +1750,7 @@
                 if (hiddenSelect) hiddenSelect.value = 'member';
 
                 // Update cards highlight
-                const cards = ['all', 'member', 'event', 'central', 'west', 'south', 'north', 'east', 'ecr', 'redhills'];
+                const cards = ['all', 'member', 'event', 'central', 'west', 'south', 'north', 'east', 'ecr', 'redhills', 'annanagar'];
                 cards.forEach(id => {
                     const el = document.getElementById(`filter-card-${id}`);
                     if (!el) return;
@@ -1747,6 +1789,7 @@
                 { id: 'east', active: 'bg-teal-500/25 text-teal-300 border-teal-500/60 font-bold shadow-sm ring-1 ring-teal-500/30' },
                 { id: 'ecr', active: 'bg-cyan-500/25 text-cyan-300 border-cyan-500/60 font-bold shadow-sm ring-1 ring-cyan-500/30' },
                 { id: 'redhills', active: 'bg-rose-500/25 text-rose-300 border-rose-500/60 font-bold shadow-sm ring-1 ring-rose-500/30' },
+                { id: 'annanagar', active: 'bg-indigo-500/25 text-indigo-300 border-indigo-500/60 font-bold shadow-sm ring-1 ring-indigo-500/30' },
                 { id: 'nagercoil', active: 'bg-cyan-500/25 text-cyan-300 border-cyan-500/60 font-bold shadow-sm ring-1 ring-cyan-500/30' },
                 { id: 'global', active: 'bg-slate-500/25 text-slate-200 border-slate-400/60 font-bold shadow-sm ring-1 ring-slate-400/30' }
             ];
@@ -1776,6 +1819,7 @@
             const countEast = allRegistrations.filter(r => getRegChapter(r) === 'east').length;
             const countEcr = allRegistrations.filter(r => getRegChapter(r) === 'ecr').length;
             const countRedhills = allRegistrations.filter(r => getRegChapter(r) === 'redhills').length;
+            const countAnnanagar = allRegistrations.filter(r => getRegChapter(r) === 'annanagar').length;
             const countNagercoil = allRegistrations.filter(r => getRegChapter(r) === 'nagercoil').length;
 
             // Member-specific chapter counts
@@ -1787,6 +1831,7 @@
             const mchEast = memberRegistrations.filter(r => getRegChapter(r) === 'east').length;
             const mchEcr = memberRegistrations.filter(r => getRegChapter(r) === 'ecr').length;
             const mchRedhills = memberRegistrations.filter(r => getRegChapter(r) === 'redhills').length;
+            const mchAnnanagar = memberRegistrations.filter(r => getRegChapter(r) === 'annanagar').length;
             const mchNagercoil = memberRegistrations.filter(r => getRegChapter(r) === 'nagercoil').length;
             const mchGlobal = memberRegistrations.filter(r => getRegChapter(r) === 'global').length;
 
@@ -1806,6 +1851,7 @@
             setBadge('badge-filter-east', countEast);
             setBadge('badge-filter-ecr', countEcr);
             setBadge('badge-filter-redhills', countRedhills);
+            setBadge('badge-filter-annanagar', countAnnanagar);
             setBadge('badge-count-nagercoil', countNagercoil);
 
             // Member Chapter sub-pills
@@ -1817,6 +1863,7 @@
             setBadge('mch-count-east', mchEast);
             setBadge('mch-count-ecr', mchEcr);
             setBadge('mch-count-redhills', mchRedhills);
+            setBadge('mch-count-annanagar', mchAnnanagar);
             setBadge('mch-count-nagercoil', mchNagercoil);
             setBadge('mch-count-global', mchGlobal);
         }
@@ -1870,6 +1917,7 @@
                         east: { label: 'East (Adyar)', cls: 'bg-teal-500/20 text-teal-300 border-teal-500/40' },
                         ecr: { label: 'ECR (Thiruvanmiyur - Kanathur)', cls: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' },
                         redhills: { label: 'Red Hills Hub', cls: 'bg-rose-500/20 text-rose-300 border-rose-500/40' },
+                        annanagar: { label: 'Anna Nagar Hub', cls: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40' },
                         nagercoil: { label: 'Nagercoil Hub', cls: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' },
                         global: { label: 'Global Hub', cls: 'bg-slate-500/20 text-slate-300 border-slate-500/40' }
                     };
@@ -2113,6 +2161,7 @@
                 east: 'East Chapter (Adyar Hub)',
                 ecr: 'ECR Chapter (Thiruvanmiyur - Kanathur)',
                 redhills: 'Red Hills Chapter (Red Hills Hub)',
+                annanagar: 'Anna Nagar Chapter (Anna Nagar Hub)',
                 nagercoil: 'Nagercoil Chapter (Nagercoil Hub)',
                 global: 'Global Chapter / Non-Metro'
             };
@@ -2596,6 +2645,8 @@
                 return { slug: 'ecr', page: 'events-chapter.html?chapter=ecr', name: 'ECR Chapter', color: 'border-cyan-500/40 text-cyan-400 bg-cyan-500/10' };
             } else if (raw.includes('red hills') || raw.includes('redhills')) {
                 return { slug: 'redhills', page: 'events-chapter.html?chapter=redhills', name: 'Red Hills Chapter', color: 'border-rose-500/40 text-rose-400 bg-rose-500/10' };
+            } else if (raw.includes('anna nagar') || raw.includes('annanagar')) {
+                return { slug: 'annanagar', page: 'events-chapter.html?chapter=annanagar', name: 'Anna Nagar Chapter', color: 'border-indigo-500/40 text-indigo-400 bg-indigo-500/10' };
             }
             return { slug: 'all', page: 'events.html', name: chapterRaw || 'Combined', color: 'border-slate-500/40 text-slate-300 bg-slate-500/10' };
         }
@@ -2962,6 +3013,9 @@
             } else if (chapter.includes('red hills') || chapter.includes('redhills')) {
                 if (!venueInput.value) venueInput.value = 'Red Hills Hub, Chennai';
                 defaultFlyer = 'images/logo.jpg';
+            } else if (chapter.includes('anna nagar') || chapter.includes('annanagar')) {
+                if (!venueInput.value) venueInput.value = 'Anna Nagar Hub, Chennai';
+                defaultFlyer = 'images/logo.jpg';
             }
 
             // If no custom flyer has been selected/uploaded yet, show the chapter default
@@ -3221,6 +3275,10 @@
                 const c = (e.chapter || '').toLowerCase();
                 return c.includes('red hills') || c.includes('redhills');
             }).length;
+            const annanagarCount = allEvents.filter(e => {
+                const c = (e.chapter || '').toLowerCase();
+                return c.includes('anna nagar') || c.includes('annanagar');
+            }).length;
             const nagercoilCount = allEvents.filter(e => (e.chapter || '').toLowerCase().includes('nagercoil')).length;
 
             const badgeCentral = document.getElementById('badge-count-central');
@@ -3230,6 +3288,7 @@
             const badgeEast = document.getElementById('badge-count-east');
             const badgeEcr = document.getElementById('badge-count-ecr');
             const badgeRedhills = document.getElementById('badge-count-redhills');
+            const badgeAnnanagar = document.getElementById('badge-count-annanagar');
             const badgeNagercoil = document.getElementById('badge-count-nagercoil');
 
             if (badgeCentral) badgeCentral.textContent = `${centralCount} event${centralCount === 1 ? '' : 's'}`;
@@ -3239,6 +3298,7 @@
             if (badgeEast) badgeEast.textContent = `${eastCount} event${eastCount === 1 ? '' : 's'}`;
             if (badgeEcr) badgeEcr.textContent = `${ecrCount} event${ecrCount === 1 ? '' : 's'}`;
             if (badgeRedhills) badgeRedhills.textContent = `${redhillsCount} event${redhillsCount === 1 ? '' : 's'}`;
+            if (badgeAnnanagar) badgeAnnanagar.textContent = `${annanagarCount} event${annanagarCount === 1 ? '' : 's'}`;
             if (badgeNagercoil) badgeNagercoil.textContent = `${nagercoilCount} event${nagercoilCount === 1 ? '' : 's'}`;
 
             // Student Nominations (Standards VIII to XII) metrics

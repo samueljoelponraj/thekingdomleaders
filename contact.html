@@ -381,6 +381,7 @@
                                 <option value="South Chapter">South Chapter (Medavakkam Hub)</option>
                                 <option value="North Chapter">North Chapter (Rayapuram Hub)</option>
                                 <option value="East Chapter">East Chapter (Adyar Hub)</option>
+                                <option value="Anna Nagar Chapter">Anna Nagar Chapter (Anna Nagar Hub)</option>
                                 <option value="ECR Chapter">ECR Chapter (Thiruvanmiyur - Kanathur Corridor)</option>
                                 <option value="Red Hills Chapter">Red Hills Chapter (Red Hills Hub)</option>
                                 <option value="Global Chapter">Global / Other Tamil Nadu Region</option>
@@ -556,27 +557,31 @@
 
             // Red Hills Chapter
             "600052": "Red Hills", "600066": "Red Hills", "600060": "Red Hills",
-            "600051": "Red Hills", "600067": "Red Hills", "600099": "Red Hills",
+            "600051": "Red Hills", "600067": "Red Hills",
+
+            // Anna Nagar Chapter (Anna Nagar, Vadapalani, Koyambedu, Mogappair, Padi, Villivakkam, Kolathur, Ambattur IE, ICF, Ayanavaram, Korattur, Thirumangalam, Aminjikarai, Arumbakkam, Nolambur)
+            "600040": "Anna Nagar", "600026": "Anna Nagar", "600107": "Anna Nagar", "600037": "Anna Nagar",
+            "600050": "Anna Nagar", "600049": "Anna Nagar", "600099": "Anna Nagar", "600058": "Anna Nagar",
+            "600038": "Anna Nagar", "600023": "Anna Nagar", "600080": "Anna Nagar", "600029": "Anna Nagar",
+            "600106": "Anna Nagar", "600095": "Anna Nagar", "600101": "Anna Nagar", "600102": "Anna Nagar",
 
             // West Chapter (Ambattur -> Avadi -> Poonamallee -> Thiruvallur)
             "600053": "West", "600098": "West", "600054": "West", "600062": "West",
             "600072": "West", "600056": "West", "600077": "West", "600071": "West",
             "602024": "West", "602001": "West", "602002": "West", "602003": "West",
             "600124": "West", "600123": "West", "602105": "West", "602025": "West",
-            "600055": "West", "600074": "West", "600109": "West", "600058": "West",
-            "600009": "West", "600122": "West", "600050": "West", "600095": "West",
-            "600125": "West", "600116": "West", "600038": "West", "600070": "West",
-            "600128": "West", "600026": "West",
+            "600055": "West", "600074": "West", "600109": "West", "600009": "West",
+            "600122": "West", "600125": "West", "600116": "West", "600070": "West",
+            "600128": "West",
 
-            // Central Chapter (Kathipara, Porur, Anna Nagar, T Nagar)
-            "600030": "Central", "600102": "Central", "600101": "Central", "600106": "Central",
-            "600023": "Central", "600031": "Central", "600006": "Central", "600084": "Central",
+            // Central Chapter (Kathipara, Porur, Guindy, T Nagar, Kodambakkam)
+            "600030": "Central", "600031": "Central", "600006": "Central", "600084": "Central",
             "600008": "Central", "600007": "Central", "600033": "Central", "600015": "Central",
             "600086": "Central", "600089": "Central", "600087": "Central", "600010": "Central",
-            "600024": "Central", "600094": "Central", "600107": "Central", "600034": "Central",
-            "600012": "Central", "600029": "Central", "600092": "Central", "600078": "Central",
+            "600024": "Central", "600094": "Central", "600034": "Central",
+            "600012": "Central", "600092": "Central", "600078": "Central",
             "600017": "Central", "600083": "Central", "600018": "Central", "600076": "Central",
-            "600049": "Central", "600093": "Central",
+            "600093": "Central",
 
             // East Chapter (Velachery, Adambakkam, Adyar, Airport, Alandur, Kilkattalai, Madipakkam, Nanganallur, Perungudi, Taramani)
             "600042": "East", "600088": "East", "600020": "East", "600027": "East",
@@ -607,6 +612,11 @@
                 name: "Red Hills Chapter",
                 link: "https://chat.whatsapp.com/FIi03URKnvuCpDM9BL8O0p?s=sh&p=a&ilr=1",
                 badge: '<img src="images/logo.jpg" alt="Red Hills Chapter" class="w-full h-full object-cover rounded-full border border-orange-200 shadow-sm">'
+            },
+            "Anna Nagar": {
+                name: "Anna Nagar Chapter",
+                link: "https://chat.whatsapp.com/EN44KtMTKVZI0BlbkXZioW?s=sh&p=a&ilr=1",
+                badge: '<img src="images/logo.jpg" alt="Anna Nagar Chapter" class="w-full h-full object-cover rounded-full border border-indigo-200 shadow-sm">'
             },
             "South": {
                 name: "South Chennai Chapter",
@@ -745,6 +755,7 @@
                     if (chLower.includes('north')) region = 'North';
                     else if (chLower.includes('south')) region = 'South';
                     else if (chLower.includes('east')) region = 'East';
+                    else if (chLower.includes('anna nagar') || chLower.includes('annanagar')) region = 'Anna Nagar';
                     else if (chLower.includes('west')) region = 'West';
                     else if (chLower.includes('central')) region = 'Central';
                     else if (chLower.includes('ecr')) region = 'ECR';

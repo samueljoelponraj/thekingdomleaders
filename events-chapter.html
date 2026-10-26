@@ -102,6 +102,9 @@
                     <a href="events-chapter.html?chapter=redhills" id="pill-redhills" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-rose-50 hover:text-rose-700">
                         Red Hills Chapter
                     </a>
+                    <a href="events-chapter.html?chapter=annanagar" id="pill-annanagar" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700">
+                        Anna Nagar Chapter
+                    </a>
                 </div>
             </div>
         </div>
@@ -319,13 +322,14 @@
             if (path.includes('nagercoil')) return 'nagercoil';
             if (path.includes('ecr')) return 'ecr';
             if (path.includes('redhills')) return 'redhills';
+            if (path.includes('annanagar')) return 'annanagar';
 
             return 'central'; // default fallback
         }
 
         function applyChapterHeaderUI(key, meta) {
             // Highlight switcher pill
-            ['central', 'west', 'south', 'north', 'east', 'nagercoil', 'ecr', 'redhills'].forEach(k => {
+            ['central', 'west', 'south', 'north', 'east', 'nagercoil', 'ecr', 'redhills', 'annanagar'].forEach(k => {
                 const pill = document.getElementById(`pill-${k}`);
                 if (pill) {
                     if (k === key) {

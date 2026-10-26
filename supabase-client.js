@@ -1307,6 +1307,23 @@
                 secretary: { name: 'To be announced', phone: '', image: 'images/logo.jpg' },
                 treasurer: { name: 'To be announced', phone: '', image: 'images/logo.jpg' }
             }
+        },
+        annanagar: {
+            id: 'annanagar',
+            name: 'Anna Nagar Chapter',
+            sector: 'Anna Nagar Sector',
+            hub: 'Anna Nagar Hub',
+            tagline: 'Marketplace Fellowship, Business Growth & Executive Leadership',
+            color: 'indigo',
+            badgeBg: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+            accentGradient: 'from-indigo-600 to-violet-700',
+            pageUrl: 'events-chapter.html?chapter=annanagar',
+            registrationUrl: 'contact.html?chapter=annanagar',
+            leaders: {
+                president: { name: 'To be announced', phone: '', image: 'images/logo.jpg' },
+                secretary: { name: 'To be announced', phone: '', image: 'images/logo.jpg' },
+                treasurer: { name: 'To be announced', phone: '', image: 'images/logo.jpg' }
+            }
         }
     };
 
@@ -1319,27 +1336,31 @@
 
         // Red Hills Chapter
         "600052": "Red Hills", "600066": "Red Hills", "600060": "Red Hills",
-        "600051": "Red Hills", "600067": "Red Hills", "600099": "Red Hills",
+        "600051": "Red Hills", "600067": "Red Hills",
+
+        // Anna Nagar Chapter (Anna Nagar, Vadapalani, Koyambedu, Mogappair, Padi, Villivakkam, Kolathur, Ambattur IE, ICF, Ayanavaram, Korattur, Thirumangalam, Aminjikarai, Arumbakkam, Nolambur)
+        "600040": "Anna Nagar", "600026": "Anna Nagar", "600107": "Anna Nagar", "600037": "Anna Nagar",
+        "600050": "Anna Nagar", "600049": "Anna Nagar", "600099": "Anna Nagar", "600058": "Anna Nagar",
+        "600038": "Anna Nagar", "600023": "Anna Nagar", "600080": "Anna Nagar", "600029": "Anna Nagar",
+        "600106": "Anna Nagar", "600095": "Anna Nagar", "600101": "Anna Nagar", "600102": "Anna Nagar",
 
         // West Chapter (Ambattur -> Avadi -> Poonamallee -> Thiruvallur)
         "600053": "West", "600098": "West", "600054": "West", "600062": "West",
         "600072": "West", "600056": "West", "600077": "West", "600071": "West",
         "602024": "West", "602001": "West", "602002": "West", "602003": "West",
         "600124": "West", "600123": "West", "602105": "West", "602025": "West",
-        "600055": "West", "600074": "West", "600109": "West", "600058": "West",
-        "600009": "West", "600122": "West", "600050": "West", "600095": "West",
-        "600125": "West", "600116": "West", "600038": "West", "600070": "West",
-        "600128": "West", "600026": "West",
+        "600055": "West", "600074": "West", "600109": "West", "600009": "West",
+        "600122": "West", "600125": "West", "600116": "West", "600070": "West",
+        "600128": "West",
 
-        // Central Chapter (Kathipara, Porur, Anna Nagar, T Nagar)
-        "600030": "Central", "600102": "Central", "600101": "Central", "600106": "Central",
-        "600023": "Central", "600031": "Central", "600006": "Central", "600084": "Central",
+        // Central Chapter (Kathipara, Porur, Guindy, T Nagar, Kodambakkam)
+        "600030": "Central", "600031": "Central", "600006": "Central", "600084": "Central",
         "600008": "Central", "600007": "Central", "600033": "Central", "600015": "Central",
         "600086": "Central", "600089": "Central", "600087": "Central", "600010": "Central",
-        "600024": "Central", "600094": "Central", "600107": "Central", "600034": "Central",
-        "600012": "Central", "600029": "Central", "600092": "Central", "600078": "Central",
+        "600024": "Central", "600094": "Central", "600034": "Central",
+        "600012": "Central", "600092": "Central", "600078": "Central",
         "600017": "Central", "600083": "Central", "600018": "Central", "600076": "Central",
-        "600049": "Central", "600093": "Central",
+        "600093": "Central",
 
         // East Chapter (Velachery, Adambakkam, Adyar, Airport, Alandur, Kilkattalai, Madipakkam, Nanganallur, Perungudi, Taramani)
         "600042": "East", "600088": "East", "600020": "East", "600027": "East",
@@ -1371,6 +1392,7 @@
             text = String(regOrText).toLowerCase();
         }
 
+        if (text.includes('anna nagar') || text.includes('annanagar')) return 'annanagar';
         if (text.includes('central')) return 'central';
         if (text.includes('west')) return 'west';
         if (text.includes('south')) return 'south';
