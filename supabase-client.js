@@ -197,6 +197,18 @@
     }
 
     /**
+     * Async getter ensuring Supabase JS client is ready
+     */
+    async function ensureClient() {
+        if (supabaseInstance) return supabaseInstance;
+        if (typeof window === 'undefined') return null;
+        if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
+            await loadSupabaseSdk();
+        }
+        return getClient();
+    }
+
+    /**
      * Configuration Manager
      */
     const Config = {
@@ -673,7 +685,7 @@
          */
         async getAll(activeOnly = false, chapter = null) {
             const deletedIds = getDeletedEventIds();
-            const client = getClient();
+            const client = await ensureClient();
             let events = null;
 
             if (client) {
@@ -688,7 +700,28 @@
                     }
 
                     if (chapter && chapter !== 'all') {
-                        query = query.ilike('chapter', `%${chapter}%`);
+                        const raw = String(chapter).toLowerCase().trim();
+                        if (raw.includes('anna')) {
+                            query = query.or('chapter.ilike.%anna nagar%,chapter.ilike.%annanagar%,chapter.ilike.%anna%');
+                        } else if (raw.includes('red')) {
+                            query = query.or('chapter.ilike.%red hills%,chapter.ilike.%redhills%,chapter.ilike.%red%');
+                        } else if (raw.includes('central')) {
+                            query = query.ilike('chapter', '%central%');
+                        } else if (raw.includes('west')) {
+                            query = query.ilike('chapter', '%west%');
+                        } else if (raw.includes('south')) {
+                            query = query.ilike('chapter', '%south%');
+                        } else if (raw.includes('north')) {
+                            query = query.ilike('chapter', '%north%');
+                        } else if (raw.includes('east')) {
+                            query = query.ilike('chapter', '%east%');
+                        } else if (raw.includes('nagercoil')) {
+                            query = query.ilike('chapter', '%nagercoil%');
+                        } else if (raw.includes('ecr')) {
+                            query = query.ilike('chapter', '%ecr%');
+                        } else {
+                            query = query.ilike('chapter', `%${raw}%`);
+                        }
                     }
 
                     const { data, error } = await query;
@@ -717,7 +750,7 @@
         async getById(id) {
             if (!id) return null;
             const strId = String(id).trim();
-            const client = getClient();
+            const client = await ensureClient();
             if (client && strId.includes('-') && strId.length >= 30) {
                 try {
                     const { data, error } = await client
@@ -1317,12 +1350,13 @@
             color: 'indigo',
             badgeBg: 'bg-indigo-100 text-indigo-800 border-indigo-200',
             accentGradient: 'from-indigo-600 to-violet-700',
-            pageUrl: 'events-chapter.html?chapter=annanagar',
+            pageUrl: 'events-annanagar.html',
             registrationUrl: 'contact.html?chapter=annanagar',
+            whatsappLink: 'https://chat.whatsapp.com/EN44KtMTKVZI0BlbkXZioW?s=sh&p=a&ilr=1',
             leaders: {
-                president: { name: 'To be announced', phone: '', image: 'images/logo.jpg' },
-                secretary: { name: 'To be announced', phone: '', image: 'images/logo.jpg' },
-                treasurer: { name: 'To be announced', phone: '', image: 'images/logo.jpg' }
+                president: { name: 'Preethi Daniel', phone: '', image: 'images/chapter learder images/Preethi Daniel annagar president.jpeg', fitClass: 'object-cover object-top' },
+                secretary: { name: 'Hidaya Ranjani', phone: '', image: 'images/chapter learder images/Hidaya Ranjani annanagar secrety.png', fitClass: 'object-contain max-h-full' },
+                treasurer: { name: 'To be announced', phone: '', image: 'images/logo.jpg', fitClass: 'object-contain' }
             }
         }
     };
@@ -1425,8 +1459,11 @@
             filtered = filtered.filter(e => e.is_active !== false);
         }
         if (chapter && chapter !== 'all') {
-            const ch = chapter.toLowerCase();
-            filtered = filtered.filter(e => (e.chapter || '').toLowerCase().includes(ch));
+            const ch = chapter.toLowerCase().replace(/[^a-z0-9]/g, '');
+            filtered = filtered.filter(e => {
+                const eCh = (e.chapter || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                return eCh.includes(ch) || ch.includes(eCh);
+            });
         }
         return (filtered || []).map(normalizeEventData);
     }

@@ -459,7 +459,18 @@ function initChennaiMap() {
             treasurer: { name: "Franklin", phone: "99401 50812", image: "images/chapter learder images/franklin_treasurer.jpeg", fitClass: "object-cover object-top" },
             colorClass: "border-l-yellow-500",
             tagClass: "bg-yellow-100 text-yellow-800",
-            coverage: "Porur, Kathipara, Anna Nagar, Vadapalani, Koyambedu, T. Nagar, Kodambakkam, Aminjikarai, Kilpauk, Shenoy Nagar, Egmore, Saidapet, Ramapuram, Valasaravakkam."
+            coverage: "Porur, Kathipara, T. Nagar, Kodambakkam, Kilpauk, Shenoy Nagar, Egmore, Saidapet, Ramapuram, Valasaravakkam, Guindy, Ashok Nagar."
+        },
+        annanagar: {
+            title: "Anna Nagar Chennai",
+            sector: "Anna Nagar Sector",
+            hub: "Anna Nagar Hub",
+            president: { name: "Preethi Daniel", phone: "", image: "images/chapter learder images/Preethi Daniel annagar president.jpeg", fitClass: "object-cover object-top" },
+            secretary: { name: "Hidaya Ranjani", phone: "", image: "images/chapter learder images/Hidaya Ranjani annanagar secrety.png", fitClass: "object-contain bg-white border border-gray-100" },
+            treasurer: { name: "None", phone: "", image: "", fitClass: "" },
+            colorClass: "border-l-indigo-500",
+            tagClass: "bg-indigo-100 text-indigo-800",
+            coverage: "Anna Nagar, Vadapalani, Koyambedu, Mogappair, Padi, Villivakkam, Kolathur, Ambattur IE, ICF, Ayanavaram, Korattur, Thirumangalam, Aminjikarai, Arumbakkam, Nolambur."
         },
         north: {
             title: "North Chennai",
@@ -504,6 +515,7 @@ function initChennaiMap() {
 
     function getGradientClass(regionKey) {
         switch(regionKey) {
+            case 'annanagar': return 'from-indigo-500 to-violet-600';
             case 'west': return 'from-red-500 to-rose-600';
             case 'central': return 'from-yellow-500 to-amber-600';
             case 'north': return 'from-blue-500 to-sky-600';
@@ -521,6 +533,12 @@ function initChennaiMap() {
         if (detailsRegion) detailsRegion.textContent = item.sector;
         if (detailsHub) detailsHub.textContent = item.hub;
         if (detailsCoverage && item.coverage) detailsCoverage.textContent = item.coverage;
+
+        const joinLink = document.getElementById('join-chapter-link');
+        if (joinLink) {
+            joinLink.href = `contact.html?interest=${encodeURIComponent(item.title)}`;
+            joinLink.textContent = `Join ${item.title}`;
+        }
 
         const renderLeader = (leader, defaultRole) => {
             if (!leader || leader.name === "None") {
@@ -606,6 +624,7 @@ function initChennaiMap() {
             const hubs = [
                 { key: "west",    name: "Ambattur",         coords: [13.1143, 80.1548], color: "#e74c3c" },
                 { key: "central", name: "Kathipara, Porur", coords: [13.0356, 80.1948], color: "#f1c40f" },
+                { key: "annanagar", name: "Anna Nagar", coords: [13.0850, 80.2101], color: "#6366f1" },
                 { key: "north",   name: "Rayapuram",        coords: [13.1097, 80.2925], color: "#3498db" },
                 { key: "east",    name: "Adyar",            coords: [13.0012, 80.2565], color: "#2ecc71" },
                 { key: "south",   name: "Medavakkam",       coords: [12.9186, 80.1987], color: "#9b59b6" }

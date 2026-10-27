@@ -258,12 +258,12 @@
         <section class="bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-900 rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden shadow-2xl" data-aos="fade-up">
             <div class="max-w-2xl space-y-4">
                 <span class="bg-white/20 text-white text-[11px] font-extrabold uppercase px-3 py-1 rounded-full inline-block backdrop-blur">Official Community Hub</span>
-                <h3 class="text-2xl sm:text-4xl font-extrabold leading-tight">Stay Connected with this Chapter</h3>
+                <h3 id="whatsapp-callout-title" class="text-2xl sm:text-4xl font-extrabold leading-tight">Stay Connected with this Chapter</h3>
                 <p class="text-emerald-100 text-sm sm:text-base leading-relaxed">
                     Join our verified chapter WhatsApp group to receive meeting reminders, business collaboration pitch invitations, and prayer requests.
                 </p>
                 <div class="pt-2 flex flex-wrap gap-3">
-                    <a href="contact.html?interest=chapter" class="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-6 py-3.5 rounded-xl text-sm shadow-lg transition-all inline-block">
+                    <a id="chapter-whatsapp-link" href="contact.html?interest=chapter" class="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-6 py-3.5 rounded-xl text-sm shadow-lg transition-all inline-block">
                         Join Chapter WhatsApp Group &rarr;
                     </a>
                     <a href="events.html" class="bg-black/30 hover:bg-black/40 text-white font-semibold px-5 py-3.5 rounded-xl text-sm border border-white/20 transition-all inline-block">
@@ -293,7 +293,7 @@
     <script src="supabase-client.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
+        async function initChapterPage() {
             if (typeof AOS !== 'undefined') AOS.init({ duration: 600, once: true });
 
             // 1. Determine active chapter from filename or query param
@@ -304,7 +304,13 @@
 
             applyChapterHeaderUI(activeChapterKey, chapterMeta);
             await loadChapterEvents(activeChapterKey, chapterMeta);
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initChapterPage);
+        } else {
+            initChapterPage();
+        }
 
         function getActiveChapterKey() {
             // Check query param e.g. ?chapter=west
@@ -352,6 +358,17 @@
             const badge = document.getElementById('hero-badge');
             if (badge) badge.textContent = `${meta.sector} • ${meta.hub}`;
 
+            // WhatsApp Callout
+            const whatsappLink = document.getElementById('chapter-whatsapp-link');
+            if (whatsappLink && meta.whatsappLink) {
+                whatsappLink.href = meta.whatsappLink;
+                whatsappLink.target = '_blank';
+            }
+            const whatsappTitle = document.getElementById('whatsapp-callout-title');
+            if (whatsappTitle && meta.name) {
+                whatsappTitle.textContent = `Join ${meta.name} WhatsApp`;
+            }
+
             // Render Leaders
             const leadersGrid = document.getElementById('chapter-leaders-grid');
             if (leadersGrid && meta.leaders) {
@@ -360,16 +377,20 @@
                     { title: 'Secretary', data: meta.leaders.secretary },
                     { title: 'Treasurer', data: meta.leaders.treasurer }
                 ];
-                leadersGrid.innerHTML = roles.map(r => `
+                leadersGrid.innerHTML = roles.map(r => {
+                    const isTBA = !r.data || !r.data.name || r.data.name.toLowerCase().includes('announced');
+                    const imgFit = (r.data && r.data.fitClass) ? r.data.fitClass : 'object-cover object-top';
+                    return `
                     <div class="bg-slate-50 p-4 rounded-2xl border border-gray-150 flex flex-col items-center text-center">
                         <div class="w-24 h-24 rounded-2xl overflow-hidden mb-3 bg-white border border-gray-200 shadow-sm flex items-center justify-center p-1">
-                            <img src="${r.data.image || 'images/logo.jpg'}" alt="${r.data.name}" class="w-full h-full object-cover object-top rounded-xl">
+                            <img src="${(r.data && r.data.image) || 'images/logo.jpg'}" alt="${(r.data && r.data.name) || r.title}" class="w-full h-full ${imgFit} rounded-xl">
                         </div>
                         <span class="text-[10px] font-extrabold uppercase tracking-wider text-blue-900 bg-blue-100 px-2.5 py-0.5 rounded-full mb-1">${r.title}</span>
-                        <h4 class="font-bold text-gray-900 text-base leading-tight">${r.data.name}</h4>
-                        ${r.data.phone ? `<a href="tel:+91${r.data.phone.replace(/\s+/g, '')}" class="text-xs text-blue-800 font-semibold mt-1 hover:underline">+91 ${r.data.phone}</a>` : '<span class="text-xs text-gray-400 mt-1">—</span>'}
+                        <h4 class="font-bold text-gray-900 text-base leading-tight ${isTBA ? 'text-gray-400 italic font-normal' : ''}">${(r.data && r.data.name) || 'To be announced'}</h4>
+                        ${r.data && r.data.phone ? `<a href="tel:+91${r.data.phone.replace(/[^0-9]/g, '')}" class="text-xs text-blue-800 font-semibold mt-1 hover:underline">+91 ${r.data.phone}</a>` : '<span class="text-xs text-gray-400 mt-1">—</span>'}
                     </div>
-                `).join('');
+                `;
+                }).join('');
             }
         }
 
@@ -407,7 +428,9 @@
                 countBadge.textContent = `${events.length} Gathering${events.length > 1 ? 's' : ''}`;
 
                 grid.innerHTML = events.map(ev => {
-                    const isUpcoming = (ev.status || '').toLowerCase() === 'upcoming';
+                    const st = (ev.status || '').toLowerCase().trim();
+                    const isLive = ['upcoming', 'ongoing', 'active'].includes(st);
+                    const isOngoing = st === 'ongoing';
                     const priceTag = parseFloat(ev.price || 0) > 0 ? `₹${ev.price}` : 'Free Entry';
                     const flyerImg = ev.flyer_url || 'images/logo.jpg';
                     let regUrl = ev.registration_url;
@@ -419,8 +442,10 @@
                         }
                     }
 
-                    const statusPill = isUpcoming
-                        ? `<span class="bg-emerald-500 text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow-sm">Upcoming Gathering 📢</span>`
+                    const statusPill = isLive
+                        ? (isOngoing 
+                            ? `<span class="bg-amber-500 text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow-sm animate-pulse">Ongoing Gathering ⚡</span>`
+                            : `<span class="bg-emerald-500 text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow-sm">Upcoming Gathering 📢</span>`)
                         : `<span class="bg-slate-800 text-slate-300 text-[10px] font-extrabold uppercase px-3 py-1 rounded-full border border-slate-700">Successfully Concluded ✅</span>`;
 
                     return `
@@ -464,7 +489,7 @@
 
                                 <!-- Action Buttons -->
                                 <div class="pt-4 border-t border-gray-100 flex items-center gap-3">
-                                    ${isUpcoming ? `
+                                    ${isLive ? `
                                         <a href="${regUrl}" class="flex-1 bg-gradient-to-r from-blue-800 to-indigo-900 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-3 px-4 rounded-xl text-center text-xs shadow-md transition-all">
                                             Mission Offering (${priceTag}) &rarr;
                                         </a>

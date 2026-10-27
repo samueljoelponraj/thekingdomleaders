@@ -814,7 +814,7 @@
         let currentEventUpiId = '9841498500@upi';
         const PAYEE_NAME = 'The Kingdom Leaders';
 
-        document.addEventListener('DOMContentLoaded', async () => {
+        async function initRegistrationPage() {
             if (typeof AOS !== 'undefined') AOS.init({ duration: 800, once: true });
             initMobileMenu();
             initGuestCounter();
@@ -823,7 +823,13 @@
 
             // Load Event from URL parameter or fallback
             await loadEventData();
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initRegistrationPage);
+        } else {
+            initRegistrationPage();
+        }
 
         // 1. Mobile Menu Handling
         function initMobileMenu() {
@@ -855,7 +861,12 @@
             try {
                 // Fetch all events for fallback / pill switcher
                 const allEvents = await window.TKL_SUPABASE.events.getAll(false);
-                allUpcomingEvents = allEvents.filter(e => (e.status || '').toLowerCase() === 'upcoming');
+                allUpcomingEvents = allEvents.filter(e => {
+                    const s = (e.status || '').toLowerCase().trim();
+                    const isActive = e.is_active !== false && e.is_active !== 'false';
+                    const isLiveStatus = s === 'upcoming' || s === 'ongoing' || s === 'active';
+                    return isLiveStatus || (isActive && s !== 'concluded' && s !== 'cancelled' && s !== 'completed');
+                });
 
                 if (targetId) {
                     currentEvent = await window.TKL_SUPABASE.events.getById(targetId);
@@ -1096,6 +1107,7 @@
             else if (raw.includes('north')) chapterKey = 'north';
             else if (raw.includes('east')) chapterKey = 'east';
             else if (raw.includes('nagercoil')) chapterKey = 'nagercoil';
+            else if (raw.includes('anna')) chapterKey = 'annanagar';
             else if (raw.includes('central')) chapterKey = 'central';
 
             const chapterMeta = window.TKL_SUPABASE && window.TKL_SUPABASE.chapters ? window.TKL_SUPABASE.chapters[chapterKey] : null;
