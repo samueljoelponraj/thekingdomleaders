@@ -1390,6 +1390,24 @@
                 treasurer: { name: 'To be announced', phone: '', image: 'images/logo.jpg' }
             }
         },
+        thirupur: {
+            id: 'thirupur',
+            name: 'Thirupur Chapter',
+            sector: 'Tirupur District / Western TN Sector',
+            hub: 'Thirupur Hub',
+            tagline: 'Textile Capital of India, Export Leaders, Kingdom Marketplace & Ethical Business Network',
+            color: 'purple',
+            badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+            accentGradient: 'from-purple-600 to-indigo-700',
+            pageUrl: 'events-thirupur.html',
+            registrationUrl: 'register.html?chapter=thirupur',
+            leaders: {
+                president: { name: 'Ps. Sumith Samuel', role: 'Leader / President', phone: '', image: 'images/chapter learder images/Leader Ps. Sumith Samuel thirupur.jpeg' },
+                secretary: { name: 'Mr. Gnanasekar', role: 'Secretary', phone: '', image: 'images/chapter learder images/Secretary Mr. Gnanasekar thirupur.jpeg' },
+                treasurer: { name: 'Sis. Renuka Saravanan', role: 'Treasurer', phone: '', image: 'images/chapter learder images/Treasurer sis. Renuka Saravanan. thirupur.jpeg' },
+                jointTreasurer: { name: 'Mr. Naveen', role: 'Joint Treasurer', phone: '', image: 'images/chapter learder images/Joint treasurer Mr. Naveen thirupur.jpeg' }
+            }
+        },
         ecr: {
             id: 'ecr',
             name: 'ECR Chapter',
@@ -1490,6 +1508,10 @@
         "600041": "ECR", "600090": "ECR", "600115": "ECR", "600097": "ECR",
         "603112": "ECR",
 
+        // Thirupur Chapter (Tirupur District)
+        "641601": "Thirupur", "641602": "Thirupur", "641603": "Thirupur", "641604": "Thirupur",
+        "641605": "Thirupur", "641606": "Thirupur", "641607": "Thirupur", "641608": "Thirupur",
+
         // South Chapter (Medavakkam, Tambaram, Pallavaram, Sithalapakkam, Padappai)
         "600127": "South", "600126": "South", "600100": "South", "603103": "South",
         "600119": "South", "600129": "South", "600043": "South", "600075": "South",
@@ -1518,6 +1540,7 @@
         if (text.includes('ecr')) return 'ecr';
         if (text.includes('red hills') || text.includes('redhills')) return 'redhills';
         if (text.includes('nagercoil')) return 'nagercoil';
+        if (text.includes('thirupur') || text.includes('tirupur') || text.includes('tiruppur')) return 'thirupur';
 
         if (pincode && PINCODE_MAP[pincode]) {
             return PINCODE_MAP[pincode].toLowerCase().replace(/\s+/g, '');

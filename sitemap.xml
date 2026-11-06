@@ -59,6 +59,12 @@
 
   <!-- Individual Chapter Hubs -->
   <url>
+    <loc>https://thekingdomleaders.in/events-thirupur.html</loc>
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://thekingdomleaders.in/events-nagercoil.html</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
