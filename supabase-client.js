@@ -505,6 +505,89 @@
             const local = getLocalRegistrations().filter(r => r.id !== id);
             safeStorage.setItem('tkl_local_registrations', JSON.stringify(local));
             return { success: true };
+        },
+
+        /**
+         * Check if phone number is an existing registered member
+         */
+        async checkMemberByPhone(rawPhone) {
+            if (!rawPhone) return { isMember: false, message: 'Please enter a valid mobile number' };
+            const cleanPhone = String(rawPhone).replace(/\D/g, '').slice(-10);
+            if (cleanPhone.length < 10) {
+                return { isMember: false, message: 'Please enter a 10-digit mobile number' };
+            }
+
+            const url = getSupabaseUrl();
+            const key = getSupabaseAnonKey();
+
+            // Try fast REST fetch directly (zero dependency on CDN SDK)
+            if (url && key && typeof fetch !== 'undefined') {
+                try {
+                    const res = await fetch(`${url}/rest/v1/registrations?phone=ilike.*${cleanPhone}*&order=created_at.desc&limit=5`, {
+                        headers: {
+                            'apikey': key,
+                            'Authorization': 'Bearer ' + key
+                        }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (Array.isArray(data) && data.length > 0) {
+                            return {
+                                isMember: true,
+                                member: data[0],
+                                allMatches: data,
+                                source: 'supabase-rest'
+                            };
+                        }
+                    }
+                } catch (fetchErr) {
+                    console.warn('[TKL Supabase] REST checkMemberByPhone warning:', fetchErr);
+                }
+            }
+
+            // Fallback to Supabase JS client if available
+            const client = await ensureClient();
+            if (client) {
+                try {
+                    const { data, error } = await client
+                        .from('registrations')
+                        .select('id, full_name, company, role, email, phone, pincode, is_existing_member, event_name, notes, referred_by')
+                        .ilike('phone', `%${cleanPhone}%`)
+                        .order('created_at', { ascending: false })
+                        .limit(5);
+
+                    if (!error && data && data.length > 0) {
+                        return {
+                            isMember: true,
+                            member: data[0],
+                            allMatches: data,
+                            source: 'supabase-client'
+                        };
+                    }
+                } catch (err) {
+                    console.warn('[TKL Supabase] checkMemberByPhone client error:', err);
+                }
+            }
+
+            // Fallback to local registrations cache
+            const local = getLocalRegistrations();
+            const foundLocal = local.find(r => {
+                const p = String(r.phone || '').replace(/\D/g, '').slice(-10);
+                return p === cleanPhone;
+            });
+
+            if (foundLocal) {
+                return {
+                    isMember: true,
+                    member: foundLocal,
+                    source: 'local'
+                };
+            }
+
+            return {
+                isMember: false,
+                message: 'Mobile number not found in registered members list'
+            };
         }
     };
 
@@ -1218,7 +1301,7 @@
             registrationUrl: 'register-central.html',
             leaders: {
                 president: { name: 'Lenin', phone: '81481 87386', image: 'images/chapter learder images/lenin_president.jpeg' },
-                secretary: { name: 'Kishore Abishek', phone: '81489 373830', image: 'images/chapter learder images/kishore_secretary.jpeg' },
+                secretary: { name: 'Kishore Abishek', phone: '81489 37880', image: 'images/chapter learder images/kishore_secretary.jpeg' },
                 treasurer: { name: 'Franklin', phone: '99401 50812', image: 'images/chapter learder images/franklin_treasurer.jpeg' }
             }
         },
@@ -1285,7 +1368,7 @@
             pageUrl: 'events-east.html',
             registrationUrl: 'contact.html?interest=east_chapter',
             leaders: {
-                president: { name: 'Saravanan', phone: '90943 56041', image: 'images/chapter learder images/saravanan.jpeg' },
+                president: { name: 'Saravanan', phone: '90943 55041', image: 'images/chapter learder images/saravanan.jpeg' },
                 secretary: { name: 'Gnanapragasam', phone: '99416 35869', image: 'images/chapter learder images/gnanapragasam.jpeg' },
                 treasurer: { name: 'V. Paul Sarangapani', phone: '97911 23466', image: 'images/chapter learder images/sarangapani.jpeg' }
             }

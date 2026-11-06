@@ -17,6 +17,14 @@
     <priority>0.95</priority>
   </url>
 
+  <!-- ARETE 26: Annual Leadership Summit (Special Event) -->
+  <url>
+    <loc>https://thekingdomleaders.in/arete26.html</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.98</priority>
+  </url>
+
   <!-- Grand Launch: West Chapter (Upcoming Event) -->
   <url>
     <loc>https://thekingdomleaders.in/register-west.html</loc>
