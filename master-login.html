@@ -804,7 +804,7 @@
                         </div>
                         <h3 class="font-bold text-white text-sm group-hover:text-indigo-300 transition-colors">Anna Nagar Chapter</h3>
                         <p class="text-[11px] text-indigo-300 font-medium">Anna Nagar Hub</p>
-                        <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Preethi Daniel, Hidaya Ranjani</p>
+                        <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Mrs. Preethi Daniel, Mrs. Hidaya Ranjani, Mrs. Kavitha Joshua</p>
                     </div>
                     <div class="mt-4 pt-3 border-t border-white/5 space-y-1.5">
                         <a href="events-annanagar.html" target="_blank" class="w-full text-center block text-[11px] font-semibold bg-white/5 hover:bg-white/10 text-indigo-300 py-1.5 px-2 rounded-lg border border-indigo-500/30 transition-colors">
@@ -2247,38 +2247,57 @@
 
         // 8. CSV Export
         function exportRegistrationsToCSV() {
-            if (allRegistrations.length === 0) {
+            let list = allRegistrations || [];
+            if (list.length === 0 && window.TKL_SUPABASE && window.TKL_SUPABASE.getLocalRegistrations) {
+                list = window.TKL_SUPABASE.getLocalRegistrations();
+            }
+
+            if (!list || list.length === 0) {
                 alert('No registrations available to export.');
                 return;
             }
 
+            const cleanVal = (val) => {
+                if (val === null || val === undefined) return '""';
+                const str = String(val).replace(/\r\n|\r|\n/g, ' ').replace(/"/g, '""').trim();
+                return `"${str}"`;
+            };
+
+            const cleanPhone = (val) => {
+                if (!val) return '""';
+                const str = String(val).replace(/\r\n|\r|\n/g, '').replace(/"/g, '""').trim();
+                return `"'${str}"`;
+            };
+
             const headers = ['Date', 'Full Name', 'Email', 'Phone', 'Residential PIN', 'Company', 'Role', 'Existing Member', 'Referred By', 'Event Name', 'Entry Type', 'Guests', 'Total Cost (INR)', 'Payment Status', 'Receipt Link'];
-            const rows = allRegistrations.map(r => [
-                r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : '',
-                `"${(r.full_name || '').replace(/"/g, '""')}"`,
-                `"${(r.email || '').replace(/"/g, '""')}"`,
-                `'${r.phone || ''}`,
-                `'${r.pincode || ''}`,
-                `"${(r.company || '').replace(/"/g, '""')}"`,
-                `"${(r.role || '').replace(/"/g, '""')}"`,
-                r.is_existing_member || 'No',
-                `"${(r.referred_by || '').replace(/"/g, '""')}"`,
-                `"${(r.event_name || '').replace(/"/g, '""')}"`,
-                `"${(r.entry_type || '').replace(/"/g, '""')}"`,
+            const rows = list.map(r => [
+                cleanVal(r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : ''),
+                cleanVal(r.full_name),
+                cleanVal(r.email),
+                cleanPhone(r.phone),
+                cleanPhone(r.pincode),
+                cleanVal(r.company),
+                cleanVal(r.role),
+                cleanVal(r.is_existing_member || 'No'),
+                cleanVal(r.referred_by),
+                cleanVal(r.event_name),
+                cleanVal(r.entry_type),
                 r.additional_guests || 0,
                 r.total_cost || 0,
-                r.payment_status || 'Pending',
-                `"${(r.receipt_url || '').replace(/"/g, '""')}"`
+                cleanVal(r.payment_status || 'Pending'),
+                cleanVal(r.receipt_url)
             ]);
 
-            const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-            const encodedUri = encodeURI(csvContent);
+            const csvContent = '\uFEFF' + [headers.map(cleanVal).join(','), ...rows.map(e => e.join(','))].join('\r\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
-            link.setAttribute('download', `TKL_Registrations_${new Date().toISOString().split('T')[0]}.csv`);
+            link.href = url;
+            link.download = `TKL_Registrations_${new Date().toISOString().split('T')[0]}.csv`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
 
         // ==========================================
@@ -2603,10 +2622,58 @@
 
         // Export Students to CSV
         function exportStudentRegistrationsToCSV() {
-            if (allStudentRegistrations.length === 0) {
+            let list = allStudentRegistrations || [];
+            if (window.TKL_SUPABASE && typeof window.TKL_SUPABASE.getLocalStudentRegistrations === 'function') {
+                const local = window.TKL_SUPABASE.getLocalStudentRegistrations();
+                if (local && local.length > 0) {
+                    const merged = [...list];
+                    const seen = new Set(list.map(s => s.registration_code || s.id));
+                    for (const item of local) {
+                        const key = item.registration_code || item.id;
+                        if (key && !seen.has(key)) {
+                            merged.push(item);
+                            seen.add(key);
+                        }
+                    }
+                    list = merged;
+                }
+            } else {
+                try {
+                    const localRaw = localStorage.getItem('tkl_local_student_registrations');
+                    if (localRaw) {
+                        const local = JSON.parse(localRaw);
+                        if (Array.isArray(local) && local.length > 0) {
+                            const merged = [...list];
+                            const seen = new Set(list.map(s => s.registration_code || s.id));
+                            for (const item of local) {
+                                const key = item.registration_code || item.id;
+                                if (key && !seen.has(key)) {
+                                    merged.push(item);
+                                    seen.add(key);
+                                }
+                            }
+                            list = merged;
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            if (!list || list.length === 0) {
                 alert('No student registrations available to export.');
                 return;
             }
+
+            const cleanVal = (val) => {
+                if (val === null || val === undefined) return '""';
+                const str = String(val).replace(/\r\n|\r|\n/g, ' ').replace(/"/g, '""').trim();
+                return `"${str}"`;
+            };
+
+            const cleanPhone = (val) => {
+                if (!val) return '""';
+                const str = String(val).replace(/\r\n|\r|\n/g, '').replace(/"/g, '""').trim();
+                return `"'${str}"`;
+            };
 
             const headers = [
                 'Registration Code', 'Date Registered', 'Student Full Name', 'Date of Birth', 'Gender',
@@ -2619,43 +2686,45 @@
                 'Parent Consent', 'Junior IAS Coaching Interest'
             ];
 
-            const rows = allStudentRegistrations.map(s => [
-                `"${(s.registration_code || '').replace(/"/g, '""')}"`,
-                s.created_at ? new Date(s.created_at).toISOString().split('T')[0] : '',
-                `"${(s.student_name || '').replace(/"/g, '""')}"`,
-                `"${(s.date_of_birth || '').replace(/"/g, '""')}"`,
-                `"${(s.gender || '').replace(/"/g, '""')}"`,
-                `"${(s.standard || '').replace(/"/g, '""')}"`,
-                `"${(s.residential_address || '').replace(/"/g, '""')}"`,
-                `"${(s.area_city || '').replace(/"/g, '""')}"`,
-                `"${(s.parent_name || '').replace(/"/g, '""')}"`,
-                `"${(s.parent_relationship || '').replace(/"/g, '""')}"`,
-                `'${s.parent_mobile || ''}`,
-                `'${s.alt_contact_number || ''}`,
-                `"${(s.school_name || '').replace(/"/g, '""')}"`,
-                `"${(s.school_address || '').replace(/"/g, '""')}"`,
-                `"${(s.school_location || '').replace(/"/g, '""')}"`,
-                `"${(s.civil_services_awareness || '').replace(/"/g, '""')}"`,
-                `"${(s.judiciary_awareness || '').replace(/"/g, '""')}"`,
-                `"${(s.marketplace_awareness || '').replace(/"/g, '""')}"`,
-                `"${(s.political_awareness || '').replace(/"/g, '""')}"`,
-                `"${(s.leadership_willingness || '').replace(/"/g, '""')}"`,
-                `"${(s.preferred_interest_area || '').replace(/"/g, '""')}"`,
-                `"${(s.referral_source || '').replace(/"/g, '""')}"`,
-                `"${(s.referrer_name || '').replace(/"/g, '""')}"`,
-                `'${s.referrer_mobile || ''}`,
-                s.parent_consent ? 'Yes' : 'No',
-                `"${(s.coaching_interest || '').replace(/"/g, '""')}"`
+            const rows = list.map(s => [
+                cleanVal(s.registration_code),
+                cleanVal(s.created_at ? new Date(s.created_at).toISOString().split('T')[0] : ''),
+                cleanVal(s.student_name),
+                cleanVal(s.date_of_birth),
+                cleanVal(s.gender),
+                cleanVal(s.standard),
+                cleanVal(s.residential_address),
+                cleanVal(s.area_city),
+                cleanVal(s.parent_name),
+                cleanVal(s.parent_relationship),
+                cleanPhone(s.parent_mobile),
+                cleanPhone(s.alt_contact_number),
+                cleanVal(s.school_name),
+                cleanVal(s.school_address),
+                cleanVal(s.school_location),
+                cleanVal(s.civil_services_awareness),
+                cleanVal(s.judiciary_awareness),
+                cleanVal(s.marketplace_awareness),
+                cleanVal(s.political_awareness),
+                cleanVal(s.leadership_willingness),
+                cleanVal(s.preferred_interest_area),
+                cleanVal(s.referral_source),
+                cleanVal(s.referrer_name),
+                cleanPhone(s.referrer_mobile),
+                cleanVal(s.parent_consent ? 'Yes' : 'No'),
+                cleanVal(s.coaching_interest)
             ]);
 
-            const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-            const encodedUri = encodeURI(csvContent);
+            const csvContent = '\uFEFF' + [headers.map(cleanVal).join(','), ...rows.map(e => e.join(','))].join('\r\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
-            link.setAttribute('download', `TKL_Student_Registrations_${new Date().toISOString().split('T')[0]}.csv`);
+            link.href = url;
+            link.download = `TKL_Student_Registrations_${new Date().toISOString().split('T')[0]}.csv`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
 
         // 9. Events Management & Multi-Chapter Hub

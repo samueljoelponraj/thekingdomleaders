@@ -465,9 +465,9 @@ function initChennaiMap() {
             title: "Anna Nagar Chennai",
             sector: "Anna Nagar Sector",
             hub: "Anna Nagar Hub",
-            president: { name: "Preethi Daniel", phone: "", image: "images/chapter learder images/Preethi Daniel annagar president.jpeg", fitClass: "object-cover object-top" },
-            secretary: { name: "Hidaya Ranjani", phone: "", image: "images/chapter learder images/Hidaya Ranjani annanagar secrety.png", fitClass: "object-contain bg-white border border-gray-100" },
-            treasurer: { name: "None", phone: "", image: "", fitClass: "" },
+            president: { name: "Mrs. Preethi Daniel", phone: "98841 97678", image: "images/chapter learder images/Preethi Daniel annagar president.jpeg", fitClass: "object-cover object-top" },
+            secretary: { name: "Mrs. Hidaya Ranjani", phone: "90945 85850", image: "images/chapter learder images/Hidaya Ranjani annanagar secrety.png", fitClass: "object-contain bg-white border border-gray-100" },
+            treasurer: { name: "Mrs. Kavitha Joshua", phone: "99524 50777", image: "images/chapter learder images/Mrs Kavitha Joshua treasurer.png", fitClass: "object-contain bg-white border border-gray-100" },
             colorClass: "border-l-indigo-500",
             tagClass: "bg-indigo-100 text-indigo-800",
             coverage: "Anna Nagar, Vadapalani, Koyambedu, Mogappair, Padi, Villivakkam, Kolathur, Ambattur IE, ICF, Ayanavaram, Korattur, Thirumangalam, Aminjikarai, Arumbakkam, Nolambur."
@@ -483,13 +483,24 @@ function initChennaiMap() {
             tagClass: "bg-blue-100 text-blue-800",
             coverage: "Royapuram, Thiruvottiyur, Tondiarpet, Washermanpet, Manali, Kaladipet, Ennore, New Washermenpet, Korukkupet, Vyasarpadi, Perambur, Moolakadai, Kasimedu."
         },
+        redhills: {
+            title: "Red Hills Northern Corridor",
+            sector: "Red Hills Chapter",
+            hub: "Red Hills Hub",
+            president: { name: "None", phone: "", image: "", fitClass: "" },
+            secretary: { name: "None", phone: "", image: "", fitClass: "" },
+            treasurer: { name: "None", phone: "", image: "", fitClass: "" },
+            colorClass: "border-l-rose-500",
+            tagClass: "bg-rose-100 text-rose-800",
+            coverage: "Red Hills, Puzhal, Sholavaram, Vadakarai, Naravarikuppam, GNT Road, Karanodai, Periyapalayam, Alamathi, Grand Northern Trunk Corridor."
+        },
         east: {
             title: "East Chennai",
             sector: "East Sector",
             hub: "Adyar Hub",
             president: { name: "Saravanan", phone: "90943 55041", image: "images/chapter learder images/saravanan.jpeg", fitClass: "object-cover object-[center_35%] scale-[2.1] origin-[70%_34%]" },
             secretary: { name: "Gnanapragasam", phone: "99416 35869", image: "images/chapter learder images/gnanapragasam.jpeg", fitClass: "object-cover object-top" },
-            treasurer: { name: "V. Paul Sarangapani", phone: "97911 23466", image: "images/chapter learder images/sarangapani.jpeg", fitClass: "object-contain bg-gray-50 border border-gray-100" },
+            treasurer: { name: "V. Paul Sarangapani", phone: "97911 23486", image: "images/chapter learder images/sarangapani.jpeg", fitClass: "object-contain bg-gray-50 border border-gray-100" },
             colorClass: "border-l-green-500",
             tagClass: "bg-green-100 text-green-800",
             coverage: "Velachery, Adambakkam, Adyar, Airport, Alandur, Kilkattalai, Madipakkam, Nanganallur, Perungudi, Taramani."
@@ -516,6 +527,7 @@ function initChennaiMap() {
     function getGradientClass(regionKey) {
         switch(regionKey) {
             case 'annanagar': return 'from-indigo-500 to-violet-600';
+            case 'redhills': return 'from-rose-500 to-red-600';
             case 'west': return 'from-red-500 to-rose-600';
             case 'central': return 'from-yellow-500 to-amber-600';
             case 'north': return 'from-blue-500 to-sky-600';
@@ -606,6 +618,12 @@ function initChennaiMap() {
     // Expose selectSector globally
     window.selectSector = function(regionKey) {
         updateDetails(regionKey);
+        if (window._chennaiMapInstance && mapLayers[regionKey]) {
+            const layer = mapLayers[regionKey];
+            if (layer && layer.getLatLng) {
+                window._chennaiMapInstance.setView(layer.getLatLng(), 12);
+            }
+        }
     };
 
     // IMMEDIATELY render South Sector leader details & photos on page load!
@@ -627,7 +645,8 @@ function initChennaiMap() {
                 { key: "annanagar", name: "Anna Nagar", coords: [13.0850, 80.2101], color: "#6366f1" },
                 { key: "north",   name: "Rayapuram",        coords: [13.1097, 80.2925], color: "#3498db" },
                 { key: "east",    name: "Adyar",            coords: [13.0012, 80.2565], color: "#2ecc71" },
-                { key: "south",   name: "Medavakkam",       coords: [12.9186, 80.1987], color: "#9b59b6" }
+                { key: "south",   name: "Medavakkam",       coords: [12.9186, 80.1987], color: "#9b59b6" },
+                { key: "redhills",name: "Red Hills",        coords: [13.1990, 80.1960], color: "#f43f5e" }
             ];
 
             const map = L.map('map', {

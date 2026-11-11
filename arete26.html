@@ -571,15 +571,15 @@
                                     </div>
                                 </div>
 
-                                <!-- Optional UTR / Reference -->
+                                <!-- Mandatory UTR / Reference -->
                                 <div>
-                                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                                        Payment Reference / UTR Number (Optional)
+                                    <label for="fastpass-payment-utr" class="block text-[11px] font-bold text-amber-300 uppercase tracking-wider mb-1.5">
+                                        Payment Reference / UTR Number <span class="text-rose-400">*</span>
                                     </label>
-                                    <input type="text" id="fastpass-payment-utr" placeholder="Enter 12-digit UTR or UPI Transaction ID if already paid"
+                                    <input type="text" id="fastpass-payment-utr" required placeholder="Enter 12-digit UTR or UPI Transaction ID (Mandatory)"
                                         class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 text-white border border-slate-700 focus:border-amber-400 outline-none text-xs font-mono">
-                                    <p class="text-[10px] text-slate-400 mt-1">
-                                        You can also transfer the fee after registering quoting your confirmation reference ID.
+                                    <p class="text-[10px] text-amber-200 mt-1">
+                                        ⚠️ Mandatory: Please transfer the registration fee to the official Karur Vysya Bank account above and enter your UTR / transaction ID.
                                     </p>
                                 </div>
                             </div>
@@ -912,12 +912,12 @@
                             <!-- Payment UTR / Transaction Reference Input -->
                             <div class="pt-2">
                                 <label for="reg-payment-utr" class="block text-[11px] font-bold text-amber-300 uppercase tracking-wider mb-1.5">
-                                    Transaction Reference / UTR Number (Optional)
+                                    Payment Reference / UTR Number <span class="text-rose-400">*</span>
                                 </label>
-                                <input type="text" id="reg-payment-utr" placeholder="Enter 12-digit UTR or UPI Transaction Reference ID if payment made"
+                                <input type="text" id="reg-payment-utr" required placeholder="Enter 12-digit UTR or UPI Transaction Reference ID (Mandatory)"
                                     class="w-full px-4 py-3 rounded-xl bg-slate-900 text-white border border-slate-700 focus:border-amber-400 outline-none text-xs font-mono">
-                                <p class="text-[10px] text-slate-400 mt-1">
-                                    You can submit registration now and transfer anytime prior to the event quoting your reference ID.
+                                <p class="text-[10px] text-amber-200 mt-1">
+                                    ⚠️ Mandatory: Please transfer the registration fee to the official Karur Vysya Bank account above and enter your 12-digit UTR / UPI transaction ID to complete registration.
                                 </p>
                             </div>
                         </div>
@@ -1326,17 +1326,28 @@
             const submitBtn = document.getElementById('btn-fastpass-submit');
             const btnText = document.getElementById('fastpass-btn-text');
             const spinner = document.getElementById('fastpass-spinner');
-            const utr = (document.getElementById('fastpass-payment-utr')?.value || '').trim();
-
-            submitBtn.disabled = true;
-            spinner.classList.remove('hidden');
-            btnText.textContent = 'Recording Fast Pass Registration...';
+            const utrInput = document.getElementById('fastpass-payment-utr');
+            const utr = (utrInput?.value || '').trim();
 
             const refId = `ARETE26-M${Date.now().toString().slice(-5)}`;
             const m = verifiedMemberRecord;
             const guestCount = fastPassGuests.length;
             const totalParticipants = 1 + guestCount;
             const totalCost = totalParticipants * ARETE_DELEGATE_FEE;
+
+            if (!utr) {
+                alert('Payment Reference / UTR Number is mandatory. Please transfer ₹' + totalCost.toLocaleString('en-IN') + ' to our Karur Vysya Bank account and enter your 12-digit UTR / transaction ID to confirm your registration.');
+                if (utrInput) {
+                    utrInput.focus();
+                    utrInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    utrInput.classList.add('border-rose-500');
+                }
+                return;
+            }
+
+            submitBtn.disabled = true;
+            spinner.classList.remove('hidden');
+            btnText.textContent = 'Recording Fast Pass Registration...';
 
             const notes = [
                 `[ARETE 26 - VERIFIED TKL MEMBER FAST PASS: ${refId}]`,
@@ -1711,7 +1722,8 @@
             const totalParticipants = 1 + guestCount;
             const totalCost = totalParticipants * ARETE_DELEGATE_FEE;
             const additionalInfo = document.getElementById('reg-additional-info').value.trim();
-            const utr = (document.getElementById('reg-payment-utr')?.value || '').trim();
+            const utrInput = document.getElementById('reg-payment-utr');
+            const utr = (utrInput?.value || '').trim();
 
             if (!fullName || !company || !designation || !mobile || !email || !address || !chapter || !industry) {
                 alert('Please fill all mandatory fields marked with an asterisk (*).');
@@ -1721,6 +1733,16 @@
             const cleanPhone = mobile.replace(/\D/g, '').slice(-10);
             if (cleanPhone.length < 10) {
                 alert('Please enter a valid 10-digit mobile number.');
+                return;
+            }
+
+            if (!utr) {
+                alert('Payment Reference / UTR Number is mandatory. Please transfer ₹' + totalCost.toLocaleString('en-IN') + ' to our Karur Vysya Bank account and enter your 12-digit UTR / UPI transaction ID to complete registration.');
+                if (utrInput) {
+                    utrInput.focus();
+                    utrInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    utrInput.classList.add('border-rose-500');
+                }
                 return;
             }
 

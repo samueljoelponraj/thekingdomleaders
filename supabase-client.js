@@ -631,6 +631,9 @@
                 notes: record.notes || ''
             };
 
+            // Always ensure safe offline/local backup
+            saveLocalStudentRegistration(payload);
+
             if (client) {
                 try {
                     const { data, error } = await client
@@ -639,18 +642,15 @@
                         .select();
 
                     if (error) {
-                        console.warn('[TKL Supabase] Supabase student registration save notice, saving locally:', error);
-                        saveLocalStudentRegistration(payload);
+                        console.warn('[TKL Supabase] Supabase student registration save notice, saved locally:', error);
                         return { success: true, data: payload, localOnly: true, note: error.message };
                     }
                     return { success: true, data: data && data[0] ? data[0] : payload };
                 } catch (err) {
                     console.error('[TKL Supabase] Exception saving student registration:', err);
-                    saveLocalStudentRegistration(payload);
                     return { success: true, data: payload, localOnly: true };
                 }
             } else {
-                saveLocalStudentRegistration(payload);
                 return { success: true, data: payload, localOnly: true };
             }
         },
@@ -660,6 +660,7 @@
          */
         async getAll() {
             const client = getClient();
+            let dbList = [];
             if (client) {
                 try {
                     const { data, error } = await client
@@ -667,12 +668,26 @@
                         .select('*')
                         .order('created_at', { ascending: false });
 
-                    if (!error && data) return data;
+                    if (!error && Array.isArray(data)) {
+                        dbList = data;
+                    }
                 } catch (err) {
                     console.warn('[TKL Supabase] Error fetching student registrations from DB:', err);
                 }
             }
-            return getLocalStudentRegistrations();
+
+            const localList = getLocalStudentRegistrations();
+            const merged = [...dbList];
+            const seen = new Set(dbList.map(d => d.registration_code || d.id));
+            for (const item of localList) {
+                const key = item.registration_code || item.id;
+                if (key && !seen.has(key)) {
+                    merged.push(item);
+                    seen.add(key);
+                }
+            }
+            merged.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+            return merged;
         },
 
         /**
@@ -1370,7 +1385,7 @@
             leaders: {
                 president: { name: 'Saravanan', phone: '90943 55041', image: 'images/chapter learder images/saravanan.jpeg' },
                 secretary: { name: 'Gnanapragasam', phone: '99416 35869', image: 'images/chapter learder images/gnanapragasam.jpeg' },
-                treasurer: { name: 'V. Paul Sarangapani', phone: '97911 23466', image: 'images/chapter learder images/sarangapani.jpeg' }
+                treasurer: { name: 'V. Paul Sarangapani', phone: '97911 23486', image: 'images/chapter learder images/sarangapani.jpeg' }
             }
         },
         nagercoil: {
@@ -1455,9 +1470,9 @@
             registrationUrl: 'contact.html?chapter=annanagar',
             whatsappLink: 'https://chat.whatsapp.com/EN44KtMTKVZI0BlbkXZioW?s=sh&p=a&ilr=1',
             leaders: {
-                president: { name: 'Preethi Daniel', phone: '', image: 'images/chapter learder images/Preethi Daniel annagar president.jpeg', fitClass: 'object-cover object-top' },
-                secretary: { name: 'Hidaya Ranjani', phone: '', image: 'images/chapter learder images/Hidaya Ranjani annanagar secrety.png', fitClass: 'object-contain max-h-full' },
-                treasurer: { name: 'To be announced', phone: '', image: 'images/logo.jpg', fitClass: 'object-contain' }
+                president: { name: 'Mrs. Preethi Daniel', phone: '98841 97678', image: 'images/chapter learder images/Preethi Daniel annagar president.jpeg', fitClass: 'object-cover object-top' },
+                secretary: { name: 'Mrs. Hidaya Ranjani', phone: '90945 85850', image: 'images/chapter learder images/Hidaya Ranjani annanagar secrety.png', fitClass: 'object-contain max-h-full' },
+                treasurer: { name: 'Mrs. Kavitha Joshua', phone: '99524 50777', image: 'images/chapter learder images/Mrs Kavitha Joshua treasurer.png', fitClass: 'object-contain max-h-full' }
             }
         }
     };
@@ -1634,6 +1649,8 @@
         pincodeMap: PINCODE_MAP,
         uploadReceipt: uploadReceiptFile,
         uploadFlyer: uploadFlyerFile,
+        getLocalRegistrations,
+        getLocalStudentRegistrations,
         storage: {
             uploadReceipt: uploadReceiptFile,
             uploadFlyer: uploadFlyerFile
