@@ -1540,10 +1540,15 @@
         let text = '';
         let pincode = pin || '';
         if (typeof regOrText === 'object') {
-            text = `${regOrText.event_name || ''} ${regOrText.chapter || ''} ${regOrText.role || ''} ${regOrText.notes || ''} ${regOrText.entry_type || ''}`.toLowerCase();
+            text = `${regOrText.event_name || ''} ${regOrText.chapter || ''} ${regOrText.role || ''} ${regOrText.notes || ''} ${regOrText.entry_type || ''} ${regOrText.referred_by || ''}`.toLowerCase();
             pincode = (regOrText.pincode || pin || '').trim();
         } else {
             text = String(regOrText).toLowerCase();
+        }
+
+        // Explicitly map non-TKL members, guests, other affiliations, or global hub to 'global'
+        if (text.includes('non-tkl') || text.includes('non tkl') || text.includes('not a member') || text.includes('global') || text.includes('other')) {
+            return 'global';
         }
 
         if (text.includes('anna nagar') || text.includes('annanagar')) return 'annanagar';

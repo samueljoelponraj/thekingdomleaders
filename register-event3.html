@@ -124,8 +124,8 @@
       "@context": "https://schema.org",
       "@type": "Event",
       "name": "ARETE 26 - Annual Leadership Summit",
-      "startDate": "2026-12-05T09:30:00+05:30",
-      "endDate": "2026-12-05T17:00:00+05:30",
+      "startDate": "2026-12-05T17:00:00+05:30",
+      "endDate": "2026-12-05T21:00:00+05:30",
       "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
       "eventStatus": "https://schema.org/EventScheduled",
       "location": {
@@ -240,7 +240,7 @@
                             <div class="min-w-0">
                                 <div class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Date & Time</div>
                                 <div class="text-xs sm:text-sm font-bold text-white truncate">5 Dec 2026</div>
-                                <div class="text-[11px] text-slate-400">09:30 AM Onwards</div>
+                                <div class="text-[11px] text-slate-400">05:00 PM Onwards</div>
                             </div>
                         </div>
 
@@ -1756,6 +1756,7 @@
             // Prepare Structured Notes
             const structuredNotes = [
                 `[ARETE 26 SUMMIT DELEGATE - REF: ${refId}]`,
+                isMember === 'Yes' ? 'Membership: Existing TKL Member' : 'Membership: New Member Intake (Global Hub)',
                 `TKL Chapter: ${chapter}`,
                 `Address: ${address}`,
                 `Industry: ${industry}`,
@@ -1770,12 +1771,13 @@
             const payload = {
                 eventName: ARETE_EVENT_TITLE,
                 eventId: ARETE_EVENT_ID,
-                entryType: 'Special Event • ₹500',
+                entryType: isMember === 'Yes' ? 'Special Event • TKL Member' : 'Special Event • New Member Intake',
                 name: fullName,
                 company: company,
                 role: designation,
                 phone: cleanPhone,
                 email: email,
+                chapter: chapter,
                 pincode: address.match(/\b[1-9][0-9]{5}\b/) ? address.match(/\b[1-9][0-9]{5}\b/)[0] : '600014',
                 isExistingMember: isMember,
                 referredBy: isMember === 'Yes' ? `TKL ${chapter}` : `Guest / ${chapter}`,

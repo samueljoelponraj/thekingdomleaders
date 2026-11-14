@@ -1693,12 +1693,40 @@
         let activeRegFilter = 'all';
         let activeMemberChapter = 'all';
 
+        function isAreteRegistration(r) {
+            if (!r) return false;
+            const en = (r.event_name || '').toLowerCase();
+            const et = (r.entry_type || '').toLowerCase();
+            const eid = (r.event_id || '').toLowerCase();
+            const notes = (r.notes || '').toLowerCase();
+            const ref = (r.referred_by || '').toLowerCase();
+            return en.includes('arete') || 
+                   et.includes('arete') || 
+                   eid === '05e95786-0cf7-4dd3-8c42-5a246a153138' ||
+                   notes.includes('arete 2026') ||
+                   notes.includes('arete 26') ||
+                   ref.includes('arete');
+        }
+
+        function isStandardMemberRegistration(r) {
+            if (!r) return false;
+            const et = (r.entry_type || '').toLowerCase();
+            const en = (r.event_name || '').toLowerCase();
+            return et.includes('member') || en.includes('member') || en.includes('join tkl');
+        }
+
+        function isMemberRegistration(r) {
+            // Member Network includes standard members AND ARETE registrations (specifically for ARETE)
+            return isStandardMemberRegistration(r) || isAreteRegistration(r);
+        }
+
         function getRegChapter(reg) {
             if (!reg) return 'global';
             if (window.TKL_SUPABASE && typeof window.TKL_SUPABASE.detectChapter === 'function') {
                 return window.TKL_SUPABASE.detectChapter(reg);
             }
-            const text = `${reg.event_name || ''} ${reg.chapter || ''} ${reg.role || ''} ${reg.notes || ''} ${reg.entry_type || ''}`.toLowerCase();
+            const text = `${reg.event_name || ''} ${reg.chapter || ''} ${reg.role || ''} ${reg.notes || ''} ${reg.entry_type || ''} ${reg.referred_by || ''}`.toLowerCase();
+            if (text.includes('non-tkl') || text.includes('non tkl') || text.includes('not a member') || text.includes('global') || text.includes('other')) return 'global';
             if (text.includes('anna nagar') || text.includes('annanagar')) return 'annanagar';
             if (text.includes('central')) return 'central';
             if (text.includes('west')) return 'west';
@@ -1708,17 +1736,12 @@
             if (text.includes('ecr') || text.includes('kanathur') || text.includes('thiruvanmiyur')) return 'ecr';
             if (text.includes('red hills') || text.includes('redhills') || text.includes('puzhal') || text.includes('sholavaram')) return 'redhills';
             if (text.includes('nagercoil')) return 'nagercoil';
+            if (text.includes('thirupur') || text.includes('tirupur') || text.includes('tiruppur')) return 'thirupur';
             const pin = (reg.pincode || '').trim();
             if (window.TKL_SUPABASE && window.TKL_SUPABASE.pincodeMap && window.TKL_SUPABASE.pincodeMap[pin]) {
                 return window.TKL_SUPABASE.pincodeMap[pin].toLowerCase();
             }
             return 'global';
-        }
-
-        function isMemberRegistration(r) {
-            const et = (r.entry_type || '').toLowerCase();
-            const en = (r.event_name || '').toLowerCase();
-            return et.includes('member') || en.includes('member') || en.includes('join tkl');
         }
 
         function selectRegFilterCard(filterKey) {
@@ -1837,7 +1860,7 @@
             const countAll = allRegistrations.length;
             const memberRegistrations = allRegistrations.filter(isMemberRegistration);
             const countMember = memberRegistrations.length;
-            const countEvent = Math.max(0, countAll - countMember);
+            const countEvent = allRegistrations.filter(r => !isStandardMemberRegistration(r) || isAreteRegistration(r)).length;
 
             // Regional counts across all registrations
             const countCentral = allRegistrations.filter(r => getRegChapter(r) === 'central').length;
@@ -1938,7 +1961,9 @@
                         ? `<span class="font-bold text-emerald-400">₹${reg.total_cost}</span>`
                         : `<span class="text-slate-400 font-semibold">₹0 (Free)</span>`;
 
+                    const isArete = isAreteRegistration(reg);
                     const isMember = isMemberRegistration(reg);
+                    const isStandardMember = isStandardMemberRegistration(reg);
                     const regChapter = getRegChapter(reg);
 
                     const chapterBadges = {
@@ -1957,9 +1982,14 @@
                     const chMeta = chapterBadges[regChapter] || { label: regChapter.toUpperCase(), cls: 'bg-slate-500/20 text-slate-300 border-slate-500/40' };
                     const chapterBadge = `<span class="inline-flex items-center gap-1 ${chMeta.cls} text-[10px] font-bold px-2 py-0.5 rounded-full border">📍 ${chMeta.label}</span>`;
 
-                    const categoryBadge = isMember
-                        ? `<span class="inline-flex items-center gap-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">👑 Member Network</span>`
-                        : `<span class="inline-flex items-center gap-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">🎫 Event Pass</span>`;
+                    const isExisting = (reg.is_existing_member || '').toLowerCase() === 'yes';
+                    const categoryBadge = isArete
+                        ? (isExisting
+                            ? `<span class="inline-flex items-center gap-1 bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[10px] font-bold px-2 py-0.5 rounded-full">⭐ ARETE 26 • Member</span>`
+                            : `<span class="inline-flex items-center gap-1 bg-gradient-to-r from-amber-500/20 to-emerald-500/20 text-emerald-300 border border-emerald-400/50 text-[10px] font-bold px-2 py-0.5 rounded-full">👑 New Member (ARETE 26)</span>`)
+                        : (isMember
+                            ? `<span class="inline-flex items-center gap-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">👑 Member Network</span>`
+                            : `<span class="inline-flex items-center gap-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">🎫 Event Pass</span>`);
 
                     return `
                         <tr onclick="if(!event.target.closest('a, button')) viewRegistrationDetail('${reg.id}')"
@@ -2040,18 +2070,22 @@
                     (r.role && r.role.toLowerCase().includes(query)) ||
                     (r.pincode && r.pincode.toLowerCase().includes(query));
 
+                const isArete = isAreteRegistration(r);
                 const isMember = isMemberRegistration(r);
+                const isStandardMember = isStandardMemberRegistration(r);
                 const regChapter = getRegChapter(r);
 
                 let matchEvent = true;
                 if (eventFilter === 'all') {
                     matchEvent = true;
                 } else if (eventFilter === 'member') {
+                    // Member table includes standard member registrations AND ARETE registrations
                     matchEvent = isMember;
                 } else if (eventFilter === 'event') {
-                    matchEvent = !isMember;
+                    // Event table includes event passes AND ARETE registrations
+                    matchEvent = !isStandardMember || isArete;
                 } else {
-                    // Top chapter card clicked (central, west, south, north, east, nagercoil)
+                    // Top chapter card clicked (central, west, south, north, east, ecr, redhills, annanagar)
                     matchEvent = (regChapter === eventFilter) || (r.event_name || '').toLowerCase().includes(eventFilter);
                 }
 
@@ -2197,13 +2231,17 @@
                 annanagar: 'Anna Nagar Chapter (Anna Nagar Hub)',
                 nagercoil: 'Nagercoil Chapter (Nagercoil Hub)',
                 thirupur: 'Thirupur Chapter (Thirupur Hub)',
-                global: 'Global Chapter / Non-Metro'
+                global: 'Global Chapter (Non-TKL / New Member Intake)'
             };
             const chDisplayName = chapterNames[regChapter] || (regChapter.toUpperCase() + ' Chapter');
             const chEl = document.getElementById('detail-reg-chapter');
             if (chEl) chEl.textContent = `📍 ${chDisplayName}`;
 
-            document.getElementById('detail-reg-referral').textContent = `Member: ${reg.is_existing_member || 'No'} | Ref: ${reg.referred_by || 'Direct'}`;
+            const isAreteReg = isAreteRegistration(reg);
+            const memberStatusLabel = isAreteReg
+                ? ((reg.is_existing_member || '').toLowerCase() === 'yes' ? 'Existing TKL Member' : 'Enrolled as New Member')
+                : (reg.is_existing_member || 'No');
+            document.getElementById('detail-reg-referral').textContent = `Member: ${memberStatusLabel} | Ref: ${reg.referred_by || 'Direct'}`;
             document.getElementById('detail-reg-cost').textContent = `Guests: ${reg.additional_guests || 0} | Total: ₹${reg.total_cost || 0}`;
 
             const statusSelect = document.getElementById('modal-update-status');
@@ -2269,7 +2307,7 @@
                 return `"'${str}"`;
             };
 
-            const headers = ['Date', 'Full Name', 'Email', 'Phone', 'Residential PIN', 'Company', 'Role', 'Existing Member', 'Referred By', 'Event Name', 'Entry Type', 'Guests', 'Total Cost (INR)', 'Payment Status', 'Receipt Link'];
+            const headers = ['Date', 'Full Name', 'Email', 'Phone', 'Residential PIN', 'Company', 'Role', 'Existing Member', 'Chapter', 'Referred By', 'Event Name', 'Entry Type', 'Guests', 'Total Cost (INR)', 'Payment Status', 'Receipt Link', 'Notes'];
             const rows = list.map(r => [
                 cleanVal(r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : ''),
                 cleanVal(r.full_name),
@@ -2279,13 +2317,15 @@
                 cleanVal(r.company),
                 cleanVal(r.role),
                 cleanVal(r.is_existing_member || 'No'),
+                cleanVal(getRegChapter(r)),
                 cleanVal(r.referred_by),
                 cleanVal(r.event_name),
                 cleanVal(r.entry_type),
                 r.additional_guests || 0,
                 r.total_cost || 0,
                 cleanVal(r.payment_status || 'Pending'),
-                cleanVal(r.receipt_url)
+                cleanVal(r.receipt_url),
+                cleanVal(r.notes)
             ]);
 
             const csvContent = '\uFEFF' + [headers.map(cleanVal).join(','), ...rows.map(e => e.join(','))].join('\r\n');
@@ -3353,11 +3393,7 @@
             if (guestsEl) guestsEl.textContent = totalHeadcount;
 
             // Member Network vs Event Registrations
-            const memberCount = allRegistrations.filter(r => {
-                const et = (r.entry_type || '').toLowerCase();
-                const en = (r.event_name || '').toLowerCase();
-                return et.includes('member') || en.includes('member') || en.includes('join tkl');
-            }).length;
+            const memberCount = allRegistrations.filter(isMemberRegistration).length;
             const eventOnlyCount = Math.max(0, totalRegs - memberCount);
 
             const memberCountEl = document.getElementById('stat-member-count');
