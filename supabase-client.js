@@ -674,13 +674,18 @@
                 notes: record.notes || ''
             };
 
-            // Always ensure safe offline/local backup
+            // Only attach id if it is an authentic UUID. Never send non-UUID 'loc-stu-' strings to Supabase.
+            if (record.id && isUUID(record.id)) {
+                payload.id = record.id.trim();
+            }
+
+            // Always ensure safe offline/local backup (saveLocalStudentRegistration clones item to avoid mutating payload)
             saveLocalStudentRegistration(payload);
 
             const url = getSupabaseUrl();
             const key = getSupabaseAnonKey();
 
-            // Direct PostgREST insert (zero dependency on CDN SDK)
+            // 1. Direct PostgREST insert (zero dependency on CDN SDK)
             if (url && key && typeof fetch !== 'undefined') {
                 try {
                     const res = await fetch(`${url}/rest/v1/student_registrations`, {
@@ -695,13 +700,21 @@
                     });
                     if (res.ok) {
                         const data = await res.json();
-                        return { success: true, data: data && data[0] ? data[0] : payload };
+                        const savedRow = data && data[0] ? data[0] : payload;
+                        if (savedRow && savedRow.id && isUUID(savedRow.id)) {
+                            saveLocalStudentRegistration(savedRow);
+                        }
+                        return { success: true, data: savedRow, savedToRemote: true };
+                    } else {
+                        const errText = await res.text().catch(() => '');
+                        console.warn('[TKL Supabase] Direct REST student insert failed, trying SDK:', res.status, errText);
                     }
                 } catch (fetchErr) {
                     console.warn('[TKL Supabase] Direct REST student insert notice, trying SDK:', fetchErr);
                 }
             }
 
+            // 2. Supabase SDK fallback
             if (client) {
                 try {
                     const { data, error } = await client
@@ -713,7 +726,11 @@
                         console.warn('[TKL Supabase] Supabase student registration save notice, saved locally:', error);
                         return { success: true, data: payload, localOnly: true, note: error.message };
                     }
-                    return { success: true, data: data && data[0] ? data[0] : payload };
+                    const savedRow = data && data[0] ? data[0] : payload;
+                    if (savedRow && savedRow.id && isUUID(savedRow.id)) {
+                        saveLocalStudentRegistration(savedRow);
+                    }
+                    return { success: true, data: savedRow, savedToRemote: true };
                 } catch (err) {
                     console.error('[TKL Supabase] Exception saving student registration:', err);
                     return { success: true, data: payload, localOnly: true };
@@ -724,7 +741,7 @@
         },
 
         /**
-         * Fetch all student registrations
+         * Fetch all student registrations from master database and merge local backups
          */
         async getAll() {
             let dbList = [];
@@ -783,9 +800,86 @@
         },
 
         /**
+         * Automatically sync any offline/local student registrations to Supabase master
+         */
+        async syncLocalToRemote() {
+            const local = getLocalStudentRegistrations();
+            if (!local || local.length === 0) return { synced: 0 };
+
+            const url = getSupabaseUrl();
+            const key = getSupabaseAnonKey();
+            if (!url || !key || typeof fetch === 'undefined') return { synced: 0 };
+
+            // Find local items that have not been assigned an authentic UUID yet
+            const unsynced = local.filter(r => !r.id || !isUUID(r.id));
+            if (unsynced.length === 0) return { synced: 0 };
+
+            let count = 0;
+            for (const item of unsynced) {
+                try {
+                    const cleanItem = Object.assign({}, item);
+                    delete cleanItem.id; // Strip dummy loc-stu- id so PostgreSQL assigns gen_random_uuid()
+
+                    const res = await fetch(`${url}/rest/v1/student_registrations`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': key,
+                            'Authorization': `Bearer ${key}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify(cleanItem)
+                    });
+                    if (res.ok) {
+                        const savedData = await res.json();
+                        if (savedData && savedData[0]) {
+                            saveLocalStudentRegistration(savedData[0]);
+                            count++;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[TKL Supabase] Error syncing local student record to master:', e);
+                }
+            }
+            return { synced: count };
+        },
+
+        /**
          * Update a student registration record
          */
         async update(id, updates) {
+            const url = getSupabaseUrl();
+            const key = getSupabaseAnonKey();
+
+            // Direct REST PATCH
+            if (url && key && id && isUUID(id) && typeof fetch !== 'undefined') {
+                try {
+                    const res = await fetch(`${url}/rest/v1/student_registrations?id=eq.${encodeURIComponent(id)}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': key,
+                            'Authorization': `Bearer ${key}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify(updates)
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        const local = getLocalStudentRegistrations();
+                        const idx = local.findIndex(r => r.id === id || r.registration_code === id);
+                        if (idx !== -1) {
+                            Object.assign(local[idx], updates);
+                            safeStorage.setItem('tkl_local_student_registrations', JSON.stringify(local));
+                        }
+                        return { success: true, data };
+                    }
+                } catch (e) {
+                    console.warn('[TKL Supabase] Direct REST student update notice, trying SDK:', e);
+                }
+            }
+
+            // Supabase SDK fallback
             const client = getClient();
             if (client && id && typeof id === 'string' && isUUID(id)) {
                 try {
@@ -800,6 +894,7 @@
                     console.error('[TKL Supabase] Error updating student registration:', err);
                 }
             }
+
             const local = getLocalStudentRegistrations();
             const idx = local.findIndex(r => r.id === id || r.registration_code === id);
             if (idx !== -1) {
@@ -813,6 +908,24 @@
          * Delete a student registration record
          */
         async delete(id) {
+            const url = getSupabaseUrl();
+            const key = getSupabaseAnonKey();
+
+            // Direct REST DELETE
+            if (url && key && id && isUUID(id) && typeof fetch !== 'undefined') {
+                try {
+                    await fetch(`${url}/rest/v1/student_registrations?id=eq.${encodeURIComponent(id)}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': key,
+                            'Authorization': `Bearer ${key}`
+                        }
+                    });
+                } catch (e) {
+                    console.warn('[TKL Supabase] Direct REST student delete notice:', e);
+                }
+            }
+
             const client = getClient();
             if (client && id && typeof id === 'string' && isUUID(id)) {
                 try {
@@ -1371,10 +1484,13 @@
 
     function saveLocalRegistration(item) {
         const list = getLocalRegistrations();
-        item.id = item.id || 'loc-' + Date.now();
-        item.created_at = item.created_at || new Date().toISOString();
-        list.unshift(item);
-        safeStorage.setItem('tkl_local_registrations', JSON.stringify(list));
+        const localItem = Object.assign({}, item);
+        localItem.id = (localItem.id && isUUID(localItem.id)) ? localItem.id : ('loc-' + Date.now());
+        localItem.created_at = localItem.created_at || new Date().toISOString();
+        const filtered = list.filter(r => r.id !== localItem.id);
+        filtered.unshift(localItem);
+        safeStorage.setItem('tkl_local_registrations', JSON.stringify(filtered));
+        return localItem;
     }
 
     function getLocalStudentRegistrations() {
@@ -1387,10 +1503,18 @@
 
     function saveLocalStudentRegistration(item) {
         const list = getLocalStudentRegistrations();
-        item.id = item.id || 'loc-stu-' + Date.now();
-        item.created_at = item.created_at || new Date().toISOString();
-        list.unshift(item);
-        safeStorage.setItem('tkl_local_student_registrations', JSON.stringify(list));
+        const localItem = Object.assign({}, item);
+        localItem.id = (localItem.id && isUUID(localItem.id)) ? localItem.id : ('loc-stu-' + Date.now());
+        localItem.created_at = localItem.created_at || new Date().toISOString();
+        // De-duplicate by registration_code or id
+        const filtered = list.filter(r => {
+            if (localItem.registration_code && r.registration_code === localItem.registration_code) return false;
+            if (localItem.id && r.id === localItem.id) return false;
+            return true;
+        });
+        filtered.unshift(localItem);
+        safeStorage.setItem('tkl_local_student_registrations', JSON.stringify(filtered));
+        return localItem;
     }
 
     // Chapter Metadata Directory

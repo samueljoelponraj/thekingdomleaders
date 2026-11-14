@@ -955,11 +955,15 @@
                 <div>
                     <h2 class="text-lg font-bold text-white flex items-center gap-2">
                         <span>Student Nominations & Award Registrations</span>
-                        <span class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-mono uppercase">Standards VIII to XII</span>
+                        <span class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-mono uppercase">Standards VIII to XII, Grad & Post Grad</span>
                     </h2>
                     <p class="text-xs text-slate-400">Review student nominations, parent contacts, civil services awareness, leadership interest, and junior coaching enrollments.</p>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button type="button" id="btn-sync-students" onclick="syncStudentRegistrations()" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3.5 py-2 rounded-xl shadow-md transition-all flex items-center gap-1.5" title="Sync any offline registrations to Supabase Master">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        <span>Sync to Master</span>
+                    </button>
                     <a href="student-registration.html" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5">
                         <span>🌐 Public Student Form</span>
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -2366,6 +2370,17 @@
 
             try {
                 if (window.TKL_SUPABASE && window.TKL_SUPABASE.studentRegistrations) {
+                    // Automatically sync any offline/local-only records to Supabase Master first
+                    if (typeof window.TKL_SUPABASE.studentRegistrations.syncLocalToRemote === 'function') {
+                        try {
+                            const syncRes = await window.TKL_SUPABASE.studentRegistrations.syncLocalToRemote();
+                            if (syncRes && syncRes.synced > 0) {
+                                console.log(`[TKL Master] Auto-synced ${syncRes.synced} offline student registration(s) to Supabase Master.`);
+                            }
+                        } catch (sErr) {
+                            console.warn('[TKL Master] Auto-sync notice:', sErr);
+                        }
+                    }
                     allStudentRegistrations = await window.TKL_SUPABASE.studentRegistrations.getAll();
                 } else {
                     allStudentRegistrations = [];
@@ -2377,6 +2392,34 @@
 
             filterStudentRegistrations();
             updateDashboardMetrics();
+        }
+
+        async function syncStudentRegistrations() {
+            const btn = document.getElementById('btn-sync-students');
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span>Syncing to Master...</span>';
+            }
+            try {
+                if (window.TKL_SUPABASE && window.TKL_SUPABASE.studentRegistrations && typeof window.TKL_SUPABASE.studentRegistrations.syncLocalToRemote === 'function') {
+                    const res = await window.TKL_SUPABASE.studentRegistrations.syncLocalToRemote();
+                    if (res && res.synced > 0) {
+                        alert(`Successfully synced ${res.synced} offline student registration(s) directly to Supabase Master!`);
+                    } else {
+                        alert('All student registrations are already in sync with Supabase Master database.');
+                    }
+                    await loadStudentRegistrations();
+                }
+            } catch (err) {
+                console.error('[TKL Master] Sync error:', err);
+                alert('Could not complete sync. Please check network and Supabase connection.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
         }
 
         function debounceFilterStudents() {

@@ -1363,10 +1363,15 @@
                 submitBtnSpinner.classList.remove('hidden');
                 submitBtnText.textContent = 'Registering Student...';
 
-                // 1. Save to Supabase / LocalStorage via TKL_SUPABASE client
+                // 1. Save to Supabase Master Database / LocalStorage backup via TKL_SUPABASE client
                 try {
                     if (window.TKL_SUPABASE && window.TKL_SUPABASE.studentRegistrations) {
-                        await window.TKL_SUPABASE.studentRegistrations.save(studentPayload);
+                        const saveRes = await window.TKL_SUPABASE.studentRegistrations.save(studentPayload);
+                        if (saveRes && saveRes.savedToRemote) {
+                            console.log('[TKL Student Reg] Successfully saved directly to Supabase Master Database.');
+                        } else {
+                            console.warn('[TKL Student Reg] Saved locally (offline backup active).');
+                        }
                     } else {
                         // Direct safe localStorage backup
                         const existing = JSON.parse(localStorage.getItem('tkl_local_student_registrations') || '[]');
