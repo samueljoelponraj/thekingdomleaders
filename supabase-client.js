@@ -634,6 +634,31 @@
             // Always ensure safe offline/local backup
             saveLocalStudentRegistration(payload);
 
+            const url = getSupabaseUrl();
+            const key = getSupabaseAnonKey();
+
+            // Direct PostgREST insert (zero dependency on CDN SDK)
+            if (url && key && typeof fetch !== 'undefined') {
+                try {
+                    const res = await fetch(`${url}/rest/v1/student_registrations`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': key,
+                            'Authorization': `Bearer ${key}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        return { success: true, data: data && data[0] ? data[0] : payload };
+                    }
+                } catch (fetchErr) {
+                    console.warn('[TKL Supabase] Direct REST student insert notice, trying SDK:', fetchErr);
+                }
+            }
+
             if (client) {
                 try {
                     const { data, error } = await client
@@ -659,20 +684,44 @@
          * Fetch all student registrations
          */
         async getAll() {
-            const client = getClient();
             let dbList = [];
-            if (client) {
-                try {
-                    const { data, error } = await client
-                        .from('student_registrations')
-                        .select('*')
-                        .order('created_at', { ascending: false });
+            const url = getSupabaseUrl();
+            const key = getSupabaseAnonKey();
 
-                    if (!error && Array.isArray(data)) {
-                        dbList = data;
+            // 1. Direct REST fetch
+            if (url && key && typeof fetch !== 'undefined') {
+                try {
+                    const res = await fetch(`${url}/rest/v1/student_registrations?select=*&order=created_at.desc`, {
+                        headers: {
+                            'apikey': key,
+                            'Authorization': `Bearer ${key}`
+                        }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (Array.isArray(data)) dbList = data;
                     }
-                } catch (err) {
-                    console.warn('[TKL Supabase] Error fetching student registrations from DB:', err);
+                } catch (e) {
+                    console.warn('[TKL Supabase] REST getAll student registrations warning:', e);
+                }
+            }
+
+            // 2. Client SDK fallback if REST was empty or failed
+            if (dbList.length === 0) {
+                const client = getClient();
+                if (client) {
+                    try {
+                        const { data, error } = await client
+                            .from('student_registrations')
+                            .select('*')
+                            .order('created_at', { ascending: false });
+
+                        if (!error && Array.isArray(data)) {
+                            dbList = data;
+                        }
+                    } catch (err) {
+                        console.warn('[TKL Supabase] Error fetching student registrations from DB:', err);
+                    }
                 }
             }
 

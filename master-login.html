@@ -986,12 +986,14 @@
                     <!-- Standard Filter -->
                     <select id="filter-student-standard-select" onchange="filterStudentRegistrations()"
                             class="glass-input px-3 py-2 rounded-xl text-xs text-slate-300 font-medium">
-                        <option value="all">🎓 All Standards (8 - 12)</option>
+                        <option value="all">🎓 All Standards & Degrees (8th - Post Graduate)</option>
                         <option value="8th">8th Standard</option>
                         <option value="9th">9th Standard</option>
                         <option value="10th">10th Standard</option>
                         <option value="11th">11th Standard</option>
                         <option value="12th">12th Standard</option>
+                        <option value="graduate">Graduate</option>
+                        <option value="post graduate">Post Graduate</option>
                     </select>
 
                     <!-- Coaching Interest Filter -->
@@ -2388,8 +2390,15 @@
                     (item.area_city && item.area_city.toLowerCase().includes(query)) ||
                     (item.preferred_interest_area && item.preferred_interest_area.toLowerCase().includes(query));
 
-                const stdText = (item.standard || '').toLowerCase();
-                const matchStandard = standardFilter === 'all' || stdText.includes(standardFilter);
+                const stdText = (item.standard || '').toLowerCase().trim();
+                let matchStandard = true;
+                if (standardFilter !== 'all') {
+                    if (standardFilter === 'graduate') {
+                        matchStandard = stdText === 'graduate' || (stdText.includes('graduate') && !stdText.includes('post'));
+                    } else {
+                        matchStandard = stdText.includes(standardFilter);
+                    }
+                }
 
                 const coachingText = (item.coaching_interest || '').toLowerCase();
                 const matchCoaching = coachingFilter === 'all' || coachingText.includes(coachingFilter);
