@@ -420,36 +420,79 @@
          * Fetch all registrations with optional filtering
          */
         async getAll(options = {}) {
-            const client = getClient();
-            if (!client) {
-                // Return cached local registrations
-                return getLocalRegistrations();
+            let dbList = [];
+            const url = getSupabaseUrl();
+            const key = getSupabaseAnonKey();
+
+            // 1. Direct high-speed REST fetch (zero dependency on CDN SDK)
+            if (url && key && typeof fetch !== 'undefined') {
+                try {
+                    let endpoint = `${url}/rest/v1/registrations?select=*&order=created_at.desc`;
+                    if (options.eventName && options.eventName !== 'all') {
+                        endpoint += `&event_name=ilike.*${encodeURIComponent(options.eventName)}*`;
+                    }
+                    if (options.paymentStatus && options.paymentStatus !== 'all') {
+                        endpoint += `&payment_status=eq.${encodeURIComponent(options.paymentStatus)}`;
+                    }
+                    const res = await fetch(endpoint, {
+                        headers: {
+                            'apikey': key,
+                            'Authorization': `Bearer ${key}`
+                        }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (Array.isArray(data)) dbList = data;
+                    }
+                } catch (e) {
+                    console.warn('[TKL Supabase] REST getAll registrations notice:', e);
+                }
             }
 
-            try {
-                let query = client
-                    .from('registrations')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+            // 2. Client SDK fallback if REST was empty or failed
+            if (dbList.length === 0) {
+                const client = getClient();
+                if (client) {
+                    try {
+                        let query = client
+                            .from('registrations')
+                            .select('*')
+                            .order('created_at', { ascending: false });
 
-                if (options.eventName && options.eventName !== 'all') {
-                    query = query.ilike('event_name', `%${options.eventName}%`);
-                }
-                if (options.paymentStatus && options.paymentStatus !== 'all') {
-                    query = query.eq('payment_status', options.paymentStatus);
-                }
-                if (options.search) {
-                    const s = `%${options.search}%`;
-                    query = query.or(`full_name.ilike.${s},email.ilike.${s},phone.ilike.${s},company.ilike.${s}`);
-                }
+                        if (options.eventName && options.eventName !== 'all') {
+                            query = query.ilike('event_name', `%${options.eventName}%`);
+                        }
+                        if (options.paymentStatus && options.paymentStatus !== 'all') {
+                            query = query.eq('payment_status', options.paymentStatus);
+                        }
+                        if (options.search) {
+                            const s = `%${options.search}%`;
+                            query = query.or(`full_name.ilike.${s},email.ilike.${s},phone.ilike.${s},company.ilike.${s}`);
+                        }
 
-                const { data, error } = await query;
-                if (error) throw error;
-                return data || [];
-            } catch (err) {
-                console.error('[TKL Supabase] Failed to fetch registrations:', err);
-                return getLocalRegistrations();
+                        const { data, error } = await query;
+                        if (!error && Array.isArray(data)) {
+                            dbList = data;
+                        }
+                    } catch (err) {
+                        console.error('[TKL Supabase] Failed to fetch registrations via client:', err);
+                    }
+                }
             }
+
+            // 3. Merge local registrations so offline/local submissions are never lost
+            const localList = getLocalRegistrations();
+            const merged = [...dbList];
+            const seen = new Set(dbList.map(d => d.id || `${d.phone}_${d.event_name}`));
+            for (const item of localList) {
+                const key = item.id || `${item.phone}_${item.event_name}`;
+                if (key && !seen.has(key)) {
+                    merged.push(item);
+                    seen.add(key);
+                }
+            }
+            merged.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+            return merged;
         },
 
         /**

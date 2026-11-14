@@ -1710,11 +1710,20 @@
                    ref.includes('arete');
         }
 
+        function isIntakeOnlyRegistration(r) {
+            if (!r) return false;
+            const en = (r.event_name || '').toLowerCase();
+            const et = (r.entry_type || '').toLowerCase();
+            return en.includes('member intake') || en.includes('join tkl') || (et.includes('member') && !en && !et.includes('pass') && !et.includes('event'));
+        }
+
         function isStandardMemberRegistration(r) {
             if (!r) return false;
             const et = (r.entry_type || '').toLowerCase();
             const en = (r.event_name || '').toLowerCase();
-            return et.includes('member') || en.includes('member') || en.includes('join tkl');
+            const isEx = (r.is_existing_member || '').toLowerCase() === 'yes';
+            const ref = (r.referred_by || '').toLowerCase();
+            return et.includes('member') || en.includes('member') || en.includes('join tkl') || isEx || ref.includes('existing tkl member') || ref.includes('tkl member');
         }
 
         function isMemberRegistration(r) {
@@ -1862,7 +1871,7 @@
             const countAll = allRegistrations.length;
             const memberRegistrations = allRegistrations.filter(isMemberRegistration);
             const countMember = memberRegistrations.length;
-            const countEvent = allRegistrations.filter(r => !isStandardMemberRegistration(r) || isAreteRegistration(r)).length;
+            const countEvent = allRegistrations.filter(r => !isIntakeOnlyRegistration(r)).length;
 
             // Regional counts across all registrations
             const countCentral = allRegistrations.filter(r => getRegChapter(r) === 'central').length;
@@ -2084,8 +2093,8 @@
                     // Member table includes standard member registrations AND ARETE registrations
                     matchEvent = isMember;
                 } else if (eventFilter === 'event') {
-                    // Event table includes event passes AND ARETE registrations
-                    matchEvent = !isStandardMember || isArete;
+                    // Event Passes view includes all chapter meeting, launch, and summit attendees
+                    matchEvent = !isIntakeOnlyRegistration(r);
                 } else {
                     // Top chapter card clicked (central, west, south, north, east, ecr, redhills, annanagar)
                     matchEvent = (regChapter === eventFilter) || (r.event_name || '').toLowerCase().includes(eventFilter);
