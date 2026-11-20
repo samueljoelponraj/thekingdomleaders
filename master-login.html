@@ -1097,6 +1097,10 @@
                         <span class="text-slate-400 text-[11px] block">Guest Count & Total Cost</span>
                         <span id="detail-reg-cost" class="font-bold text-emerald-400"></span>
                     </div>
+                    <div>
+                        <span class="text-slate-400 text-[11px] block">Dinner / Food Preference</span>
+                        <span id="detail-reg-food" class="font-bold text-amber-300"></span>
+                    </div>
                 </div>
 
                 <!-- Receipt Screenshot Viewer -->
@@ -1735,6 +1739,19 @@
             return isStandardMemberRegistration(r) || isAreteRegistration(r);
         }
 
+        function getRegFoodPreference(r) {
+            if (!r) return '';
+            if (r.food_preference) return r.food_preference;
+            if (r.foodPreference) return r.foodPreference;
+            if (r.notes) {
+                const match = r.notes.match(/Food Preference:\s*([^|\]]+)/i);
+                if (match) return match[1].trim();
+                if (/Pure Veg|Veg(?!\s*-\s*Non)/i.test(r.notes) && !/Non-Veg/i.test(r.notes)) return 'Veg';
+                if (/Non-Veg/i.test(r.notes)) return 'Non-Veg';
+            }
+            return '';
+        }
+
         function getRegChapter(reg) {
             if (!reg) return 'global';
             if (window.TKL_SUPABASE && typeof window.TKL_SUPABASE.detectChapter === 'function') {
@@ -2006,6 +2023,13 @@
                             ? `<span class="inline-flex items-center gap-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">👑 Member Network</span>`
                             : `<span class="inline-flex items-center gap-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">🎫 Event Pass</span>`);
 
+                    const foodPref = getRegFoodPreference(reg);
+                    const foodBadge = foodPref
+                        ? (foodPref.toLowerCase().includes('non')
+                            ? `<span class="inline-flex items-center gap-1 bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full" title="${escapeHtml(foodPref)}">🍗 Non-Veg</span>`
+                            : `<span class="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full" title="${escapeHtml(foodPref)}">🥗 Veg</span>`)
+                        : '';
+
                     return `
                         <tr onclick="if(!event.target.closest('a, button')) viewRegistrationDetail('${reg.id}')"
                             title="Click row to view profile"
@@ -2027,6 +2051,7 @@
                                 <div class="flex items-center gap-1.5 flex-wrap mb-1">
                                     ${categoryBadge}
                                     ${chapterBadge}
+                                    ${foodBadge}
                                 </div>
                                 <div class="font-semibold text-amber-300 text-xs">${escapeHtml(reg.event_name || 'TKL Event')}</div>
                                 <div class="text-[10px] text-slate-400 uppercase tracking-wider">${escapeHtml(reg.entry_type || '')}</div>
@@ -2259,6 +2284,12 @@
             document.getElementById('detail-reg-referral').textContent = `Member: ${memberStatusLabel} | Ref: ${reg.referred_by || 'Direct'}`;
             document.getElementById('detail-reg-cost').textContent = `Guests: ${reg.additional_guests || 0} | Total: ₹${reg.total_cost || 0}`;
 
+            const foodEl = document.getElementById('detail-reg-food');
+            if (foodEl) {
+                const fp = getRegFoodPreference(reg);
+                foodEl.textContent = fp ? (fp.toLowerCase().includes('non') ? `🍗 ${fp}` : `🥗 ${fp}`) : 'Not specified';
+            }
+
             const statusSelect = document.getElementById('modal-update-status');
             statusSelect.value = reg.payment_status || 'Pending';
 
@@ -2322,7 +2353,7 @@
                 return `"'${str}"`;
             };
 
-            const headers = ['Date', 'Full Name', 'Email', 'Phone', 'Residential PIN', 'Company', 'Role', 'Existing Member', 'Chapter', 'Referred By', 'Event Name', 'Entry Type', 'Guests', 'Total Cost (INR)', 'Payment Status', 'Receipt Link', 'Notes'];
+            const headers = ['Date', 'Full Name', 'Email', 'Phone', 'Residential PIN', 'Company', 'Role', 'Existing Member', 'Chapter', 'Referred By', 'Food Preference', 'Event Name', 'Entry Type', 'Guests', 'Total Cost (INR)', 'Payment Status', 'Receipt Link', 'Notes'];
             const rows = list.map(r => [
                 cleanVal(r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : ''),
                 cleanVal(r.full_name),
@@ -2334,6 +2365,7 @@
                 cleanVal(r.is_existing_member || 'No'),
                 cleanVal(getRegChapter(r)),
                 cleanVal(r.referred_by),
+                cleanVal(getRegFoodPreference(r)),
                 cleanVal(r.event_name),
                 cleanVal(r.entry_type),
                 r.additional_guests || 0,
