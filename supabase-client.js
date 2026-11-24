@@ -1648,12 +1648,24 @@
             color: 'cyan',
             badgeBg: 'bg-cyan-100 text-cyan-800 border-cyan-200',
             accentGradient: 'from-cyan-600 to-blue-700',
-            pageUrl: 'chapters.html#chapter-coverage',
+            pageUrl: 'events-chapter.html?chapter=ecr',
             registrationUrl: 'contact.html?chapter=ecr',
             leaders: {
-                president: { name: 'To be announced', phone: '', image: 'images/logo.jpg' },
-                secretary: { name: 'To be announced', phone: '', image: 'images/logo.jpg' },
-                treasurer: { name: 'To be announced', phone: '', image: 'images/logo.jpg' }
+                president: {
+                    name: 'Dr. Joshua Thangaraj Gnanasekar',
+                    phone: '86820 40383',
+                    image: 'images/chapter learder images/ECR President - Dr. Joshua Thangaraj Gnanasekar.jpeg'
+                },
+                secretary: {
+                    name: 'Joseph A',
+                    phone: '74184 19994',
+                    image: 'images/chapter learder images/JOSEPH A ecr chatpter secretery.jpeg'
+                },
+                treasurer: {
+                    name: 'Ramesh Elisha',
+                    phone: '73959 53852',
+                    image: 'images/chapter learder images/RAMESH  ELISHA ecr chapter Treasurer.jpeg'
+                }
             }
         },
         redhills: {

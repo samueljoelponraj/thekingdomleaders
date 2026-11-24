@@ -504,6 +504,17 @@ function initChennaiMap() {
             colorClass: "border-l-green-500",
             tagClass: "bg-green-100 text-green-800",
             coverage: "Velachery, Adambakkam, Adyar, Airport, Alandur, Kilkattalai, Madipakkam, Nanganallur, Perungudi, Taramani."
+        },
+        ecr: {
+            title: "ECR Coastal Corridor",
+            sector: "ECR Chapter",
+            hub: "ECR Hub (Thiruvanmiyur - Kanathur)",
+            president: { name: "Dr. Joshua Thangaraj Gnanasekar", phone: "86820 40383", image: "images/chapter learder images/ECR President - Dr. Joshua Thangaraj Gnanasekar.jpeg", fitClass: "object-cover object-top" },
+            secretary: { name: "Joseph A", phone: "74184 19994", image: "images/chapter learder images/JOSEPH A ecr chatpter secretery.jpeg", fitClass: "object-cover object-top" },
+            treasurer: { name: "Ramesh Elisha", phone: "73959 53852", image: "images/chapter learder images/RAMESH  ELISHA ecr chapter Treasurer.jpeg", fitClass: "object-cover object-top" },
+            colorClass: "border-l-cyan-500",
+            tagClass: "bg-cyan-100 text-cyan-800",
+            coverage: "Thiruvanmiyur, Kottivakkam, Palavakkam, Neelankarai, Injambakkam, Akkarai, Sholinganallur Link, Uthandi, Kanathur, East Coast Road Corridor."
         }
     };
 
@@ -646,8 +657,9 @@ function initChennaiMap() {
                 { key: "north",   name: "Rayapuram",        coords: [13.1097, 80.2925], color: "#3498db" },
                 { key: "east",    name: "Adyar",            coords: [13.0012, 80.2565], color: "#2ecc71" },
                 { key: "south",   name: "Medavakkam",       coords: [12.9186, 80.1987], color: "#9b59b6" },
-                { key: "redhills",name: "Red Hills",        coords: [13.1990, 80.1960], color: "#f43f5e" }
-            ];
+                { key: "redhills",name: "Red Hills",        coords: [13.1990, 80.1960], color: "#f43f5e" },
+                { key: "ecr", name: "ECR Chapter", coords: [12.9121, 80.2520], color: "#06b6d4" }
+];
 
             const map = L.map('map', {
                 zoomControl: true,
