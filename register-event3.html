@@ -1,953 +1,413 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARETE 26: VIP & Special Invitee Registration | The Kingdom Leaders</title>
-    <meta name="description"
-        content="Register for ARETE 26, the premier Annual Leadership Summit by The Kingdom Leaders on 5 December 2026 at CSI Synod Centre, Royapettah, Chennai. Keynote by Mr. JCD Prabhakar, Dr. Isaac Livingstone, Rev. Paul Francis Ravichandran, and eminent dignitaries.">
-    <meta name="keywords"
-        content="ARETE 26, Arete 26, The Kingdom Leaders, TKL Summit, Mr JCD Prabhakar, Dr Isaac Livingstone, Rev Paul Francis Ravichandran, Samuel Dhinakaran, Daniel Davidson, Stella Ramola Dhinakaran, Israel Jebasingh, CSI Synod Centre Chennai, leadership summit Chennai 2026">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://thekingdomleaders.in/arete26.html">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://thekingdomleaders.in/arete26.html">
-    <meta property="og:title" content="ARETE 26: Annual Leadership Summit | The Kingdom Leaders">
-    <meta property="og:description"
-        content="Join marketplace leaders, entrepreneurs, and visionaries on 5 December 2026 at CSI Synod Centre, Royapettah, Chennai. Complimentary VIP Delegate Registration.">
-    <meta property="og:image" content="https://thekingdomleaders.in/images/Arete26.jpeg">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://thekingdomleaders.in/arete26.html">
-    <meta property="twitter:title" content="ARETE 26: Annual Leadership Summit | The Kingdom Leaders">
-    <meta property="twitter:description"
-        content="A Generation of Kingdom Leaders Transforming India. 5 December 2026 at CSI Synod Centre, Royapettah, Chennai.">
-    <meta property="twitter:image" content="https://thekingdomleaders.in/images/Arete26.jpeg">
-
-    <!-- Favicon -->
+    <title>Aréte’26 Delegate Registration | The Kingdom Leaders</title>
+    <meta name="description" content="Register as a delegate for Aréte’26 - State-Level Annual Business Leadership Summit & Christmas Celebration on 5 Dec 2026 at CSI Synod Centre, Chennai.">
     <link rel="icon" type="image/jpeg" href="images/logo.jpg">
 
-    <!-- Google Fonts & Tailwind -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            50: '#fffbf0',
+                            100: '#fef5d6',
+                            200: '#fde9ad',
+                            300: '#fcd679',
+                            400: '#f9be43',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                            premium: '#D4AF37'
+                        },
+                        emerald: {
+                            850: '#064e3b',
+                            900: '#06281e',
+                            950: '#021a13'
+                        }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
 
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!-- Custom Central Stylesheet -->
-    <link rel="stylesheet" href="styles.css">
-
-    <!-- Supabase CDN Client -->
+    <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
 
     <style>
-        /* Failsafe to guarantee content is NEVER invisible or empty */
-        [data-aos] {
-            opacity: 1 !important;
-            transform: none !important;
-            visibility: visible !important;
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #040d09;
+            color: #e2e8f0;
         }
-
         .font-cinzel {
             font-family: 'Cinzel', serif;
         }
-
         .gold-gradient-text {
-            background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #d97706 100%);
+            background: linear-gradient(135deg, #FFF6D6 0%, #F59E0B 50%, #D4AF37 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .gold-border-glow {
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.15);
+        .gold-border {
+            border-color: rgba(212, 175, 55, 0.35);
         }
-
-        .gold-pill-active {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: #ffffff;
-            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.35);
-        }
-
-        .reg-input {
-            width: 100%;
-            padding: 0.875rem 1.125rem;
-            border-radius: 0.875rem;
-            border: 1px solid #e2e8f0;
-            background-color: #ffffff;
-            font-size: 0.875rem;
-            color: #0f172a;
+        .form-input-luxury {
+            background-color: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #f8fafc;
             transition: all 0.2s ease;
+        }
+        .form-input-luxury:focus {
+            background-color: rgba(15, 23, 42, 0.95);
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
             outline: none;
         }
-
-        .reg-input:focus {
-            border-color: #f59e0b;
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
-            background-color: #ffffff;
-        }
-
-        .reg-input:disabled {
-            background-color: #f8fafc;
+        .form-input-luxury::placeholder {
             color: #64748b;
-            cursor: not-allowed;
-        }
-
-        .glass-dark-card {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-        }
-
-        .vip-speaker-card {
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        .vip-speaker-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -10px rgba(245, 158, 11, 0.25);
         }
     </style>
-
-    <!-- Schema.org JSON-LD Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Event",
-      "name": "ARETE 26 - Annual Leadership Summit",
-      "startDate": "2026-12-05T17:00:00+05:30",
-      "endDate": "2026-12-05T21:00:00+05:30",
-      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-      "eventStatus": "https://schema.org/EventScheduled",
-      "location": {
-        "@type": "Place",
-        "name": "CSI Synod Centre",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "5, Whites Rd, Indira Garden, Royapettah",
-          "addressLocality": "Chennai",
-          "postalCode": "600014",
-          "addressRegion": "Tamil Nadu",
-          "addressCountry": "IN"
-        }
-      },
-      "image": [
-        "https://thekingdomleaders.in/images/Arete26.jpeg"
-      ],
-      "description": "ARETE 26 Annual Leadership Summit by The Kingdom Leaders. Featuring Mr. JCD Prabhakar (Speaker, Tamil Nadu State), Dr. Isaac Livingstone, Rev. Paul Francis Ravichandran, Samuel Dhinakaran, Daniel Davidson, Stella Ramola Dhinakaran, and Mr. R.A. Israel Jebasingh.",
-      "organizer": {
-        "@type": "Organization",
-        "name": "The Kingdom Leaders",
-        "url": "https://thekingdomleaders.in"
-      },
-      "offers": {
-        "@type": "Offer",
-        "url": "https://thekingdomleaders.in/arete26.html",
-        "price": "0",
-        "priceCurrency": "INR",
-        "availability": "https://schema.org/InStock",
-        "validFrom": "2026-11-01"
-      }
-    }
-    </script>
 </head>
+<body class="min-h-screen flex flex-col bg-[#040d09] selection:bg-amber-500 selection:text-slate-950">
 
-<body class="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
-
-    <!-- Top Announcement Bar -->
-    <div class="bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 text-slate-950 py-2 px-4 text-center font-bold text-xs uppercase tracking-wider shadow-md">
-        <span>✨ The Kingdom Leaders Flagship Event • 5 December 2026 • CSI Synod Centre, Royapettah, Chennai</span>
-    </div>
-
-    <!-- Navigation Bar -->
-    <header class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-white/10">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <a href="index.html" class="flex items-center space-x-3 group">
-                    <div class="w-12 h-12 rounded-xl overflow-hidden flex items-center justify-center bg-white p-1 shadow-md border border-amber-500/30 group-hover:border-amber-400 transition-colors">
-                        <img src="images/logo.jpg" alt="The Kingdom Leaders Logo" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <div class="text-xl font-black text-white group-hover:text-amber-400 transition-colors tracking-tight font-cinzel">
-                            The Kingdom Leaders
-                        </div>
-                        <p class="text-[11px] text-amber-400/90 font-semibold tracking-wider uppercase">
-                            Aréte’26 • Annual Summit
-                        </p>
-                    </div>
-                </a>
-
-                <nav class="hidden md:flex items-center space-x-7 text-sm font-semibold text-slate-300">
-                    <a href="index.html" class="hover:text-amber-400 transition-colors">Home</a>
-                    <a href="events.html" class="hover:text-amber-400 transition-colors">All Events</a>
-                    <a href="chapters.html" class="hover:text-amber-400 transition-colors">Chapters</a>
-                    <a href="about.html" class="hover:text-amber-400 transition-colors">About Us</a>
-                    <a href="contact.html" class="hover:text-amber-400 transition-colors">Contact</a>
-                </nav>
-
-                <div class="flex items-center space-x-3">
-                    <a href="#register-section"
-                        class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all transform hover:-translate-y-0.5">
-                        Register Now ✍️
-                    </a>
+    <!-- TOP HEADER -->
+    <header class="sticky top-0 z-40 bg-[#040d09]/90 backdrop-blur-md border-b border-amber-500/20 py-3.5 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <img src="images/logo.jpg" alt="The Kingdom Leaders Logo" class="w-10 h-10 rounded-full object-cover object-top border border-amber-400/60 shadow-md shadow-amber-500/10 group-hover:scale-105 transition-transform">
+                <div>
+                    <span class="block text-sm sm:text-base font-extrabold tracking-widest text-amber-300 font-cinzel">THE KINGDOM LEADERS</span>
+                    <span class="block text-[10px] text-slate-400 uppercase tracking-widest">Marketplace Leadership • Chennai</span>
                 </div>
+            </a>
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-300 hover:text-amber-300 px-3 py-1.5 rounded-lg border border-white/10 hover:border-amber-400/40 transition-colors">
+                    <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                    <span>Back to Home</span>
+                </a>
+                <a href="tel:9444441900" class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-lg hover:bg-amber-500/20 transition-colors">
+                    <i class="fa-solid fa-phone text-[10px]"></i>
+                    <span>9444441900</span>
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main>
-        <!-- Hero Section with Flyer Showcase -->
-        <section class="relative pt-12 pb-20 overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-            <!-- Background Glow Effects -->
-            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute top-1/3 left-10 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                    
-                    <!-- Left Column: Event Introduction -->
-                    <div class="lg:col-span-7 space-y-6" data-aos="fade-right">
-                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-widest">
-                            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                            VIP & Special Invitee Portal • Chennai
-                        </div>
-
-                        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-none font-cinzel">
-                            Aréte<span class="gold-gradient-text">’26</span>
-                        </h1>
-
-                        <p class="text-xl sm:text-2xl font-bold text-amber-300 font-serif italic">
-                            "A Generation of Kingdom Leaders Transforming India"
-                        </p>
-
-                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
-                            The Kingdom Leaders cordially invites Christian marketplace founders, executives, civic servants, emerging leaders, and professionals to <strong class="text-white">ARETE 26</strong> — an epochal day of vision casting, strategic alliance building, spiritual mentorship, and kingdom governance.
-                        </p>
-
-                        <!-- Key Event Highlights Ribbon -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
-                            <div class="bg-slate-800/80 border border-amber-500/20 rounded-2xl p-4 flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-lg flex-shrink-0">
-                                    📅
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Date & Time</div>
-                                    <div class="text-xs sm:text-sm font-bold text-white truncate">5 Dec 2026</div>
-                                    <div class="text-[11px] text-slate-400">05:00 PM – 09:00 PM</div>
-                                </div>
-                            </div>
-
-                            <div class="bg-slate-800/80 border border-amber-500/20 rounded-2xl p-4 flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-lg flex-shrink-0">
-                                    📍
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Summit Venue</div>
-                                    <div class="text-xs sm:text-sm font-bold text-white truncate">CSI Synod Centre</div>
-                                    <div class="text-[11px] text-slate-400 truncate">Royapettah, Chennai</div>
-                                </div>
-                            </div>
-
-                            <div class="bg-slate-800/80 border border-amber-500/30 rounded-2xl p-4 flex items-center gap-3 bg-gradient-to-br from-amber-500/10 to-amber-950/20">
-                                <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-lg flex-shrink-0">
-                                    🎟️
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Registration</div>
-                                    <div class="text-xs sm:text-sm font-black text-amber-300">Complimentary</div>
-                                    <div class="text-[11px] text-slate-400">VIP Reserved Pass</div>
-                                </div>
-                            </div>
-
-                            <div class="bg-slate-800/80 border border-emerald-500/30 rounded-2xl p-4 flex items-center gap-3 bg-gradient-to-br from-emerald-500/10 to-emerald-950/20">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-center text-lg flex-shrink-0">
-                                    🍽️
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Fellowship Dinner</div>
-                                    <div class="text-xs sm:text-sm font-bold text-emerald-300">Included with Pass</div>
-                                    <div class="text-[11px] text-slate-400">Choice of Veg / Non-Veg</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- CTA Actions -->
-                        <div class="pt-4 flex flex-wrap items-center gap-4">
-                            <a href="#register-section"
-                                class="bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black px-8 py-4 rounded-2xl text-sm uppercase tracking-wider shadow-xl shadow-amber-500/25 transition-all transform hover:-translate-y-1 flex items-center gap-2">
-                                <span>Proceed to VIP Registration (Free)</span>
-                                <span class="text-lg">↓</span>
-                            </a>
-                            <a href="images/aret26.jpeg" target="_blank"
-                                class="bg-white/10 hover:bg-white/15 text-white font-bold px-6 py-4 rounded-2xl text-sm border border-white/20 transition-all flex items-center gap-2">
-                                <span>View Full Official Poster</span>
-                                <span>↗</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: Official Poster Visual Showcase -->
-                    <div class="lg:col-span-5" data-aos="fade-left">
-                        <div class="relative mx-auto max-w-md">
-                            <!-- Golden Ornamental Frame -->
-                            <div class="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-700 opacity-75 blur-sm"></div>
-                            
-                            <div class="relative rounded-2xl overflow-hidden bg-slate-950 border-2 border-amber-400/50 shadow-2xl group">
-                                <img src="images/aret26.jpeg" alt="ARETE 26 Official Summit Poster"
-                                    class="w-full h-auto object-cover group-hover:scale-102 transition-transform duration-500 cursor-pointer"
-                                    onclick="window.open('images/aret26.jpeg', '_blank')">
-                                
-                                <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 flex items-center justify-between text-xs">
-                                    <div class="text-amber-300 font-bold">Official Summit Poster</div>
-                                    <a href="images/aret26.jpeg" download="ARETE26_Poster.jpeg" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 px-3 py-1 rounded-lg border border-amber-500/30 font-semibold transition-colors">
-                                        Download Poster 📥
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+    <!-- MAIN WRAPPER -->
+    <main class="flex-grow py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- PAGE TITLE / INTRO -->
+            <div class="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold tracking-widest uppercase mb-3">
+                    <i class="fa-solid fa-crown text-[11px] text-amber-400"></i>
+                    <span>State-Level Annual Summit • Chennai</span>
                 </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white font-cinzel tracking-tight gold-gradient-text">
+                    Aréte’26 Delegate Registration
+                </h1>
+                <p class="text-sm sm:text-base text-slate-300 mt-3 leading-relaxed">
+                    Reserve your delegate seat and fellowship dinner for the grand gathering of Christian business leaders, civic executives, and professionals.
+                </p>
             </div>
-        </section>
 
-        <!-- REGISTRATION SECTION -->
-        <section id="register-section" class="py-20 bg-slate-900 relative">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+            <!-- TWO-COLUMN GRID: POSTER & REGISTRATION FORM -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
                 
-                <!-- Section Header -->
-                <div class="text-center mb-10" data-aos="fade-up">
-                    <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-amber-500/10 px-4 py-1.5 rounded-full border border-amber-500/30 inline-block mb-3">
-                        VIP & SPECIAL INVITEE REGISTRATION
-                    </span>
-                    <h2 class="text-3xl sm:text-5xl font-black text-white font-cinzel">
-                        VIP Delegate Registration for <span class="gold-gradient-text">Aréte’26</span>
-                    </h2>
-                    <p class="text-slate-400 text-sm sm:text-base mt-3 max-w-xl mx-auto">
-                        Kindly complete the registration below. Summit Delegate Fee: ₹500 per person. Secure your reserved delegate pass.
-                    </p>
-                </div>
-
-                <!-- ========================================== -->
-                <!-- ON-PAGE POST-REGISTRATION CONFIRMATION (Shown AFTER Registration) -->
-                <!-- ========================================== -->
-                <div id="post-reg-success-container" class="hidden mb-12">
-                    <div class="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-2 border-amber-400 rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden">
-                        
-                        <!-- Confirmation Header -->
-                        <div class="text-center pb-6 border-b border-white/10">
-                            <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-600 text-slate-950 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg shadow-emerald-500/30 font-black">
-                                ✓
-                            </div>
-                            <span class="text-[10px] font-black uppercase tracking-widest text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-3 py-1 rounded-full">
-                                Registration Successfully Confirmed
+                <!-- LEFT COLUMN: POSTER & SUMMIT DETAILS (5 cols) -->
+                <div class="lg:col-span-5 space-y-6">
+                    <!-- Summit Poster -->
+                    <div class="relative group rounded-3xl overflow-hidden border-2 border-amber-500/30 shadow-2xl shadow-emerald-950/50 bg-slate-900">
+                        <img src="images/aret26.jpeg" alt="Aréte'26 Summit Poster" class="w-full h-auto object-cover transform group-hover:scale-[1.01] transition-transform duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
+                        <div class="absolute bottom-4 left-4 right-4 text-center sm:text-left pointer-events-none">
+                            <span class="inline-block px-2.5 py-1 bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-wider rounded-md">
+                                Official Summit Poster
                             </span>
-                            <h3 class="text-2xl sm:text-4xl font-black text-white mt-3 font-cinzel">
-                                Welcome to Aréte’26, <span id="page-post-name" class="gold-gradient-text">Delegate</span>!
-                            </h3>
-                            <p class="text-xs sm:text-sm text-slate-300 mt-2 max-w-lg mx-auto">
-                                Your summit pass has been reserved in our central registry. Please complete your registration fee payment to the official account below.
-                            </p>
-                            
-                            <!-- Summary Chips -->
-                            <div class="flex flex-wrap items-center justify-center gap-3 mt-4 text-xs font-semibold">
-                                <div class="bg-slate-900 px-4 py-2 rounded-xl border border-amber-500/30">
-                                    <span class="text-slate-400 text-[10px] block uppercase tracking-wider">Summit Reference ID</span>
-                                    <strong id="page-post-ref-id" class="text-amber-400 font-mono text-sm">ARETE26-00000</strong>
+                        </div>
+                    </div>
+
+                    <!-- Key Event Details Card -->
+                    <div class="bg-slate-900/80 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-amber-500/25 space-y-4">
+                        <h2 class="text-base font-bold text-amber-300 font-cinzel flex items-center gap-2 border-b border-white/10 pb-3">
+                            <i class="fa-solid fa-calendar-check text-amber-400"></i>
+                            <span>Event Information</span>
+                        </h2>
+
+                        <div class="space-y-3.5 text-xs sm:text-sm">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                                    <i class="fa-regular fa-calendar-days text-sm"></i>
                                 </div>
-                                <div class="bg-slate-900 px-4 py-2 rounded-xl border border-amber-500/30">
-                                    <span class="text-slate-400 text-[10px] block uppercase tracking-wider">Delegates</span>
-                                    <strong id="page-post-delegates" class="text-white text-sm">1 Delegate</strong>
+                                <div>
+                                    <strong class="text-white block font-semibold">Date & Time</strong>
+                                    <span class="text-slate-300">Friday, 5 December 2026 • 5:00 PM – 9:00 PM</span>
                                 </div>
-                                <div class="bg-slate-900 px-4 py-2 rounded-xl border border-amber-500/30">
-                                    <span class="text-slate-400 text-[10px] block uppercase tracking-wider">Total Fee</span>
-                                    <strong id="page-post-total-fee" class="text-amber-300 font-black text-sm">₹500</strong>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                                    <i class="fa-solid fa-location-dot text-sm"></i>
+                                </div>
+                                <div>
+                                    <strong class="text-white block font-semibold">Venue</strong>
+                                    <span class="text-slate-300">CSI Synod Centre, Royapettah, Chennai</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center shrink-0 mt-0.5">
+                                    <i class="fa-solid fa-utensils text-sm"></i>
+                                </div>
+                                <div>
+                                    <strong class="text-white block font-semibold">Fellowship Dinner</strong>
+                                    <span class="text-slate-300">Included for all registered delegates (Choice of Veg / Non-Veg)</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                                    <i class="fa-solid fa-headset text-sm"></i>
+                                </div>
+                                <div>
+                                    <strong class="text-white block font-semibold">Inquiries / Support</strong>
+                                    <span class="text-slate-300">Phone: 9444441900 | The Kingdom Leaders</span>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- User Requested Bank Payment Details Card -->
-                        <div class="max-w-md mx-auto my-6">
-                            <div class="relative rounded-3xl overflow-hidden bg-slate-900/95 border-2 border-emerald-500/50 shadow-2xl p-6 backdrop-blur-xl text-left space-y-4">
-                                <div class="flex items-center justify-between pb-3 border-b border-white/10">
-                                    <div class="flex items-center gap-2.5">
-                                        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-center text-lg">
-                                            ⭐
-                                        </div>
-                                        <div>
-                                            <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">VIP ADMISSION</div>
-                                            <h4 class="text-base font-extrabold text-white">Reserved Pass Confirmed</h4>
-                                        </div>
-                                    </div>
-                                    <span class="bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider shadow">
-                                        COMPLIMENTARY
-                                    </span>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-3 text-xs">
-                                    <div class="bg-slate-950/80 p-3 rounded-xl border border-white/10">
-                                        <span class="text-[10px] text-slate-400 block font-semibold mb-0.5">Summit Date & Time</span>
-                                        <strong class="text-xs sm:text-sm font-bold text-amber-300">5 Dec 2026 • 5:00 PM</strong>
-                                    </div>
-                                    <div class="bg-slate-950/80 p-3 rounded-xl border border-white/10">
-                                        <span class="text-[10px] text-slate-400 block font-semibold mb-0.5">Fellowship Dinner</span>
-                                        <strong class="text-xs sm:text-sm font-bold text-emerald-300">Included (Veg/Non-Veg)</strong>
-                                    </div>
-                                    <div class="col-span-2 bg-slate-950/80 p-3 rounded-xl border border-white/10">
-                                        <span class="text-[10px] text-slate-400 block font-semibold mb-0.5">Summit Venue</span>
-                                        <strong class="text-xs sm:text-sm font-bold text-white">CSI Synod Centre, Royapettah, Chennai</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Post-Registration Actions -->
-                        <div class="max-w-md mx-auto space-y-3 pt-2 text-center">
-                            <div class="text-center text-xs">
-                                <button type="button" onclick="resetRegistrationToNew()" class="text-slate-400 hover:text-white underline cursor-pointer">
-                                    Register Another Delegate
-                                </button>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
 
-                <!-- ========================================== -->
-                <!-- MANDATORY GATEWAY: TKL MEMBERSHIP VERIFICATION -->
-                <!-- ========================================== -->
-                <div id="membership-gateway-card" class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl mb-10 relative overflow-hidden" data-aos="fade-up">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl font-bold border border-amber-500/40">
-                            🔍
-                        </div>
-                        <div>
-                            <span class="text-[11px] font-extrabold uppercase tracking-widest text-amber-400">Step 1</span>
-                            <h3 class="text-xl sm:text-2xl font-bold text-white leading-tight">
-                                Are you an existing TKL Member? *
-                            </h3>
-                        </div>
-                    </div>
-
-                    <p class="text-slate-300 text-xs sm:text-sm mb-6 leading-relaxed">
-                        If you are already a registered member of The Kingdom Leaders in any Chennai Chapter, we can quickly verify your phone number to auto-fill your details. If you are not a member yet, you can register directly!
-                    </p>
-
-                    <!-- Gateway Decision Buttons -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="member-choice-buttons">
-                        <button type="button" id="btn-choice-yes" onclick="selectMemberStatus(true)"
-                            class="p-4 sm:p-5 rounded-2xl border-2 border-slate-700 bg-slate-800/80 hover:border-amber-500 hover:bg-slate-800 text-left transition-all group cursor-pointer">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">Yes, I am a TKL Member</span>
-                                <span class="w-6 h-6 rounded-full border border-slate-600 flex items-center justify-center text-xs group-hover:border-amber-400 text-amber-400">✓</span>
-                            </div>
-                            <p class="text-xs text-slate-400 leading-normal">
-                                I belong to Chennai South, Central, East, West, North, ECR, Anna Nagar, or other TKL chapter.
+                <!-- RIGHT COLUMN: REGISTRATION FORM (7 cols) -->
+                <div class="lg:col-span-7">
+                    <div class="bg-slate-900/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 lg:p-10 border border-amber-500/30 shadow-2xl shadow-black/70">
+                        
+                        <div class="border-b border-white/10 pb-5 mb-6">
+                            <span class="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full">
+                                Delegate Pass
+                            </span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-white mt-2 font-cinzel">
+                                Delegate Registration
+                            </h2>
+                            <p class="text-xs sm:text-sm text-slate-300 mt-1">
+                                Complete this form to confirm your delegate badge and reserved dinner seating.
                             </p>
-                        </button>
-
-                        <button type="button" id="btn-choice-no" onclick="selectMemberStatus(false)"
-                            class="p-4 sm:p-5 rounded-2xl border-2 border-slate-700 bg-slate-800/80 hover:border-amber-500 hover:bg-slate-800 text-left transition-all group cursor-pointer">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">No, I am not a member yet</span>
-                                <span class="w-6 h-6 rounded-full border border-slate-600 flex items-center justify-center text-xs group-hover:border-amber-400 text-amber-400">→</span>
-                            </div>
-                            <p class="text-xs text-slate-400 leading-normal">
-                                I am attending as a guest, business associate, entrepreneur, or future member.
-                            </p>
-                        </button>
-                    </div>
-
-                    <!-- PHONE LOOKUP CONTAINER (Revealed if YES) -->
-                    <div id="member-phone-lookup" class="hidden mt-6 pt-6 border-t border-white/10">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-amber-300 mb-2">
-                            Enter your Registered Mobile Number *
-                        </label>
-                        <div class="flex flex-col sm:flex-row gap-3">
-                            <div class="relative flex-1">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">+91</span>
-                                <input type="tel" id="lookup-phone-input" maxlength="10" placeholder="10-digit mobile number"
-                                    class="w-full pl-14 pr-4 py-3.5 rounded-xl bg-slate-800 text-white border border-slate-700 focus:border-amber-500 outline-none text-sm font-semibold">
-                            </div>
-                            <button type="button" id="btn-verify-member" onclick="performMemberLookup()"
-                                class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black px-6 py-3.5 rounded-xl text-xs uppercase tracking-wider shadow-md transition-all flex items-center justify-center gap-2">
-                                <span id="verify-btn-text">Check Membership 🔍</span>
-                            </button>
                         </div>
 
-                        <!-- Verification Feedback Status Box -->
-                        <div id="lookup-feedback" class="mt-4 hidden"></div>
-
-                        <!-- 1-CLICK VERIFIED MEMBER FAST REGISTRATION (No form filling required!) -->
-                        <div id="member-fast-pass" class="hidden mt-6 p-6 rounded-2xl bg-gradient-to-br from-emerald-950/80 via-slate-900 to-emerald-950/80 border-2 border-emerald-500/50 shadow-2xl">
-                            <div class="flex items-start justify-between gap-4 border-b border-emerald-500/30 pb-4 mb-4">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl border border-emerald-500/40">
-                                        ✓
+                        <form id="arete-delegate-form" onsubmit="handleRegistrationSubmit(event)" class="space-y-5">
+                            
+                            <!-- Full Name -->
+                            <div>
+                                <label for="reg-name" class="block text-xs font-bold text-slate-200 uppercase tracking-wider mb-1.5">
+                                    Full Name <span class="text-amber-400">*</span>
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs">
+                                        <i class="fa-regular fa-user"></i>
                                     </span>
-                                    <div>
-                                        <span class="text-[10px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30">Verified TKL Member</span>
-                                        <h4 id="fastpass-name" class="text-xl sm:text-2xl font-black text-white font-cinzel mt-1">Member Name</h4>
-                                        <p id="fastpass-meta" class="text-xs text-emerald-300 font-medium">Company • Role • Chapter</p>
+                                    <input type="text" id="reg-name" required placeholder="e.g. Dr. Joshua Thangaraj"
+                                        class="form-input-luxury w-full pl-10 pr-4 py-3 rounded-xl text-sm font-medium">
+                                </div>
+                            </div>
+
+                            <!-- Phone & Email (2 cols on sm) -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="reg-phone" class="block text-xs font-bold text-slate-200 uppercase tracking-wider mb-1.5">
+                                        WhatsApp / Mobile <span class="text-amber-400">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs">
+                                            <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+                                        </span>
+                                        <input type="tel" id="reg-phone" required placeholder="10-digit mobile number" maxlength="10"
+                                            class="form-input-luxury w-full pl-10 pr-4 py-3 rounded-xl text-sm font-medium">
                                     </div>
                                 </div>
-                                <button type="button" onclick="resetMemberVerification()" class="text-xs text-slate-400 hover:text-white underline">Change Number</button>
+                                <div>
+                                    <label for="reg-email" class="block text-xs font-bold text-slate-200 uppercase tracking-wider mb-1.5">
+                                        Email Address <span class="text-amber-400">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs">
+                                            <i class="fa-regular fa-envelope"></i>
+                                        </span>
+                                        <input type="email" id="reg-email" required placeholder="name@company.com"
+                                            class="form-input-luxury w-full pl-10 pr-4 py-3 rounded-xl text-sm font-medium">
+                                    </div>
+                                </div>
                             </div>
 
-                            <p class="text-xs sm:text-sm text-slate-200 leading-relaxed mb-5">
-                                🎉 <strong class="text-emerald-300">No need to fill out the form!</strong> As a verified TKL Member, your profile is already in our system. You can confirm your attendance for ARETE 26 in one click.
-                            </p>
-
-                            <!-- Optional Guests for Member -->
-                            <div class="bg-slate-900/90 rounded-xl p-4 border border-emerald-500/30 mb-5">
-                                <label class="block text-xs font-bold text-amber-300 uppercase tracking-wider mb-2">
-                                    Are you bringing any additional members / guests along with you?
-                                </label>
-                                <div class="flex items-center gap-5 text-xs font-semibold text-slate-300">
-                                    <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="member_fast_has_guests" value="no" checked onchange="toggleFastPassGuests(false)" class="text-amber-500 focus:ring-amber-400">
-                                        <span>No (Attending Alone)</span>
+                            <!-- Company & Designation (2 cols on sm) -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="reg-company" class="block text-xs font-bold text-slate-200 uppercase tracking-wider mb-1.5">
+                                        Company / Business / Church <span class="text-amber-400">*</span>
                                     </label>
-                                    <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="member_fast_has_guests" value="yes" onchange="toggleFastPassGuests(true)" class="text-amber-500 focus:ring-amber-400">
-                                        <span>Yes (Add Guests)</span>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs">
+                                            <i class="fa-solid fa-briefcase"></i>
+                                        </span>
+                                        <input type="text" id="reg-company" required placeholder="e.g. Eagle Press / Ministry"
+                                            class="form-input-luxury w-full pl-10 pr-4 py-3 rounded-xl text-sm font-medium">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="reg-designation" class="block text-xs font-bold text-slate-200 uppercase tracking-wider mb-1.5">
+                                        Designation / Profession <span class="text-amber-400">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs">
+                                            <i class="fa-solid fa-id-badge"></i>
+                                        </span>
+                                        <input type="text" id="reg-designation" required placeholder="e.g. Managing Director / Founder"
+                                            class="form-input-luxury w-full pl-10 pr-4 py-3 rounded-xl text-sm font-medium">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chapter / Location Selection -->
+                            <div>
+                                <label for="reg-chapter" class="block text-xs font-bold text-slate-200 uppercase tracking-wider mb-1.5">
+                                    TKL Chapter / City Location <span class="text-amber-400">*</span>
+                                </label>
+                                <select id="reg-chapter" required class="form-input-luxury w-full px-4 py-3 rounded-xl text-sm font-medium cursor-pointer">
+                                    <option value="" disabled selected>-- Select Chapter / Location --</option>
+                                    <option value="Chennai Central">Chennai Central Chapter</option>
+                                    <option value="Chennai OMR">Chennai OMR Chapter</option>
+                                    <option value="Chennai ECR">Chennai ECR Chapter</option>
+                                    <option value="Chennai Anna Nagar">Chennai Anna Nagar Chapter</option>
+                                    <option value="Chennai Tambaram">Chennai Tambaram Chapter</option>
+                                    <option value="Chennai Porur">Chennai Porur Chapter</option>
+                                    <option value="Chennai Velachery">Chennai Velachery Chapter</option>
+                                    <option value="Coimbatore">Coimbatore Chapter</option>
+                                    <option value="Madurai">Madurai Chapter</option>
+                                    <option value="Trichy">Trichy Chapter</option>
+                                    <option value="Bangalore">Bangalore Chapter</option>
+                                    <option value="Guest Delegate">Invited Guest Delegate / Other</option>
+                                </select>
+                            </div>
+
+                            <!-- Fellowship Dinner Preference -->
+                            <div class="bg-slate-950/70 p-4 sm:p-5 rounded-2xl border border-white/10 space-y-2">
+                                <label class="block text-xs font-bold text-amber-300 uppercase tracking-wider">
+                                    Fellowship Dinner Preference <span class="text-amber-400">*</span>
+                                </label>
+                                <p class="text-xs text-slate-400">Please choose your meal preference for the summit fellowship dinner.</p>
+                                <div class="grid grid-cols-2 gap-3 pt-1">
+                                    <label class="food-choice-card flex items-center gap-3 p-3 rounded-xl border border-slate-700 bg-slate-900/90 cursor-pointer hover:border-amber-400 transition-colors">
+                                        <input type="radio" name="food_preference" value="Non-Veg" checked class="w-4 h-4 text-amber-500 focus:ring-amber-400">
+                                        <div>
+                                            <span class="block text-sm font-bold text-white">🍗 Non-Veg</span>
+                                            <span class="block text-[10px] text-slate-400">Chicken / Mutton Menu</span>
+                                        </div>
+                                    </label>
+                                    <label class="food-choice-card flex items-center gap-3 p-3 rounded-xl border border-slate-700 bg-slate-900/90 cursor-pointer hover:border-emerald-400 transition-colors">
+                                        <input type="radio" name="food_preference" value="Veg" class="w-4 h-4 text-emerald-500 focus:ring-emerald-400">
+                                        <div>
+                                            <span class="block text-sm font-bold text-white">🥗 Pure Veg</span>
+                                            <span class="block text-[10px] text-slate-400">Special Vegetarian Menu</span>
+                                        </div>
                                     </label>
                                 </div>
+                            </div>
 
-                                <div id="fastpass-guests-container" class="hidden mt-4 space-y-3 pt-3 border-t border-slate-800">
-                                    <div id="fastpass-guests-list" class="space-y-3"></div>
-                                    <button type="button" onclick="addFastPassGuestCard()"
-                                        class="text-xs font-bold text-amber-400 hover:text-amber-300 py-1.5 px-3 rounded-lg border border-dashed border-amber-500/40 bg-amber-500/10 transition-colors inline-block cursor-pointer">
-                                        ➕ Add Another Guest
+                            <!-- Accompanying Guests Toggle -->
+                            <div class="bg-slate-950/70 p-4 sm:p-5 rounded-2xl border border-white/10 space-y-3">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-200 uppercase tracking-wider">
+                                            Are you bringing accompanying members / guests?
+                                        </label>
+                                        <span class="text-[11px] text-slate-400">Spouse, business partner, or colleague</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-xs font-semibold">
+                                        <label class="flex items-center gap-1.5 cursor-pointer">
+                                            <input type="radio" name="has_guests" value="no" checked onchange="toggleGuestSection(false)" class="text-amber-500 focus:ring-amber-400">
+                                            <span>No</span>
+                                        </label>
+                                        <label class="flex items-center gap-1.5 cursor-pointer">
+                                            <input type="radio" name="has_guests" value="yes" onchange="toggleGuestSection(true)" class="text-amber-500 focus:ring-amber-400">
+                                            <span>Yes</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Guest List Container -->
+                                <div id="guest-fields-wrapper" class="hidden pt-3 border-t border-white/10 space-y-3">
+                                    <div id="guests-list" class="space-y-3"></div>
+                                    <button type="button" onclick="addGuestField()" class="text-xs font-bold text-amber-300 hover:text-amber-200 py-1.5 px-3 rounded-lg border border-dashed border-amber-500/40 bg-amber-500/10 transition-colors inline-flex items-center gap-1.5">
+                                        <i class="fa-solid fa-plus text-[10px]"></i>
+                                        <span>Add Another Guest</span>
                                     </button>
                                 </div>
                             </div>
 
-                            <!-- VIP Fast Pass Details -->
-                            <div class="bg-slate-950/90 rounded-2xl p-5 border border-amber-500/30 mb-5 space-y-4">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/10">
-                                    <div>
-                                        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">VIP Pass Status</span>
-                                        <div class="text-xs text-slate-300"><span id="fastpass-delegates-count">1</span> Reserved Delegate Pass</div>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-lg font-black text-emerald-400 font-cinzel">COMPLIMENTARY</div>
-                                        <div class="text-[10px] text-emerald-500 font-semibold">(VIP Reserved Pass • ₹0)</div>
-                                    </div>
-                                </div>
-
-                                <!-- Food Preference for Fast Pass -->
-                                <div>
-                                    <label class="block text-xs font-bold text-amber-300 uppercase tracking-wider mb-2">
-                                        Fellowship Dinner Preference *
-                                    </label>
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <label class="flex items-center p-2.5 rounded-xl border border-slate-700 bg-slate-900 cursor-pointer text-xs font-bold text-white hover:border-amber-400">
-                                            <input type="radio" name="fastpass_food_preference" value="Non-Veg" checked class="w-4 h-4 text-amber-500">
-                                            <span class="ml-2">🍗 Non-Veg</span>
-                                        </label>
-                                        <label class="flex items-center p-2.5 rounded-xl border border-slate-700 bg-slate-900 cursor-pointer text-xs font-bold text-white hover:border-emerald-400">
-                                            <input type="radio" name="fastpass_food_preference" value="Veg" class="w-4 h-4 text-emerald-500">
-                                            <span class="ml-2">🥗 Pure Veg</span>
-                                        </label>
-                                    </div>
-                                </div>
+                            <!-- Special Notes (Optional) -->
+                            <div>
+                                <label for="reg-notes" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                                    Dietary Notes / Special Requests (Optional)
+                                </label>
+                                <textarea id="reg-notes" rows="2" placeholder="Any dietary or seating preferences for the committee..."
+                                    class="form-input-luxury w-full px-4 py-2.5 rounded-xl text-sm font-medium resize-none"></textarea>
                             </div>
 
-                            <!-- 1-Click Fast Pass Confirmation Button -->
-                            <button type="button" id="btn-fastpass-submit" onclick="submitMemberFastPass()"
-                                class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-4 px-8 rounded-2xl text-sm sm:text-base uppercase tracking-wider shadow-xl shadow-emerald-500/25 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
-                                <span id="fastpass-spinner" class="hidden">
-                                    <svg class="animate-spin h-5 w-5 text-slate-950" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                                    </svg>
+                            <!-- Agreement Checkbox -->
+                            <div class="p-3.5 rounded-xl bg-slate-950/60 border border-white/10">
+                                <label class="flex items-start gap-2.5 cursor-pointer">
+                                    <input type="checkbox" id="reg-agree" required class="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 border-slate-700 mt-0.5">
+                                    <span class="text-xs text-slate-300 leading-snug">
+                                        I confirm my attendance for <strong class="text-amber-300 font-bold">Aréte’26</strong> on 5 December 2026 at CSI Synod Centre, Chennai.
+                                    </span>
+                                </label>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" id="btn-submit"
+                                class="w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-4 px-6 rounded-2xl text-sm sm:text-base uppercase tracking-wider shadow-xl shadow-amber-500/20 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
+                                <span id="btn-spinner" class="hidden">
+                                    <i class="fa-solid fa-circle-notch fa-spin text-base"></i>
                                 </span>
-                                <span id="fastpass-btn-text">⚡ Confirm VIP Member Pass (Complimentary) ➔</span>
+                                <span id="btn-text">Confirm Delegate Registration</span>
+                                <i id="btn-icon" class="fa-solid fa-arrow-right text-sm"></i>
                             </button>
-                        </div>
-                    </div>
 
-                    <!-- NON-MEMBER NOTICE (Revealed if NO) -->
-                    <div id="non-member-notice" class="hidden mt-6 pt-6 border-t border-white/10">
-                        <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex items-center justify-between gap-4">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">👋</span>
-                                <div>
-                                    <h4 class="font-bold text-white text-sm">Welcome to ARETE 26!</h4>
-                                    <p class="text-xs text-amber-200/90 mt-0.5">
-                                        You are registering as a Non-TKL Member / Guest. Please fill in your primary details below.
-                                    </p>
-                                </div>
-                            </div>
-                            <a href="#form-section-1" class="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-4 py-2 rounded-xl transition-colors whitespace-nowrap shadow-sm">
-                                Fill Details ↓
-                            </a>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- ========================================== -->
-                <!-- MAIN REGISTRATION FORM -->
-                <!-- ========================================== -->
-                <form id="arete-registration-form" onsubmit="handleAreteSubmit(event)" class="hidden space-y-8 bg-white text-slate-900 rounded-3xl p-6 sm:p-10 shadow-2xl border border-amber-500/30 transition-all duration-300">
-                    
-                    <!-- Hidden field tracking membership flag -->
-                    <input type="hidden" id="form-is-member" value="No">
-
-                    <!-- SECTION 1: PRIMARY REGISTRANT DETAILS -->
-                    <div id="form-section-1" class="space-y-6 pt-2">
-                        <div class="border-b border-gray-200 pb-4">
-                            <span class="text-[11px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-3 py-1 rounded-full">Section 1</span>
-                            <h3 class="text-2xl font-black text-gray-900 mt-2 font-cinzel">Non-TKL Member Registration Form</h3>
-                            <p class="text-xs text-gray-500 mt-1">Non-TKL members, entrepreneurs, and guests please fill in your details below. Fields marked with * are required.</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            <!-- 1. Full Name * -->
-                            <div class="sm:col-span-2">
-                                <label for="reg-full-name" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    1. Full Name *
-                                </label>
-                                <input type="text" id="reg-full-name" required placeholder="e.g. John David"
-                                    class="reg-input">
-                            </div>
-
-                            <!-- 2. Business / Company Name * -->
-                            <div>
-                                <label for="reg-company-name" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    2. Business / Company Name *
-                                </label>
-                                <input type="text" id="reg-company-name" required placeholder="e.g. Acme Innovations Pvt Ltd"
-                                    class="reg-input">
-                            </div>
-
-                            <!-- 3. Designation * -->
-                            <div>
-                                <label for="reg-designation" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    3. Designation *
-                                </label>
-                                <input type="text" id="reg-designation" required placeholder="e.g. Managing Director / Founder"
-                                    class="reg-input">
-                            </div>
-
-                            <!-- 4. Mobile / WhatsApp Number * -->
-                            <div>
-                                <label for="reg-mobile" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    4. Mobile Number / WhatsApp Number *
-                                </label>
-                                <input type="tel" id="reg-mobile" required placeholder="10-digit mobile number"
-                                    class="reg-input">
-                            </div>
-
-                            <!-- 5. Email ID * -->
-                            <div>
-                                <label for="reg-email" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    5. Email ID *
-                                </label>
-                                <input type="email" id="reg-email" required placeholder="name@company.com"
-                                    class="reg-input">
-                            </div>
-
-                            <!-- 6. Full Address * -->
-                            <div class="sm:col-span-2">
-                                <label for="reg-address" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    6. Full Address *
-                                </label>
-                                <textarea id="reg-address" rows="2" required placeholder="Door No, Street name, Area, City, PIN code"
-                                    class="reg-input resize-none"></textarea>
-                            </div>
-
-                            <!-- 7. TKL Chapter Name * -->
-                            <div class="sm:col-span-2">
-                                <label for="reg-chapter" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    7. TKL Chapter Name *
-                                </label>
-                                <select id="reg-chapter" required class="reg-input font-semibold">
-                                    <option value="" disabled selected>Select your TKL Chapter or Membership status *</option>
-                                    <option value="Chennai South">Chennai South</option>
-                                    <option value="Chennai Central">Chennai Central</option>
-                                    <option value="Chennai East">Chennai East</option>
-                                    <option value="Chennai West">Chennai West</option>
-                                    <option value="Chennai North">Chennai North</option>
-                                    <option value="ECR">ECR</option>
-                                    <option value="Anna Nagar">Anna Nagar</option>
-                                    <option value="Thirupur">Thirupur</option>
-                                    <option value="Other">Other</option>
-                                    <option value="Non-TKL Member">Non-TKL Member</option>
-                                </select>
-                            </div>
-
-                            <!-- 8. Food Preference (Fellowship Dinner) * -->
-                            <div class="sm:col-span-2">
-                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    8. Food Preference (Fellowship Dinner) *
-                                </label>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <label class="relative flex items-center p-3.5 rounded-xl border border-gray-300 hover:border-amber-500 cursor-pointer transition-colors bg-white has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50/50 has-[:checked]:ring-2 has-[:checked]:ring-amber-500">
-                                        <input type="radio" name="food_preference" value="Non-Veg" checked class="w-4 h-4 text-amber-600 focus:ring-amber-500 border-gray-300">
-                                        <div class="ml-3">
-                                            <span class="block text-sm font-bold text-gray-900">🍗 Non-Veg</span>
-                                            <span class="block text-xs text-gray-500">Fellowship Dinner</span>
-                                        </div>
-                                    </label>
-                                    <label class="relative flex items-center p-3.5 rounded-xl border border-gray-300 hover:border-emerald-500 cursor-pointer transition-colors bg-white has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-50/50 has-[:checked]:ring-2 has-[:checked]:ring-emerald-500">
-                                        <input type="radio" name="food_preference" value="Veg" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
-                                        <div class="ml-3">
-                                            <span class="block text-sm font-bold text-gray-900">🥗 Pure Veg</span>
-                                            <span class="block text-xs text-gray-500">Fellowship Dinner</span>
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SECTION 2: BUSINESS DETAILS -->
-                    <div id="form-section-2" class="space-y-6 pt-6 border-t border-gray-200">
-                        <div class="border-b border-gray-200 pb-4">
-                            <span class="text-[11px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-3 py-1 rounded-full">Section 2</span>
-                            <h3 class="text-2xl font-black text-gray-900 mt-2 font-cinzel">Business Details</h3>
-                            <p class="text-xs text-gray-500 mt-1">This helps us facilitate marketplace collaborations, referrals, and networking during the summit.</p>
-                        </div>
-
-                        <div class="space-y-5">
-                            <!-- 1. Industry / Business Category * -->
-                            <div>
-                                <label for="reg-industry" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    1. Industry / Business Category *
-                                </label>
-                                <select id="reg-industry" required class="reg-input font-medium">
-                                    <option value="" disabled selected>Select Business Category *</option>
-                                    <option value="Information Technology & Software">Information Technology & Software</option>
-                                    <option value="Manufacturing & Industrial">Manufacturing & Industrial</option>
-                                    <option value="Retail, FMCG & E-Commerce">Retail, FMCG & E-Commerce</option>
-                                    <option value="Real Estate, Construction & Infrastructure">Real Estate, Construction & Infrastructure</option>
-                                    <option value="Healthcare, Medical & Pharma">Healthcare, Medical & Pharma</option>
-                                    <option value="Education, Training & Coaching">Education, Training & Coaching</option>
-                                    <option value="Financial Services, Banking & Insurance">Financial Services, Banking & Insurance</option>
-                                    <option value="Logistics, Supply Chain & Warehousing">Logistics, Supply Chain & Warehousing</option>
-                                    <option value="Media, Marketing & Advertising">Media, Marketing & Advertising</option>
-                                    <option value="Hospitality, Food & Catering">Hospitality, Food & Catering</option>
-                                    <option value="Legal & Professional Consulting">Legal & Professional Consulting</option>
-                                    <option value="Agriculture & Agrotech">Agriculture & Agrotech</option>
-                                    <option value="Automobile & Transportation">Automobile & Transportation</option>
-                                    <option value="Other Category">Other Category</option>
-                                </select>
-                            </div>
-
-                            <!-- 2. Products / Services Offered -->
-                            <div>
-                                <label for="reg-products-services" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    2. Products / Services Offered
-                                </label>
-                                <textarea id="reg-products-services" rows="2" placeholder="Briefly describe what your enterprise or practice offers"
-                                    class="reg-input resize-none"></textarea>
-                            </div>
-
-                            <!-- 3. Website / Social Media Link (Optional) -->
-                            <div>
-                                <label for="reg-website" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    3. Website / Social Media Link (Optional)
-                                </label>
-                                <input type="text" id="reg-website" placeholder="https://yourwebsite.com or LinkedIn profile"
-                                    class="reg-input">
-                            </div>
-
-                            <!-- 4. What business connections or collaborations are you looking for? (Optional) -->
-                            <div>
-                                <label for="reg-collaborations" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                    4. What business connections or collaborations are you looking for? (Optional)
-                                </label>
-                                <textarea id="reg-collaborations" rows="2" placeholder="e.g. Seeking B2B distribution partners, institutional clients, technology collaborators, investors, or vendors"
-                                    class="reg-input resize-none"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SECTION 3: ADDITIONAL MEMBERS -->
-                    <div id="form-section-3" class="space-y-6 pt-6 border-t border-gray-200">
-                        <div class="border-b border-gray-200 pb-4">
-                            <span class="text-[11px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-3 py-1 rounded-full">Section 3</span>
-                            <h3 class="text-2xl font-black text-gray-900 mt-2 font-cinzel">Additional Members</h3>
-                            <p class="text-xs text-gray-500 mt-1">Register colleagues, business partners, spouse, family, or guests accompanying you.</p>
-                        </div>
-
-                        <!-- Yes/No Question -->
-                        <div>
-                            <label class="block text-sm font-bold text-gray-800 mb-3">
-                                Would you like to register additional members along with you? *
-                            </label>
-                            <div class="flex items-center gap-6">
-                                <label class="flex items-center gap-2 cursor-pointer text-sm font-semibold text-gray-700">
-                                    <input type="radio" name="has_additional_members" value="no" checked onchange="toggleAdditionalMembers(false)"
-                                        class="w-4 h-4 text-amber-600 focus:ring-amber-500">
-                                    <span>No (I am attending alone)</span>
-                                </label>
-
-                                <label class="flex items-center gap-2 cursor-pointer text-sm font-semibold text-gray-700">
-                                    <input type="radio" name="has_additional_members" value="yes" onchange="toggleAdditionalMembers(true)"
-                                        class="w-4 h-4 text-amber-600 focus:ring-amber-500">
-                                    <span>Yes (Register accompanying members)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Dynamic Additional Members Container -->
-                        <div id="additional-members-wrapper" class="hidden space-y-6 pt-4">
-                            <div id="additional-members-list" class="space-y-4">
-                                <!-- Cards dynamically appended here -->
-                            </div>
-
-                            <button type="button" onclick="addAnotherMemberCard()"
-                                class="inline-flex items-center gap-2 px-5 py-3 rounded-xl border-2 border-dashed border-amber-500/60 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs uppercase tracking-wider transition-all">
-                                <span>➕ Add Another Member</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- SECTION 4: VIP DELEGATE CONFIRMATION -->
-                    <div id="form-section-4" class="space-y-6 pt-6 border-t border-gray-200">
-                        <div class="border-b border-gray-200 pb-4">
-                            <span class="text-[11px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-3 py-1 rounded-full">Section 4</span>
-                            <h3 class="text-2xl font-black text-gray-900 mt-2 font-cinzel">VIP Delegate Confirmation</h3>
-                            <p class="text-xs text-gray-500 mt-1">Review your delegate summary and confirm your complimentary attendance.</p>
-                        </div>
-
-                        <!-- 1. Total Number of Participants & Pass Summary Box -->
-                        <div class="bg-gradient-to-r from-amber-50 via-slate-50 to-amber-50 border border-amber-300 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-800 uppercase tracking-wider">
-                                    1. Total Number of Participants (including yourself) *
-                                </label>
-                                <p class="text-xs text-gray-500 mt-0.5">
-                                    Primary VIP Delegate (1) + Additional Accompanying Members (<span id="calc-guests-count">0</span>)
-                                </p>
-                            </div>
-                            <div class="flex items-center gap-6">
-                                <div class="text-center sm:text-right">
-                                    <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Total Delegates</div>
-                                    <div class="flex items-center gap-1.5 justify-center sm:justify-end">
-                                        <span class="text-2xl font-black text-slate-900 font-cinzel" id="display-total-count">1</span>
-                                        <span class="text-xs font-extrabold text-slate-600 uppercase">Person(s)</span>
-                                    </div>
-                                    <input type="hidden" id="reg-total-participants" value="1">
-                                </div>
-                                <div class="h-10 w-px bg-amber-300 hidden sm:block"></div>
-                                <div class="text-center sm:text-right">
-                                    <div class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Pass Admission</div>
-                                    <div class="text-xl font-black text-emerald-700 font-cinzel">
-                                        COMPLIMENTARY
-                                    </div>
-                                    <div class="text-[10px] text-emerald-600 font-semibold">(VIP Reserved Pass • ₹0)</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- VIP Invitation Perks Notice -->
-                        <div class="bg-slate-950 text-white rounded-2xl p-5 border border-amber-400/40 shadow-lg flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center justify-center text-2xl flex-shrink-0">
-                                🌟
-                            </div>
-                            <div class="text-xs space-y-1">
-                                <div class="font-bold text-amber-300 text-sm">Special Invitee / VIP Admission</div>
-                                <p class="text-slate-300 leading-relaxed">
-                                    Your pass includes reserved keynote seating, summit networking credentials, and the official <strong class="text-emerald-400">Fellowship Dinner (Included)</strong>. No payment or transaction reference required.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- 2. Any additional information (Optional) -->
-                        <div>
-                            <label for="reg-additional-info" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                                2. Any special requests, accessibility needs, or dietary notes (Optional)
-                            </label>
-                            <textarea id="reg-additional-info" rows="2" placeholder="Special requirements or notes for the organizing committee"
-                                class="reg-input resize-none"></textarea>
-                        </div>
-
-                        <!-- Confirmation Checkbox -->
-                        <div class="p-4 rounded-xl bg-slate-50 border border-gray-200">
-                            <label class="flex items-start gap-3 cursor-pointer">
-                                <input type="checkbox" id="reg-confirm-agree" required
-                                    class="w-5 h-5 rounded text-amber-600 focus:ring-amber-500 border-gray-300 mt-0.5">
-                                <span class="text-xs sm:text-sm font-semibold text-gray-800 leading-snug">
-                                    I confirm that the information provided is correct and confirm my participation in <strong class="text-amber-800 font-bold">ARETE 26</strong> on 5 December 2026 (VIP Complimentary Pass). *
-                                </span>
-                            </label>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="pt-4">
-                            <button type="submit" id="btn-submit-registration"
-                                class="w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-4 px-8 rounded-2xl text-sm sm:text-base uppercase tracking-wider shadow-xl shadow-amber-500/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
-                                <span id="submit-btn-spinner" class="hidden">
-                                    <svg class="animate-spin h-5 w-5 text-slate-950" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                                    </svg>
-                                </span>
-                                <span id="submit-btn-text">Confirm VIP Registration (Complimentary) ➔</span>
-                            </button>
-                            <p class="text-[11px] text-gray-500 text-center mt-2">
-                                Complimentary Admission • Instant digital confirmation pass generated • Reserved VIP Seating.
+                            <p class="text-[11px] text-center text-slate-400 mt-2">
+                                Instant confirmation • Delegate badge & details will be sent via WhatsApp/Email.
                             </p>
-                        </div>
-                    </div>
-
-                </form>
-
-            </div>
-        </section>
-
-        <!-- SUMMIT HIGHLIGHTS / WHY ATTEND -->
-        <section class="py-16 bg-slate-950 border-t border-white/10">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center">
-                        <div class="text-3xl mb-3">🏛️</div>
-                        <h4 class="text-lg font-bold text-white mb-2 font-cinzel">Civic & State Leadership</h4>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            Interacting with senior governmental, judicial, and state figures to align faith with constitutional nation-building.
-                        </p>
-                    </div>
-
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center">
-                        <div class="text-3xl mb-3">🤝</div>
-                        <h4 class="text-lg font-bold text-white mb-2 font-cinzel">Marketplace Synergy</h4>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            B2B connections, ethical investment opportunities, and cross-chapter referral ecosystems across Chennai and Tamil Nadu.
-                        </p>
-                    </div>
-
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center">
-                        <div class="text-3xl mb-3">🔥</div>
-                        <h4 class="text-lg font-bold text-white mb-2 font-cinzel">Next-Gen Incubation</h4>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            Empowering youth, civil services aspirants, and startup pioneers to lead with excellence and integrity.
-                        </p>
+                        </form>
                     </div>
                 </div>
+
             </div>
-        </section>
+        </div>
     </main>
 
-    <!-- SUCCESS CONFIRMATION MODAL (Dark Luxury Golden Summit Pass with Bank Payment Details) -->
-    <div id="success-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
-        <div class="relative bg-slate-900 text-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border-2 border-amber-400/60 text-center transform transition-all my-8 max-h-[90vh] overflow-y-auto">
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirmation-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
+        <div class="relative bg-slate-900 text-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border-2 border-amber-400/60 text-center transform transition-all my-8">
             
-            <!-- Success Icon & Header -->
+            <!-- Checkmark Icon -->
             <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-600 text-slate-950 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg shadow-emerald-500/30 font-black">
                 ✓
             </div>
@@ -960,747 +420,211 @@
                 Welcome to Aréte’26!
             </h3>
 
-            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                Thank you, <strong id="modal-attendee-name" class="text-amber-300">Delegate</strong>! Your summit pass has been reserved in our central registry.
+            <p class="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
+                Thank you, <strong id="modal-delegate-name" class="text-amber-300">Delegate</strong>! Your delegate registration has been confirmed.
             </p>
 
-            <!-- Registration Summary Strip -->
-            <div class="grid grid-cols-2 gap-2 mt-4 text-xs text-left">
-                <div class="bg-slate-950/80 p-2.5 rounded-xl border border-white/10">
-                    <span class="text-slate-400 text-[10px] uppercase tracking-wider block">Reference ID</span>
-                    <strong id="modal-ref-id" class="text-amber-400 font-mono text-xs sm:text-sm">ARETE26-00000</strong>
-                </div>
-                <div class="bg-slate-950/80 p-2.5 rounded-xl border border-white/10">
-                    <span class="text-slate-400 text-[10px] uppercase tracking-wider block">Total Amount</span>
-                    <strong id="modal-total-fee" class="text-amber-300 font-black text-xs sm:text-sm">₹500</strong>
-                    <span id="modal-total-delegates" class="text-[10px] text-slate-400 block">(1 Delegate)</span>
-                </div>
-            </div>
-
-            <!-- VIP PASS CONFIRMATION PERKS -->
-            <div class="bg-slate-950/90 rounded-2xl p-4 border border-emerald-500/30 text-left space-y-3 mt-4">
-                <div class="flex items-center gap-2 pb-2 border-b border-white/10">
-                    <span class="text-xl">🎟️</span>
+            <!-- Details Card -->
+            <div class="bg-slate-950/90 rounded-2xl p-4 border border-amber-500/25 text-left space-y-3 mt-5">
+                <div class="flex items-center justify-between pb-2 border-b border-white/10">
                     <div>
-                        <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">ADMISSION STATUS</div>
-                        <h4 class="text-sm font-extrabold text-white">VIP Reserved Pass Confirmed</h4>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Reference Number</span>
+                        <strong id="modal-ref-id" class="text-amber-400 font-mono text-sm">ARETE26-00000</strong>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Delegates</span>
+                        <strong id="modal-delegates-count" class="text-emerald-400 font-bold text-sm">1 Delegate</strong>
                     </div>
                 </div>
+
                 <div class="grid grid-cols-2 gap-2 text-xs">
                     <div class="bg-slate-900 p-2.5 rounded-xl border border-white/5">
                         <span class="text-[10px] text-slate-400 block">Date & Time</span>
-                        <strong class="text-amber-300 text-xs">5 Dec 2026 • 5:00 PM</strong>
+                        <strong class="text-white text-xs">5 Dec 2026 • 5:00 PM</strong>
                     </div>
                     <div class="bg-slate-900 p-2.5 rounded-xl border border-white/5">
-                        <span class="text-[10px] text-slate-400 block">Fellowship Dinner</span>
-                        <strong class="text-emerald-400 text-xs">Included (Veg / Non-Veg)</strong>
+                        <span class="text-[10px] text-slate-400 block">Venue</span>
+                        <strong class="text-white text-xs">CSI Synod Centre</strong>
                     </div>
-                    <div class="col-span-2 bg-slate-900 p-2.5 rounded-xl border border-white/5">
-                        <span class="text-[10px] text-slate-400 block">Summit Venue</span>
-                        <strong class="text-white text-xs">CSI Synod Centre, Royapettah, Chennai</strong>
-                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-2.5 rounded-xl border border-white/5 text-xs">
+                    <span class="text-[10px] text-slate-400 block">Fellowship Dinner</span>
+                    <strong id="modal-food-summary" class="text-amber-300 text-xs">Non-Veg</strong>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="mt-4">
-                <button type="button" onclick="closeSuccessModal()"
-                    class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-colors shadow cursor-pointer">
-                    Done / Return to Page &rarr;
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
+                <a id="modal-whatsapp-btn" href="#" target="_blank"
+                    class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span>Share Details</span>
+                </a>
+                <button type="button" onclick="closeConfirmationModal()"
+                    class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-3 px-4 rounded-xl text-xs uppercase tracking-wider border border-white/10 transition-colors">
+                    Done
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-slate-950 text-gray-400 py-12 border-t border-white/10 text-xs">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-            <div class="flex items-center justify-center space-x-3">
-                <img src="images/logo.jpg" alt="Logo" class="w-8 h-8 rounded-lg object-cover">
-                <span class="text-white font-bold text-sm tracking-wide font-cinzel">The Kingdom Leaders</span>
-            </div>
-            <p class="max-w-md mx-auto text-slate-400">
-                A Generation of Kingdom Leaders Transforming India. Head Office: Plot No.18, Medavakkam Main Rd, Sithalapakkam, Chennai - 600131.
-            </p>
-            <div class="flex items-center justify-center space-x-6 text-slate-400">
-                <a href="index.html" class="hover:text-amber-400 transition-colors">Home</a>
-                <a href="events.html" class="hover:text-amber-400 transition-colors">Events</a>
-                <a href="chapters.html" class="hover:text-amber-400 transition-colors">Chapters</a>
-                <a href="contact.html" class="hover:text-amber-400 transition-colors">Contact</a>
-            </div>
-            <p class="text-slate-600">
-                © 2026 The Kingdom Leaders. All rights reserved.
-            </p>
-        </div>
-    </footer>
-
-    <!-- ========================================== -->
-    <!-- INTERACTIVE JAVASCRIPT LOGIC -->
-    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        const ARETE_EVENT_ID = '05e95786-0cf7-4dd3-8c42-5a246a153138';
-        const ARETE_EVENT_TITLE = 'ARETE 26 - Annual Leadership Summit';
-        const ARETE_DELEGATE_FEE = 0;
-        let additionalMembers = [];
+        const ARETE_EVENT_TITLE = "ARETE 26 - Annual Business Leadership Summit";
+        const ARETE_EVENT_ID = "arete-26";
+        let guestList = [];
 
-        // Copy Bank Details Helper
-        function copyBankText(text, btn) {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(() => {
-                    const originalText = btn.innerHTML;
-                    btn.innerHTML = '<span>Copied! ✓</span>';
-                    btn.classList.add('bg-emerald-500/30', 'text-emerald-300', 'border-emerald-500/40');
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                        btn.classList.remove('bg-emerald-500/30', 'text-emerald-300', 'border-emerald-500/40');
-                    }, 2000);
-                });
-            } else {
-                const ta = document.createElement('textarea');
-                ta.value = text;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<span>Copied! ✓</span>';
-                setTimeout(() => { btn.innerHTML = originalText; }, 2000);
-            }
-        }
-
-        // 1. Initialize Page Lifecycle
-        function initAretePage() {
-            if (typeof AOS !== 'undefined') {
-                AOS.init({ duration: 600, once: true });
-            }
-            updateTotalParticipants();
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initAretePage);
-        } else {
-            initAretePage();
-        }
-
-        // 2. Gateway Member Selection (Yes vs No)
-        function selectMemberStatus(isMember) {
-            const btnYes = document.getElementById('btn-choice-yes');
-            const btnNo = document.getElementById('btn-choice-no');
-            const lookupContainer = document.getElementById('member-phone-lookup');
-            const nonMemberNotice = document.getElementById('non-member-notice');
-            const hiddenIsMember = document.getElementById('form-is-member');
-            const chapterSelect = document.getElementById('reg-chapter');
-
-            if (isMember) {
-                // Highlight Yes button
-                const fullForm = document.getElementById('arete-registration-form');
-                if (fullForm) fullForm.classList.add('hidden');
-                btnYes.classList.add('border-amber-500', 'bg-amber-500/10');
-                btnNo.classList.remove('border-amber-500', 'bg-amber-500/10');
-
-                lookupContainer.classList.remove('hidden');
-                nonMemberNotice.classList.add('hidden');
-                hiddenIsMember.value = 'Yes';
-
-                // Focus phone input
-                setTimeout(() => {
-                    const phoneInput = document.getElementById('lookup-phone-input');
-                    if (phoneInput) phoneInput.focus();
-                }, 100);
-            } else {
-                // Highlight No button
-                const fullForm = document.getElementById('arete-registration-form');
-                if (fullForm) {
-                    fullForm.classList.remove('hidden');
-                    setTimeout(() => {
-                        fullForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
-                }
-                btnNo.classList.add('border-amber-500', 'bg-amber-500/10');
-                btnYes.classList.remove('border-amber-500', 'bg-amber-500/10');
-
-                lookupContainer.classList.add('hidden');
-                nonMemberNotice.classList.remove('hidden');
-                hiddenIsMember.value = 'No';
-
-                // Set Chapter to Non-TKL Member
-                if (chapterSelect) {
-                    chapterSelect.value = 'Non-TKL Member';
-                }
-            }
-        }
-
-        let verifiedMemberRecord = null;
-        let fastPassGuests = [];
-
-        function resetMemberVerification() {
-            verifiedMemberRecord = null;
-            fastPassGuests = [];
-            document.getElementById('member-fast-pass').classList.add('hidden');
-            document.getElementById('lookup-feedback').classList.add('hidden');
-            document.getElementById('lookup-phone-input').value = '';
-            document.getElementById('lookup-phone-input').focus();
-        }
-
-        function updateFastPassTotals() {
-            const guestCount = fastPassGuests.length;
-            const total = 1 + guestCount;
-            const totalFee = total * ARETE_DELEGATE_FEE;
-            const totalEl = document.getElementById('fastpass-total-amount');
-            const btnEl = document.getElementById('fastpass-btn-amount');
-            const delegatesEl = document.getElementById('fastpass-delegates-count');
-            if (totalEl) totalEl.textContent = totalFee.toLocaleString('en-IN');
-            if (btnEl) btnEl.textContent = totalFee.toLocaleString('en-IN');
-            if (delegatesEl) delegatesEl.textContent = total;
-        }
-
-        function toggleFastPassGuests(show) {
-            const container = document.getElementById('fastpass-guests-container');
-            if (show) {
-                container.classList.remove('hidden');
-                if (fastPassGuests.length === 0) {
-                    addFastPassGuestCard();
-                }
-            } else {
-                container.classList.add('hidden');
-                fastPassGuests = [];
-                renderFastPassGuests();
-            }
-            updateFastPassTotals();
-        }
-
-        function addFastPassGuestCard() {
-            fastPassGuests.push({
-                name: '',
-                company: '',
-                relationship: 'Business Partner'
-            });
-            renderFastPassGuests();
-            updateFastPassTotals();
-        }
-
-        function removeFastPassGuest(idx) {
-            fastPassGuests.splice(idx, 1);
-            renderFastPassGuests();
-            updateFastPassTotals();
-        }
-
-        function updateFastPassGuest(idx, field, val) {
-            if (fastPassGuests[idx]) fastPassGuests[idx][field] = val;
-        }
-
-        function renderFastPassGuests() {
-            const list = document.getElementById('fastpass-guests-list');
-            if (!list) return;
-            list.innerHTML = fastPassGuests.map((g, idx) => `
-                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-700 text-xs space-y-2">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-amber-300">Guest #${idx + 1}</span>
-                        <button type="button" onclick="removeFastPassGuest(${idx})" class="text-rose-400 hover:text-rose-300">✕ Remove</button>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <input type="text" placeholder="Guest Full Name *" value="${escapeHtml(g.name)}"
-                            oninput="updateFastPassGuest(${idx}, 'name', this.value)"
-                            class="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white outline-none focus:border-amber-400 text-xs">
-                        <input type="text" placeholder="Company" value="${escapeHtml(g.company)}"
-                            oninput="updateFastPassGuest(${idx}, 'company', this.value)"
-                            class="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white outline-none focus:border-amber-400 text-xs">
-                        <select onchange="updateFastPassGuest(${idx}, 'relationship', this.value)"
-                            class="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white outline-none focus:border-amber-400 text-xs">
-                            <option value="Business Partner" ${g.relationship === 'Business Partner' ? 'selected' : ''}>Business Partner</option>
-                            <option value="Spouse" ${g.relationship === 'Spouse' ? 'selected' : ''}>Spouse</option>
-                            <option value="Family Member" ${g.relationship === 'Family Member' ? 'selected' : ''}>Family Member</option>
-                            <option value="Guest" ${g.relationship === 'Guest' ? 'selected' : ''}>Guest</option>
-                        </select>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // 1-Click Fast Pass Submission for Verified TKL Members
-        async function submitMemberFastPass() {
-            if (!verifiedMemberRecord) return;
-
-            const submitBtn = document.getElementById('btn-fastpass-submit');
-            const btnText = document.getElementById('fastpass-btn-text');
-            const spinner = document.getElementById('fastpass-spinner');
-            const foodPrefEl = document.querySelector('input[name="fastpass_food_preference"]:checked');
-            const foodPref = foodPrefEl ? foodPrefEl.value : 'Non-Veg';
-
-            const refId = `ARETE26-M${Date.now().toString().slice(-5)}`;
-            const m = verifiedMemberRecord;
-            const guestCount = fastPassGuests.length;
-            const totalParticipants = 1 + guestCount;
-            const totalCost = totalParticipants * ARETE_DELEGATE_FEE;
-
-            // Backdoor VIP Pass: Payment not required (Fee = 0)
-
-            submitBtn.disabled = true;
-            spinner.classList.remove('hidden');
-            btnText.textContent = 'Recording Fast Pass Registration...';
-
-            const notes = [
-                `[ARETE 26 - VERIFIED TKL MEMBER FAST PASS: ${refId}]`,
-                `Chapter: ${m.chapter || 'Central Chapter'}`,
-                `Company: ${m.company || '-'}`,
-                `Role: ${m.role || '-'}`,
-                `Food Preference: ${foodPref}`,
-                `Pass: VIP Member Pass (Complimentary)`,
-                guestCount > 0 ? `Guests (${guestCount}): ${JSON.stringify(fastPassGuests)}` : 'No additional guests'
-            ].join(' | ');
-
-            const payload = {
-                eventName: ARETE_EVENT_TITLE,
-                eventId: ARETE_EVENT_ID,
-                entryType: 'Special Event • VIP Member Pass',
-                name: m.full_name || 'TKL Member',
-                company: m.company || '',
-                role: m.role || 'Member',
-                phone: m.phone || '',
-                email: m.email || '',
-                pincode: m.pincode || '600014',
-                isExistingMember: 'Yes',
-                referredBy: `TKL ${m.chapter || 'Member'}`,
-                additionalGuests: guestCount,
-                totalCost: totalCost,
-                paymentStatus: 'Free',
-                notes: notes
-            };
-
-            try {
-                if (window.TKL_SUPABASE && window.TKL_SUPABASE.registrations && window.TKL_SUPABASE.registrations.save) {
-                    await window.TKL_SUPABASE.registrations.save(payload);
-                } else {
-                    const url = 'https://wbetzpupfslfntdjxpcg.supabase.co';
-                    const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndiZXR6cHVwZnNsZm50ZGp4cGNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NjE3NjgsImV4cCI6MjEwNjIzNzc2OH0.XPEH78fqfiBkDwrg5jYVWUfpD3Y0KaTDgA4_KM-S51M';
-                    await fetch(`${url}/rest/v1/registrations`, {
-                        method: 'POST',
-                        headers: {
-                            'apikey': key,
-                            'Authorization': 'Bearer ' + key,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            event_name: payload.eventName,
-                            event_id: payload.eventId,
-                            entry_type: payload.entryType,
-                            full_name: payload.name,
-                            company: payload.company,
-                            role: payload.role,
-                            phone: payload.phone,
-                            email: payload.email,
-                            pincode: payload.pincode,
-                            is_existing_member: 'Yes',
-                            referred_by: payload.referredBy,
-                            additional_guests: guestCount,
-                            total_cost: totalCost,
-                            payment_status: payload.paymentStatus,
-                            notes: notes
-                        })
-                    });
-                }
-
-                // Show confirmation modal immediately!
-                populateSuccessDetails(m.full_name || 'TKL Member', refId, totalParticipants, totalCost);
-
-            } catch (err) {
-                console.error("Fast pass error:", err);
-                populateSuccessDetails(m.full_name || 'TKL Member', refId, totalParticipants, totalCost);
-            } finally {
-                submitBtn.disabled = false;
-                spinner.classList.add('hidden');
-                btnText.textContent = `⚡ Confirm ARETE 26 Registration (₹${totalCost.toLocaleString('en-IN')}) ➔`;
-            }
-        }
-
-        // 3. Member Phone Lookup in Supabase / Local Storage
-        async function performMemberLookup() {
-            const phoneInput = document.getElementById('lookup-phone-input');
-            const feedbackEl = document.getElementById('lookup-feedback');
-            const verifyBtn = document.getElementById('btn-verify-member');
-            const verifyBtnText = document.getElementById('verify-btn-text');
-
-            const rawPhone = (phoneInput ? phoneInput.value : '').trim();
-            const cleanPhone = rawPhone.replace(/\D/g, '').slice(-10);
-
-            if (cleanPhone.length < 10) {
-                feedbackEl.className = 'mt-4 p-4 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-semibold';
-                feedbackEl.innerHTML = '⚠️ Please enter a valid 10-digit mobile number to verify.';
-                feedbackEl.classList.remove('hidden');
-                return;
-            }
-
-            verifyBtn.disabled = true;
-            verifyBtnText.textContent = 'Verifying... ⏳';
-            feedbackEl.classList.add('hidden');
-
-            try {
-                let lookupResult = { isMember: false };
-                if (window.TKL_SUPABASE && window.TKL_SUPABASE.registrations && window.TKL_SUPABASE.registrations.checkMemberByPhone) {
-                    lookupResult = await window.TKL_SUPABASE.registrations.checkMemberByPhone(cleanPhone);
-                } else {
-                    // Direct REST query fallback
-                    const url = 'https://wbetzpupfslfntdjxpcg.supabase.co';
-                    const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndiZXR6cHVwZnNsZm50ZGp4cGNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NjE3NjgsImV4cCI6MjEwNjIzNzc2OH0.XPEH78fqfiBkDwrg5jYVWUfpD3Y0KaTDgA4_KM-S51M';
-                    const res = await fetch(`${url}/rest/v1/registrations?phone=ilike.*${cleanPhone}*&order=created_at.desc&limit=3`, {
-                        headers: { 'apikey': key, 'Authorization': 'Bearer ' + key }
-                    });
-                    if (res.ok) {
-                        const data = await res.json();
-                        if (data && data.length > 0) {
-                            lookupResult = { isMember: true, member: data[0] };
-                        }
-                    }
-                }
-
-                if (lookupResult.isMember && lookupResult.member) {
-                    // MEMBER FOUND!
-                    const m = lookupResult.member;
-                    verifiedMemberRecord = m;
-
-                    // Detect chapter
-                    let detectedChapter = 'Chennai Central';
-                    const textToMatch = ((m.event_name || '') + ' ' + (m.referred_by || '') + ' ' + (m.notes || '')).toLowerCase();
-                    if (textToMatch.includes('south')) detectedChapter = 'Chennai South';
-                    else if (textToMatch.includes('central')) detectedChapter = 'Chennai Central';
-                    else if (textToMatch.includes('west')) detectedChapter = 'Chennai West';
-                    else if (textToMatch.includes('north')) detectedChapter = 'Chennai North';
-                    else if (textToMatch.includes('east')) detectedChapter = 'Chennai East';
-                    else if (textToMatch.includes('ecr')) detectedChapter = 'ECR';
-                    else if (textToMatch.includes('anna')) detectedChapter = 'Anna Nagar';
-                    m.chapter = detectedChapter;
-
-                    // Display Fast Pass Box
-                    document.getElementById('fastpass-name').textContent = m.full_name || 'TKL Member';
-                    document.getElementById('fastpass-meta').textContent = `${m.company || 'Enterprise'} • ${m.role || 'Leader'} • ${detectedChapter}`;
-                    document.getElementById('member-fast-pass').classList.remove('hidden');
-                    feedbackEl.classList.add('hidden');
-
-                    // HIDE the full 4-section form because TKL member DOES NOT NEED TO FILL IT!
-                    const fullForm = document.getElementById('arete-registration-form');
-                    if (fullForm) {
-                        fullForm.classList.add('hidden');
-                    }
-
-                } else { // Must fill form as Non-TKL Member
-                    feedbackEl.className = 'mt-4 p-4 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs leading-relaxed';
-                    feedbackEl.innerHTML = `
-                        <div class="flex items-start gap-3">
-                            <span class="text-xl">⚠️</span>
-                            <div>
-                                <strong class="text-white text-sm block">Mobile number not found in TKL Member list</strong>
-                                <p class="mt-1">
-                                    You are not currently registered as an existing TKL member. Please complete the registration form below as a Non-TKL Member / Guest!
-                                </p>
-                                <button type="button" onclick="continueAsGuest('${cleanPhone}')"
-                                    class="mt-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-wider transition-colors inline-block shadow">
-                                    Proceed to Non-TKL Member Registration &rarr;
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    feedbackEl.classList.remove('hidden');
-                    document.getElementById('member-fast-pass').classList.add('hidden');
-                }
-            } catch (err) {
-                console.error("Lookup error:", err);
-                feedbackEl.className = 'mt-4 p-4 rounded-xl bg-slate-800 text-slate-300 text-xs';
-                feedbackEl.textContent = 'Could not reach membership registry at this moment. You can fill out the form directly below.';
-                feedbackEl.classList.remove('hidden');
-            } finally {
-                verifyBtn.disabled = false;
-                verifyBtnText.textContent = 'Check Membership 🔍';
-            }
-        }
-
-        function continueAsGuest(phone) {
-            const fullForm = document.getElementById('arete-registration-form');
-            if (fullForm) fullForm.classList.remove('hidden');
-            document.getElementById('form-is-member').value = 'No';
-            const chapterSelect = document.getElementById('reg-chapter');
-            if (chapterSelect) chapterSelect.value = 'Non-TKL Member';
-            if (phone) document.getElementById('reg-mobile').value = phone;
-            document.getElementById('form-section-1').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // 4. Additional Members Toggle & Dynamic Fields
-        function toggleAdditionalMembers(show) {
-            const wrapper = document.getElementById('additional-members-wrapper');
+        function toggleGuestSection(show) {
+            const wrapper = document.getElementById('guest-fields-wrapper');
             if (show) {
                 wrapper.classList.remove('hidden');
-                if (additionalMembers.length === 0) {
-                    addAnotherMemberCard();
+                if (guestList.length === 0) {
+                    addGuestField();
                 }
             } else {
                 wrapper.classList.add('hidden');
-                additionalMembers = [];
-                renderAdditionalMembersList();
+                guestList = [];
+                renderGuests();
             }
-            updateTotalParticipants();
         }
 
-        function addAnotherMemberCard() {
-            const newMember = {
-                id: Date.now() + Math.random().toString(36).substring(2, 6),
+        function addGuestField() {
+            guestList.push({
                 name: '',
-                company: '',
-                designation: '',
-                mobile: '',
-                email: '',
-                relationship: 'Business Partner',
                 foodPreference: 'Non-Veg'
-            };
-            additionalMembers.push(newMember);
-            renderAdditionalMembersList();
-            updateTotalParticipants();
+            });
+            renderGuests();
         }
 
-        function removeMemberCard(index) {
-            additionalMembers.splice(index, 1);
-            renderAdditionalMembersList();
-            updateTotalParticipants();
-        }
-
-        function updateMemberField(index, field, value) {
-            if (additionalMembers[index]) {
-                additionalMembers[index][field] = value;
+        function removeGuestField(index) {
+            guestList.splice(index, 1);
+            if (guestList.length === 0) {
+                const noRadio = document.querySelector('input[name="has_guests"][value="no"]');
+                if (noRadio) noRadio.checked = true;
+                toggleGuestSection(false);
+            } else {
+                renderGuests();
             }
         }
 
-        function renderAdditionalMembersList() {
-            const listEl = document.getElementById('additional-members-list');
-            if (!listEl) return;
-
-            if (additionalMembers.length === 0) {
-                listEl.innerHTML = '';
-                return;
+        function updateGuestData(index, field, value) {
+            if (guestList[index]) {
+                guestList[index][field] = value;
             }
+        }
 
-            listEl.innerHTML = additionalMembers.map((m, idx) => `
-                <div class="bg-slate-50 border border-gray-200 rounded-2xl p-5 relative shadow-sm">
-                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-gray-200">
-                        <span class="text-xs font-bold text-amber-800 uppercase tracking-wider">
-                            Additional Member #${idx + 1}
-                        </span>
-                        <button type="button" onclick="removeMemberCard(${idx})"
-                            class="text-rose-600 hover:text-rose-800 text-xs font-bold flex items-center gap-1 transition-colors">
-                            <span>✕ Remove</span>
+        function renderGuests() {
+            const container = document.getElementById('guests-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            guestList.forEach((g, idx) => {
+                const row = document.createElement('div');
+                row.className = 'p-3 rounded-xl bg-slate-900 border border-slate-700 space-y-2';
+                row.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-amber-300">Guest #${idx + 1}</span>
+                        <button type="button" onclick="removeGuestField(${idx})" class="text-[11px] text-rose-400 hover:text-rose-300">
+                            <i class="fa-solid fa-trash-can"></i> Remove
                         </button>
                     </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                                Full Name *
-                            </label>
-                            <input type="text" required placeholder="Guest Name"
-                                value="${escapeHtml(m.name)}"
-                                oninput="updateMemberField(${idx}, 'name', this.value)"
-                                class="reg-input text-xs py-2.5">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                                Business / Company Name
-                            </label>
-                            <input type="text" placeholder="Company Name"
-                                value="${escapeHtml(m.company)}"
-                                oninput="updateMemberField(${idx}, 'company', this.value)"
-                                class="reg-input text-xs py-2.5">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                                Designation
-                            </label>
-                            <input type="text" placeholder="e.g. Partner / Director"
-                                value="${escapeHtml(m.designation)}"
-                                oninput="updateMemberField(${idx}, 'designation', this.value)"
-                                class="reg-input text-xs py-2.5">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                                Mobile Number
-                            </label>
-                            <input type="tel" placeholder="10-digit mobile"
-                                value="${escapeHtml(m.mobile)}"
-                                oninput="updateMemberField(${idx}, 'mobile', this.value)"
-                                class="reg-input text-xs py-2.5">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                                Email ID
-                            </label>
-                            <input type="email" placeholder="guest@example.com"
-                                value="${escapeHtml(m.email)}"
-                                oninput="updateMemberField(${idx}, 'email', this.value)"
-                                class="reg-input text-xs py-2.5">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                                Relationship *
-                            </label>
-                            <select onchange="updateMemberField(${idx}, 'relationship', this.value)"
-                                class="reg-input text-xs py-2.5 font-medium">
-                                <option value="Business Partner" ${m.relationship === 'Business Partner' ? 'selected' : ''}>Business Partner</option>
-                                <option value="Spouse" ${m.relationship === 'Spouse' ? 'selected' : ''}>Spouse</option>
-                                <option value="Family Member" ${m.relationship === 'Family Member' ? 'selected' : ''}>Family Member</option>
-                                <option value="Business Associate" ${m.relationship === 'Business Associate' ? 'selected' : ''}>Business Associate</option>
-                                <option value="Guest" ${m.relationship === 'Guest' ? 'selected' : ''}>Guest</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                                Food Preference *
-                            </label>
-                            <select onchange="updateMemberField(${idx}, 'foodPreference', this.value)"
-                                class="reg-input text-xs py-2.5 font-medium">
-                                <option value="Non-Veg" ${(m.foodPreference || 'Non-Veg') === 'Non-Veg' ? 'selected' : ''}>🍗 Non-Veg</option>
-                                <option value="Veg" ${m.foodPreference === 'Veg' ? 'selected' : ''}>🥗 Pure Veg</option>
-                            </select>
-                        </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <input type="text" placeholder="Guest Full Name" value="${escapeHtml(g.name)}"
+                            oninput="updateGuestData(${idx}, 'name', this.value)"
+                            class="form-input-luxury w-full px-3 py-2 rounded-lg text-xs font-medium" required>
+                        <select onchange="updateGuestData(${idx}, 'foodPreference', this.value)"
+                            class="form-input-luxury w-full px-3 py-2 rounded-lg text-xs font-medium cursor-pointer">
+                            <option value="Non-Veg" ${g.foodPreference === 'Non-Veg' ? 'selected' : ''}>🍗 Non-Veg</option>
+                            <option value="Veg" ${g.foodPreference === 'Veg' ? 'selected' : ''}>🥗 Pure Veg</option>
+                        </select>
                     </div>
-                </div>
-            `).join('');
+                `;
+                container.appendChild(row);
+            });
         }
 
-        function updateTotalParticipants() {
-            const hasAdditionalEl = document.querySelector('input[name="has_additional_members"]:checked');
-            const hasAdditional = hasAdditionalEl && hasAdditionalEl.value === 'yes';
-            const guestCount = hasAdditional ? additionalMembers.length : 0;
-            const total = 1 + guestCount;
-            const totalFee = total * ARETE_DELEGATE_FEE;
-
-            const calcGuestsEl = document.getElementById('calc-guests-count');
-            const displayTotalEl = document.getElementById('display-total-count');
-            const hiddenTotalInput = document.getElementById('reg-total-participants');
-            const displayTotalFeeEl = document.getElementById('display-total-fee');
-            const displayFeePartsEl = document.getElementById('display-calc-participants');
-            const btnFeeAmountEl = document.getElementById('btn-fee-amount');
-            const bankPaymentFeeEl = document.getElementById('bank-payment-fee');
-            const bankPaymentFeeTextEl = document.getElementById('bank-payment-fee-text');
-
-            if (calcGuestsEl) calcGuestsEl.textContent = guestCount;
-            if (displayTotalEl) displayTotalEl.textContent = total;
-            if (hiddenTotalInput) hiddenTotalInput.value = total;
-            if (displayTotalFeeEl) displayTotalFeeEl.textContent = totalFee.toLocaleString('en-IN');
-            if (displayFeePartsEl) displayFeePartsEl.textContent = total;
-            if (btnFeeAmountEl) btnFeeAmountEl.textContent = totalFee.toLocaleString('en-IN');
-            if (bankPaymentFeeEl) bankPaymentFeeEl.textContent = totalFee.toLocaleString('en-IN');
-            if (bankPaymentFeeTextEl) bankPaymentFeeTextEl.textContent = totalFee.toLocaleString('en-IN');
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>"']/g, function(m) {
+                return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m];
+            });
         }
 
-        // 5. Submit Handler
-        async function handleAreteSubmit(e) {
+        async function handleRegistrationSubmit(e) {
             e.preventDefault();
 
-            const submitBtn = document.getElementById('btn-submit-registration');
-            const submitBtnText = document.getElementById('submit-btn-text');
-            const spinner = document.getElementById('submit-btn-spinner');
+            const submitBtn = document.getElementById('btn-submit');
+            const submitBtnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('btn-spinner');
+            const btnIcon = document.getElementById('btn-icon');
 
-            // Gather Primary Fields
-            const fullName = document.getElementById('reg-full-name').value.trim();
-            const company = document.getElementById('reg-company-name').value.trim();
-            const designation = document.getElementById('reg-designation').value.trim();
-            const mobile = document.getElementById('reg-mobile').value.trim();
+            const fullName = document.getElementById('reg-name').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
             const email = document.getElementById('reg-email').value.trim();
-            const address = document.getElementById('reg-address').value.trim();
+            const company = document.getElementById('reg-company').value.trim();
+            const designation = document.getElementById('reg-designation').value.trim();
             const chapter = document.getElementById('reg-chapter').value;
-            const isMember = document.getElementById('form-is-member').value;
+            const notes = document.getElementById('reg-notes').value.trim();
 
-            // Gather Business Fields
-            const industry = document.getElementById('reg-industry').value;
-            const productsServices = document.getElementById('reg-products-services').value.trim();
-            const website = document.getElementById('reg-website').value.trim();
-            const collaborations = document.getElementById('reg-collaborations').value.trim();
-
-            // Additional Info & Calculation
             const foodPrefEl = document.querySelector('input[name="food_preference"]:checked');
-            const foodPreference = foodPrefEl ? foodPrefEl.value : 'Non-Veg';
-            const hasAdditionalEl = document.querySelector('input[name="has_additional_members"]:checked');
-            const hasAdditional = hasAdditionalEl && hasAdditionalEl.value === 'yes';
-            const guestCount = hasAdditional ? additionalMembers.length : 0;
-            const totalParticipants = 1 + guestCount;
-            const totalCost = totalParticipants * ARETE_DELEGATE_FEE;
+            const primaryFood = foodPrefEl ? foodPrefEl.value : 'Non-Veg';
 
-            let vegCount = foodPreference === 'Veg' ? 1 : 0;
-            let nonVegCount = foodPreference === 'Non-Veg' ? 1 : 0;
-            if (hasAdditional) {
-                additionalMembers.forEach(m => {
-                    if (m.foodPreference === 'Veg') vegCount++;
-                    else nonVegCount++;
-                });
-            }
-            const additionalInfo = document.getElementById('reg-additional-info').value.trim();
-            const utr = 'VIP-COMPLIMENTARY';
-
-            if (!fullName || !company || !designation || !mobile || !email || !address || !chapter || !industry) {
-                alert('Please fill all mandatory fields marked with an asterisk (*).');
-                return;
-            }
-
-            const cleanPhone = mobile.replace(/\D/g, '').slice(-10);
+            const cleanPhone = phone.replace(/\D/g, '').slice(-10);
             if (cleanPhone.length < 10) {
                 alert('Please enter a valid 10-digit mobile number.');
                 return;
             }
 
-            if (!utr) {
-                alert('Payment Reference / UTR Number is mandatory. Please transfer ₹' + totalCost.toLocaleString('en-IN') + ' to our Karur Vysya Bank account and enter your 12-digit UTR / UPI transaction ID to complete registration.');
-                if (utrInput) {
-                    utrInput.focus();
-                    utrInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    utrInput.classList.add('border-rose-500');
-                }
-                return;
+            const hasGuests = document.querySelector('input[name="has_guests"]:checked').value === 'yes';
+            const guestCount = hasGuests ? guestList.length : 0;
+            const totalDelegates = 1 + guestCount;
+
+            let vegCount = primaryFood === 'Veg' ? 1 : 0;
+            let nonVegCount = primaryFood === 'Non-Veg' ? 1 : 0;
+            if (hasGuests) {
+                guestList.forEach(g => {
+                    if (g.foodPreference === 'Veg') vegCount++;
+                    else nonVegCount++;
+                });
             }
 
-            // UI Loading state
+            // Loading state
             submitBtn.disabled = true;
             spinner.classList.remove('hidden');
-            submitBtnText.textContent = 'Recording Registration...';
+            btnIcon.classList.add('hidden');
+            submitBtnText.textContent = 'Confirming Registration...';
 
-            const refId = `ARETE26-${Date.now().toString().slice(-6)}`;
+            const refId = 'ARETE26-' + Date.now().toString().slice(-6);
 
-            // Prepare Structured Notes
             const structuredNotes = [
-                `[ARETE 26 VIP BACKDOOR PASS - COMPLIMENTARY - REF: ${refId}]`,
-                `Food Preference: ${foodPreference} (Total: ${vegCount} Veg, ${nonVegCount} Non-Veg)`,
-                isMember === 'Yes' ? 'Membership: Existing TKL Member' : 'Membership: New Member Intake (Global Hub)',
-                `TKL Chapter: ${chapter}`,
-                `Address: ${address}`,
-                `Industry: ${industry}`,
-                productsServices ? `Products/Services: ${productsServices}` : '',
-                website ? `Website/Social: ${website}` : '',
-                collaborations ? `Looking For: ${collaborations}` : '',
-                `Pass: VIP Complimentary Pass (Free Admission)`,
-                `Payment Status: Complimentary`,
-                additionalInfo ? `Notes: ${additionalInfo}` : '',
-                guestCount > 0 ? `Additional Members (${guestCount}): ${JSON.stringify(additionalMembers)}` : ''
+                '[ARETE 26 SUMMIT DELEGATE - REF: ' + refId + ']',
+                'Food: ' + primaryFood + ' (Summary: ' + vegCount + ' Veg, ' + nonVegCount + ' Non-Veg)',
+                'Chapter: ' + chapter,
+                'Designation: ' + designation,
+                'Company: ' + company,
+                notes ? 'Notes: ' + notes : '',
+                guestCount > 0 ? 'Guests (' + guestCount + '): ' + JSON.stringify(guestList) : ''
             ].filter(Boolean).join(' | ');
 
             const payload = {
                 eventName: ARETE_EVENT_TITLE,
                 eventId: ARETE_EVENT_ID,
-                entryType: isMember === 'Yes' ? 'Special Event • VIP Member Pass' : 'Special Event • VIP Complimentary Pass',
+                entryType: 'Special Event • Summit Delegate',
                 name: fullName,
                 company: company,
                 role: designation,
                 phone: cleanPhone,
                 email: email,
                 chapter: chapter,
-                pincode: address.match(/\b[1-9][0-9]{5}\b/) ? address.match(/\b[1-9][0-9]{5}\b/)[0] : '600014',
-                isExistingMember: isMember,
-                referredBy: isMember === 'Yes' ? `TKL ${chapter}` : `Guest / ${chapter}`,
+                pincode: '600014',
+                isExistingMember: chapter.includes('Guest') ? 'No' : 'Yes',
+                referredBy: chapter,
                 additionalGuests: guestCount,
-                foodPreference: foodPreference,
-                foodSummary: `${vegCount} Veg, ${nonVegCount} Non-Veg`,
-                totalCost: totalCost,
-                paymentStatus: utr ? 'Pending Verification' : 'Pending Payment',
+                foodPreference: primaryFood,
+                foodSummary: vegCount + ' Veg, ' + nonVegCount + ' Non-Veg',
+                totalCost: 0,
+                paymentStatus: 'Free',
                 receiptUrl: '',
                 notes: structuredNotes
             };
@@ -1710,10 +634,9 @@
                 if (window.TKL_SUPABASE && window.TKL_SUPABASE.registrations && window.TKL_SUPABASE.registrations.save) {
                     await window.TKL_SUPABASE.registrations.save(payload);
                 } else {
-                    // Direct REST Insert
                     const url = 'https://wbetzpupfslfntdjxpcg.supabase.co';
                     const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndiZXR6cHVwZnNsZm50ZGp4cGNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NjE3NjgsImV4cCI6MjEwNjIzNzc2OH0.XPEH78fqfiBkDwrg5jYVWUfpD3Y0KaTDgA4_KM-S51M';
-                    await fetch(`${url}/rest/v1/registrations`, {
+                    await fetch(url + '/rest/v1/registrations', {
                         method: 'POST',
                         headers: {
                             'apikey': key,
@@ -1722,7 +645,6 @@
                         },
                         body: JSON.stringify({
                             event_name: payload.eventName,
-                            event_id: payload.eventId,
                             entry_type: payload.entryType,
                             full_name: payload.name,
                             company: payload.company,
@@ -1733,14 +655,14 @@
                             is_existing_member: payload.isExistingMember,
                             referred_by: payload.referredBy,
                             additional_guests: payload.additionalGuests,
-                            total_cost: totalCost,
-                            payment_status: payload.paymentStatus,
+                            total_cost: 0,
+                            payment_status: 'Free',
                             notes: payload.notes
                         })
                     });
                 }
 
-                // 2. Dual-write backup to Google Apps Script if present
+                // 2. Backup to Google Apps Script
                 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVn6B_y_3L9i8Z2qL4vQ1g7m0kE8w2/exec';
                 try {
                     fetch(APPS_SCRIPT_URL, {
@@ -1751,120 +673,50 @@
                             formType: 'arete26',
                             refId: refId,
                             ...payload,
-                            additionalMembersList: additionalMembers
+                            guestList: guestList
                         })
-                    }).catch(() => {});
+                    }).catch(function() {});
                 } catch (gErr) {}
 
-                // 3. Populate Success Details & Bank Info (AFTER Registration)
-                populateSuccessDetails(fullName, refId, totalParticipants, totalCost);
+                // 3. Show Success Modal
+                document.getElementById('modal-delegate-name').textContent = fullName;
+                document.getElementById('modal-ref-id').textContent = refId;
+                document.getElementById('modal-delegates-count').textContent = totalDelegates + (totalDelegates > 1 ? ' Delegates' : ' Delegate');
+                document.getElementById('modal-food-summary').textContent = vegCount + ' Veg, ' + nonVegCount + ' Non-Veg';
+
+                const waMessage = encodeURIComponent(
+                    '*Aréte’26 Summit Delegate Confirmation*\n\n' +
+                    'Hello ' + fullName + ', your registration is confirmed!\n' +
+                    '• *Ref ID:* ' + refId + '\n' +
+                    '• *Date:* Friday, 5 December 2026 (5:00 PM - 9:00 PM)\n' +
+                    '• *Venue:* CSI Synod Centre, Royapettah, Chennai\n' +
+                    '• *Delegates:* ' + totalDelegates + ' person(s)\n' +
+                    '• *Dinner:* ' + vegCount + ' Veg, ' + nonVegCount + ' Non-Veg\n\n' +
+                    'The Kingdom Leaders'
+                );
+                document.getElementById('modal-whatsapp-btn').href = 'https://wa.me/91' + cleanPhone + '?text=' + waMessage;
+
+                document.getElementById('confirmation-modal').classList.remove('hidden');
 
                 // Reset form
-                document.getElementById('arete-registration-form').reset();
-                additionalMembers = [];
-                renderAdditionalMembersList();
-                updateTotalParticipants();
+                document.getElementById('arete-delegate-form').reset();
+                guestList = [];
+                renderGuests();
+                toggleGuestSection(false);
 
             } catch (err) {
-                console.error("Submission error:", err);
-                alert("Thank you! Your registration has been received and saved locally. See you at ARETE 26!");
-                populateSuccessDetails(fullName, refId, totalParticipants, totalCost);
+                console.error('Submission error:', err);
+                alert('Registration recorded! Reference: ' + refId);
             } finally {
                 submitBtn.disabled = false;
                 spinner.classList.add('hidden');
-                submitBtnText.textContent = 'Confirm VIP Registration (Complimentary) ➔';
+                btnIcon.classList.remove('hidden');
+                submitBtnText.textContent = 'Confirm Delegate Registration';
             }
         }
 
-        // Populate Success Details & Bank Information AFTER Registration
-        function populateSuccessDetails(fullName, refId, totalParticipants, totalCost) {
-            const feeFormatted = 'Complimentary (Free Pass)';
-            
-            // Modal fields
-            const modalName = document.getElementById('modal-attendee-name');
-            if (modalName) modalName.textContent = fullName;
-            const modalRef = document.getElementById('modal-ref-id');
-            if (modalRef) modalRef.textContent = refId;
-            const modalDel = document.getElementById('modal-total-delegates');
-            if (modalDel) modalDel.textContent = `(${totalParticipants} Delegate${totalParticipants > 1 ? 's' : ''})`;
-            const modalFee = document.getElementById('modal-total-fee');
-            if (modalFee) modalFee.textContent = feeFormatted;
-
-            const modalFeePill = document.getElementById('modal-bank-fee-pill');
-            if (modalFeePill) modalFeePill.textContent = `${feeFormatted} Total`;
-            const modalFeeText = document.getElementById('modal-bank-fee-text');
-            if (modalFeeText) modalFeeText.textContent = feeFormatted;
-            const modalRefText = document.getElementById('modal-bank-ref-text');
-            if (modalRefText) modalRefText.textContent = refId;
-
-
-
-            // On-page Post-Registration Container
-            const postContainer = document.getElementById('post-reg-success-container');
-            const fullForm = document.getElementById('arete-registration-form');
-            const gateway = document.getElementById('membership-gateway-card');
-            if (fullForm) fullForm.classList.add('hidden');
-            if (gateway) gateway.classList.add('hidden');
-            
-            if (postContainer) {
-                const pageName = document.getElementById('page-post-name');
-                if (pageName) pageName.textContent = fullName;
-                const pageRef = document.getElementById('page-post-ref-id');
-                if (pageRef) pageRef.textContent = refId;
-                const pageDel = document.getElementById('page-post-delegates');
-                if (pageDel) pageDel.textContent = `${totalParticipants} Delegate${totalParticipants > 1 ? 's' : ''}`;
-                const pageFee = document.getElementById('page-post-total-fee');
-                if (pageFee) pageFee.textContent = feeFormatted;
-
-                const pageFeeBadge = document.getElementById('page-post-bank-fee-badge');
-                if (pageFeeBadge) pageFeeBadge.textContent = `${feeFormatted} Total`;
-                const pageFeeText = document.getElementById('page-post-bank-fee-text');
-                if (pageFeeText) pageFeeText.textContent = feeFormatted;
-                const pageRefText = document.getElementById('page-post-bank-ref-text');
-                if (pageRefText) pageRefText.textContent = refId;
-
-
-                postContainer.classList.remove('hidden');
-            }
-
-            // Show Modal
-            const modal = document.getElementById('success-modal');
-            if (modal) modal.classList.remove('hidden');
-        }
-
-        function closeSuccessModal() {
-            const modal = document.getElementById('success-modal');
-            if (modal) modal.classList.add('hidden');
-            const postContainer = document.getElementById('post-reg-success-container');
-            if (postContainer && !postContainer.classList.contains('hidden')) {
-                postContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
-        function resetRegistrationToNew() {
-            const postContainer = document.getElementById('post-reg-success-container');
-            const fullForm = document.getElementById('arete-registration-form');
-            const gateway = document.getElementById('membership-gateway-card');
-            if (postContainer) postContainer.classList.add('hidden');
-            if (gateway) gateway.classList.remove('hidden');
-            if (fullForm) {
-                fullForm.classList.add('hidden');
-                fullForm.reset();
-            }
-            additionalMembers = [];
-            renderAdditionalMembersList();
-            updateTotalParticipants();
-            if (gateway) gateway.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+        function closeConfirmationModal() {
+            document.getElementById('confirmation-modal').classList.add('hidden');
         }
     </script>
 </body>
