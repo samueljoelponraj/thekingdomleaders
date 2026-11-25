@@ -427,8 +427,8 @@
                                     </div>
 
                                     <!-- UPI ID with Copy -->
-                                    <!-- UPI ID with Direct Pay Link & Copy -->
-                                    <div class="bg-gradient-to-r from-amber-500/20 via-slate-950 to-slate-950 p-3.5 rounded-2xl border border-amber-500/40 space-y-2.5">
+                                    <!-- UPI ID with Direct Pay Link, Copy & QR Code -->
+                                    <div class="bg-gradient-to-r from-amber-500/20 via-slate-950 to-slate-950 p-4 rounded-2xl border border-amber-500/40 space-y-3">
                                         <div class="flex items-center justify-between gap-2">
                                             <div>
                                                 <div class="text-[10px] font-bold uppercase tracking-wider text-amber-400 mb-0.5">OFFICIAL UPI ID (GPAY / PHONEPE / PAYTM)</div>
@@ -443,6 +443,20 @@
                                             class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow text-center">
                                             <span>⚡ Open UPI App & Pay ₹<span id="page-upi-amount">500</span></span>
                                         </a>
+                                        <!-- Post-Reg QR Code Box -->
+                                        <div class="pt-2 text-center border-t border-white/10">
+                                            <div class="inline-block bg-white p-3 rounded-2xl shadow-xl border-2 border-amber-400">
+                                                <img id="page-payment-upi-qr" 
+                                                    src="https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=upi%3A%2F%2Fpay%3Fpa%3Dpaytm.s1ujuoz%40pty%26pn%3DThe%2520Kingdom%2520Leaders%26am%3D500.00%26cu%3DINR%26tn%3DARETE26%2520Summit"
+                                                    alt="Scan & Pay via UPI" 
+                                                    class="w-44 h-44 sm:w-52 sm:h-52 mx-auto object-contain rounded-xl">
+                                            </div>
+                                            <div class="mt-2 text-center">
+                                                <span class="inline-flex items-center gap-1 bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-wider px-3 py-0.5 rounded-full shadow">
+                                                    Scan to Pay ₹<span id="page-upi-qr-amount">500</span>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- Bank & Mode Info -->
@@ -629,7 +643,7 @@
                                             </div>
                                             <button type="button" onclick="copyBankText('KVBL0001663', this)" class="text-[10px] text-amber-400 hover:text-amber-300 font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10">Copy</button>
                                         </div>
-                                        <div class="bg-slate-950 p-2.5 rounded-lg border border-amber-500/30 sm:col-span-2 space-y-2">
+                                        <div class="bg-slate-950 p-3 rounded-xl border border-amber-500/30 sm:col-span-2 space-y-3">
                                             <div class="flex items-center justify-between gap-2">
                                                 <div>
                                                     <span class="text-amber-400 block text-[9px] font-bold">Official UPI ID (GPay / PhonePe / Paytm):</span>
@@ -638,9 +652,23 @@
                                                 <button type="button" onclick="copyBankText('paytm.s1ujuoz@pty', this)" class="text-[10px] text-amber-400 hover:text-amber-300 font-bold px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30">Copy UPI</button>
                                             </div>
                                             <a id="fastpass-upi-pay-btn" href="upi://pay?pa=paytm.s1ujuoz@pty&pn=The%20Kingdom%20Leaders&am=500.00&cu=INR&tn=ARETE26%20Summit"
-                                                class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-2 px-3 rounded-lg text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow text-center">
+                                                class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-2.5 px-3 rounded-lg text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow text-center">
                                                 <span>⚡ Open UPI App & Pay ₹<span id="fastpass-upi-amount">500</span></span>
                                             </a>
+                                            <!-- Fast Pass QR Code Box -->
+                                            <div class="pt-2 text-center border-t border-white/10">
+                                                <div class="inline-block bg-white p-2.5 rounded-2xl shadow-xl border-2 border-amber-400">
+                                                    <img id="fastpass-payment-upi-qr" 
+                                                        src="https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=upi%3A%2F%2Fpay%3Fpa%3Dpaytm.s1ujuoz%40pty%26pn%3DThe%2520Kingdom%2520Leaders%26am%3D500.00%26cu%3DINR%26tn%3DARETE26%2520Summit"
+                                                        alt="Scan & Pay via UPI" 
+                                                        class="w-40 h-40 sm:w-48 sm:h-48 mx-auto object-contain rounded-xl">
+                                                </div>
+                                                <div class="mt-1.5">
+                                                    <span class="inline-flex items-center gap-1 bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-wider px-3 py-0.5 rounded-full shadow">
+                                                        Scan to Pay ₹<span id="fastpass-upi-qr-amount">500</span>
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -993,28 +1021,54 @@
                                     </div>
                                 </div>
 
-                                <!-- Action Row: Open Payment App Button & QR Code -->
-                                <div class="pt-3 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                                <!-- Action Row: Open Payment App Button & Big QR Code Scanner -->
+                                <div class="pt-4 border-t border-white/10 space-y-5">
                                     <!-- 1-Click Open Payment App Button -->
-                                    <div class="w-full md:flex-1">
+                                    <div>
                                         <a id="btn-upi-pay-direct" href="upi://pay?pa=paytm.s1ujuoz@pty&pn=The%20Kingdom%20Leaders&am=500.00&cu=INR&tn=ARETE26%20Summit"
                                             class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-3.5 px-6 rounded-xl text-sm sm:text-base uppercase tracking-wider shadow-lg shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2.5 text-center">
                                             <span>⚡ Open UPI App & Pay ₹<span id="upi-btn-amount">500</span></span>
                                             <svg class="w-5 h-5 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                         </a>
-                                        <p class="text-[11px] text-slate-300 mt-2 text-center md:text-left">
-                                            📲 Tapping this on mobile directly opens Google Pay, PhonePe, Paytm, or BHIM with amount pre-filled.
+                                        <p class="text-[11px] text-slate-300 mt-2 text-center">
+                                            📲 <strong>On Mobile:</strong> Tap above to open Google Pay, PhonePe, Paytm, BHIM, or Cred with fee pre-filled.
                                         </p>
                                     </div>
 
-                                    <!-- QR Code for Desktop Users -->
-                                    <div class="flex items-center gap-3 bg-slate-950/80 p-2.5 rounded-xl border border-white/10 shrink-0">
-                                        <img id="payment-upi-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi%3A%2F%2Fpay%3Fpa%3Dpaytm.s1ujuoz%40pty%26pn%3DThe%2520Kingdom%2520Leaders%26am%3D500.00%26cu%3DINR%26tn%3DARETE26%2520Summit"
-                                            alt="Scan & Pay via UPI" class="w-20 h-20 rounded-lg bg-white p-1 border border-amber-400/50">
-                                        <div class="text-left">
-                                            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">Scan with any App</span>
-                                            <div class="text-xs font-bold text-white mt-0.5">₹<span id="upi-qr-amount">500</span></div>
-                                            <span class="text-[9px] text-slate-400 block mt-0.5">Camera / GPay / PhonePe</span>
+                                    <!-- Big QR Code Scanner Showcase (For Desktop / Scanning from Phone) -->
+                                    <div class="bg-slate-950/95 rounded-2xl border-2 border-amber-400/60 p-5 sm:p-6 flex flex-col md:flex-row items-center justify-center gap-6 text-center md:text-left shadow-2xl">
+                                        <!-- Big QR Code Frame -->
+                                        <div class="relative shrink-0 flex flex-col items-center">
+                                            <div class="bg-white p-3.5 rounded-2xl shadow-2xl border-2 border-amber-400 inline-block">
+                                                <img id="payment-upi-qr" 
+                                                    src="https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=upi%3A%2F%2Fpay%3Fpa%3Dpaytm.s1ujuoz%40pty%26pn%3DThe%2520Kingdom%2520Leaders%26am%3D500.00%26cu%3DINR%26tn%3DARETE26%2520Summit"
+                                                    alt="Scan & Pay via UPI" 
+                                                    class="w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 object-contain rounded-xl">
+                                            </div>
+                                            <div class="mt-2.5">
+                                                <span class="inline-flex items-center gap-1.5 bg-amber-500 text-slate-950 text-xs font-black uppercase tracking-wider px-3.5 py-1 rounded-full shadow border border-slate-950">
+                                                    ₹<span id="upi-qr-amount">500</span> Pre-Filled
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- QR Explanatory & Supported Apps -->
+                                        <div class="space-y-3 max-w-sm">
+                                            <div class="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-300 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                                                <span>📷 SCAN & PAY INSTANTLY</span>
+                                            </div>
+                                            <h5 class="text-lg sm:text-xl font-black text-white font-cinzel leading-snug">
+                                                Scan with Any Mobile Camera or UPI App
+                                            </h5>
+                                            <p class="text-xs text-slate-300 leading-relaxed">
+                                                Point your phone camera or open <strong class="text-amber-300">Google Pay, PhonePe, Paytm, BHIM, or CRED</strong> to scan this QR code directly off your screen. The registration fee of <strong class="text-white">₹<span id="upi-qr-amount-text">500</span></strong> is automatically populated.
+                                            </p>
+                                            <div class="pt-1 flex flex-wrap items-center justify-center md:justify-start gap-1.5 text-[11px] font-semibold text-slate-300">
+                                                <span class="bg-slate-900 px-2.5 py-1 rounded-lg border border-white/10">Google Pay</span>
+                                                <span class="bg-slate-900 px-2.5 py-1 rounded-lg border border-white/10">PhonePe</span>
+                                                <span class="bg-slate-900 px-2.5 py-1 rounded-lg border border-white/10">Paytm</span>
+                                                <span class="bg-slate-900 px-2.5 py-1 rounded-lg border border-white/10">BHIM</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1232,8 +1286,8 @@
                             </button>
                         </div>
 
-                        <!-- UPI ID with Direct Pay Link & Copy -->
-                        <div class="bg-gradient-to-r from-amber-500/20 to-slate-900 p-2.5 rounded-xl border border-amber-500/40 space-y-2">
+                        <!-- UPI ID with Direct Pay Link, Copy & Big QR Code -->
+                        <div class="bg-gradient-to-r from-amber-500/20 to-slate-900 p-3.5 rounded-2xl border border-amber-500/40 space-y-3">
                             <div class="flex items-center justify-between gap-2">
                                 <div>
                                     <div class="text-[9px] font-bold uppercase tracking-wider text-amber-400 mb-0.5">OFFICIAL UPI ID (GPAY / PHONEPE / PAYTM)</div>
@@ -1245,9 +1299,23 @@
                                 </button>
                             </div>
                             <a id="modal-upi-pay-btn" href="upi://pay?pa=paytm.s1ujuoz@pty&pn=The%20Kingdom%20Leaders&am=500.00&cu=INR&tn=ARETE26%20Summit"
-                                class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-2 px-3 rounded-lg text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow text-center">
+                                class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-2.5 px-3 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow text-center">
                                 <span>⚡ Open UPI App & Pay ₹<span id="modal-upi-amount">500</span></span>
                             </a>
+                            <!-- Modal Big QR Code -->
+                            <div class="pt-2 text-center border-t border-white/10">
+                                <div class="inline-block bg-white p-3 rounded-2xl shadow-xl border-2 border-amber-400">
+                                    <img id="modal-payment-upi-qr" 
+                                        src="https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=upi%3A%2F%2Fpay%3Fpa%3Dpaytm.s1ujuoz%40pty%26pn%3DThe%2520Kingdom%2520Leaders%26am%3D500.00%26cu%3DINR%26tn%3DARETE26%2520Summit"
+                                        alt="Scan & Pay via UPI" 
+                                        class="w-44 h-44 sm:w-52 sm:h-52 mx-auto object-contain rounded-xl">
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <span class="inline-flex items-center gap-1 bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-wider px-3 py-0.5 rounded-full shadow">
+                                        Scan with Phone to Pay ₹<span id="modal-upi-qr-amount">500</span>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Bank & Mode Info -->
@@ -1342,9 +1410,9 @@
             const amtNum = parseFloat(amount) || 500;
             const amtFormatted = amtNum.toLocaleString('en-IN');
             const upiUri = `upi://pay?pa=paytm.s1ujuoz@pty&pn=The%20Kingdom%20Leaders&am=${amtNum.toFixed(2)}&cu=INR&tn=ARETE26%20Summit`;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiUri)}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${encodeURIComponent(upiUri)}`;
 
-            // Main form UPI button, amount & QR
+            // Main form UPI button, amount & Big QR
             const mainUpiBtn = document.getElementById('btn-upi-pay-direct');
             if (mainUpiBtn) mainUpiBtn.href = upiUri;
             const mainUpiAmt = document.getElementById('upi-btn-amount');
@@ -1353,24 +1421,38 @@
             if (mainUpiQr) mainUpiQr.src = qrUrl;
             const qrAmt = document.getElementById('upi-qr-amount');
             if (qrAmt) qrAmt.textContent = amtFormatted;
+            const qrAmtText = document.getElementById('upi-qr-amount-text');
+            if (qrAmtText) qrAmtText.textContent = amtFormatted;
 
-            // Fast Pass UPI button & amount
+            // Fast Pass UPI button, amount & QR
             const fpUpiBtn = document.getElementById('fastpass-upi-pay-btn');
             if (fpUpiBtn) fpUpiBtn.href = upiUri;
             const fpUpiAmt = document.getElementById('fastpass-upi-amount');
             if (fpUpiAmt) fpUpiAmt.textContent = amtFormatted;
+            const fpUpiQr = document.getElementById('fastpass-payment-upi-qr');
+            if (fpUpiQr) fpUpiQr.src = qrUrl;
+            const fpQrAmt = document.getElementById('fastpass-upi-qr-amount');
+            if (fpQrAmt) fpQrAmt.textContent = amtFormatted;
 
-            // Modal UPI button & amount
+            // Modal UPI button, amount & Big QR
             const modalUpiBtn = document.getElementById('modal-upi-pay-btn');
             if (modalUpiBtn) modalUpiBtn.href = upiUri;
             const modalUpiAmt = document.getElementById('modal-upi-amount');
             if (modalUpiAmt) modalUpiAmt.textContent = amtFormatted;
+            const modalUpiQr = document.getElementById('modal-payment-upi-qr');
+            if (modalUpiQr) modalUpiQr.src = qrUrl;
+            const modalQrAmt = document.getElementById('modal-upi-qr-amount');
+            if (modalQrAmt) modalQrAmt.textContent = amtFormatted;
 
-            // Post-reg page UPI button & amount
+            // Post-reg page UPI button, amount & Big QR
             const pageUpiBtn = document.getElementById('page-upi-pay-btn');
             if (pageUpiBtn) pageUpiBtn.href = upiUri;
             const pageUpiAmt = document.getElementById('page-upi-amount');
             if (pageUpiAmt) pageUpiAmt.textContent = amtFormatted;
+            const pageUpiQr = document.getElementById('page-payment-upi-qr');
+            if (pageUpiQr) pageUpiQr.src = qrUrl;
+            const pageQrAmt = document.getElementById('page-upi-qr-amount');
+            if (pageQrAmt) pageQrAmt.textContent = amtFormatted;
         }
 
         // 1. Initialize Page Lifecycle
