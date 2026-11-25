@@ -426,6 +426,18 @@
                                         </button>
                                     </div>
 
+                                    <!-- UPI ID with Copy -->
+                                    <div class="bg-gradient-to-r from-amber-500/20 via-slate-950 to-slate-950 p-3.5 rounded-2xl border border-amber-500/40 flex items-center justify-between gap-2">
+                                        <div>
+                                            <div class="text-[10px] font-bold uppercase tracking-wider text-amber-400 mb-0.5">OFFICIAL UPI ID (GPAY / PHONEPE / PAYTM)</div>
+                                            <div class="text-sm sm:text-base font-mono font-black text-white tracking-wide">paytm.s1ujuoz@pty</div>
+                                        </div>
+                                        <button type="button" onclick="copyBankText('paytm.s1ujuoz@pty', this)"
+                                            class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-xl font-black text-[11px] transition-all flex items-center gap-1 flex-shrink-0 cursor-pointer shadow">
+                                            <span>Copy UPI</span>
+                                        </button>
+                                    </div>
+
                                     <!-- Bank & Mode Info -->
                                     <div class="grid grid-cols-2 gap-3 pt-1">
                                         <div class="bg-slate-950/50 p-2.5 rounded-xl border border-white/5">
@@ -610,6 +622,13 @@
                                             </div>
                                             <button type="button" onclick="copyBankText('KVBL0001663', this)" class="text-[10px] text-amber-400 hover:text-amber-300 font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10">Copy</button>
                                         </div>
+                                        <div class="flex items-center justify-between bg-slate-950 px-2.5 py-1.5 rounded-lg border border-amber-500/30 sm:col-span-2">
+                                            <div>
+                                                <span class="text-amber-400 block text-[9px] font-bold">Official UPI ID (GPay / PhonePe / Paytm):</span>
+                                                <span class="text-white font-bold text-xs">paytm.s1ujuoz@pty</span>
+                                            </div>
+                                            <button type="button" onclick="copyBankText('paytm.s1ujuoz@pty', this)" class="text-[10px] text-amber-400 hover:text-amber-300 font-bold px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30">Copy UPI</button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -621,7 +640,7 @@
                                     <input type="text" id="fastpass-payment-utr" required placeholder="Enter 12-digit UTR or UPI Transaction ID (Mandatory)"
                                         class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 text-white border border-slate-700 focus:border-amber-400 outline-none text-xs font-mono">
                                     <p class="text-[10px] text-amber-200 mt-1">
-                                        ⚠️ Mandatory: Please transfer the registration fee to the official Karur Vysya Bank account above and enter your UTR / transaction ID.
+                                        ⚠️ Mandatory: Please transfer the registration fee via UPI (<strong class="text-white">paytm.s1ujuoz@pty</strong>) or Karur Vysya Bank account above and enter your UTR / transaction ID.
                                     </p>
                                 </div>
                             </div>
@@ -933,8 +952,32 @@
                             </div>
 
                             <p class="text-xs text-slate-300 leading-relaxed">
-                                Please transfer the registration fee of <strong class="text-amber-300">₹<span id="bank-payment-fee-text">500</span></strong> to the official account below via Net Banking, IMPS, NEFT, Google Pay, PhonePe, or Paytm. <em>No physical form download needed — your registration is recorded digitally here.</em>
+                                Please transfer the registration fee of <strong class="text-amber-300">₹<span id="bank-payment-fee-text">500</span></strong> to the official account or UPI ID below via Google Pay, PhonePe, Paytm, or Net Banking. <em>No physical form download needed — your registration is recorded digitally here.</em>
                             </p>
+
+                            <!-- UPI ID & QR Code Banner -->
+                            <div class="bg-gradient-to-r from-amber-500/15 via-slate-900 to-amber-500/10 p-4 rounded-2xl border-2 border-amber-400/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div class="flex items-center gap-3 w-full sm:w-auto">
+                                    <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center justify-center font-black text-sm shrink-0">
+                                        UPI
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest">Official UPI ID</span>
+                                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded font-semibold">GPay / PhonePe / Paytm</span>
+                                        </div>
+                                        <div class="text-base sm:text-lg font-mono font-black text-white tracking-wide select-all mt-0.5">
+                                            paytm.s1ujuoz@pty
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                    <button type="button" onclick="copyBankText('paytm.s1ujuoz@pty', this)"
+                                        class="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer">
+                                        <span>Copy UPI ID</span>
+                                    </button>
+                                </div>
+                            </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
                                 <!-- Beneficiary Name -->
@@ -1145,6 +1188,18 @@
                             <button type="button" onclick="copyBankText('KVBL0001663', this)"
                                 class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-lg font-bold text-[10px] transition-all flex items-center gap-1 cursor-pointer">
                                 <span>Copy IFSC</span>
+                            </button>
+                        </div>
+
+                        <!-- UPI ID with Copy -->
+                        <div class="bg-gradient-to-r from-amber-500/20 to-slate-900 p-2.5 rounded-xl border border-amber-500/40 flex items-center justify-between gap-2">
+                            <div>
+                                <div class="text-[9px] font-bold uppercase tracking-wider text-amber-400 mb-0.5">OFFICIAL UPI ID (GPAY / PHONEPE / PAYTM)</div>
+                                <div class="text-xs sm:text-sm font-mono font-black text-white tracking-wide">paytm.s1ujuoz@pty</div>
+                            </div>
+                            <button type="button" onclick="copyBankText('paytm.s1ujuoz@pty', this)"
+                                class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1 rounded-lg font-black text-[10px] transition-all flex items-center gap-1 cursor-pointer shadow">
+                                <span>Copy UPI</span>
                             </button>
                         </div>
 
