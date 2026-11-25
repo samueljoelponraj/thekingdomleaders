@@ -80,6 +80,14 @@
             box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
             outline: none;
         }
+        .membership-card:has(input:checked) {
+            border-color: #f59e0b !important;
+            background-color: rgba(245, 158, 11, 0.12) !important;
+        }
+        .food-choice-card:has(input:checked) {
+            border-color: #f59e0b !important;
+            background-color: rgba(245, 158, 11, 0.12) !important;
+        }
         .form-input-luxury::placeholder {
             color: #64748b;
         }
@@ -258,6 +266,62 @@
                             <option value="Bangalore">Bangalore Chapter</option>
                             <option value="Guest Delegate">Invited Guest Delegate / Other</option>
                         </select>
+                    </div>
+
+                    <!-- TKL Membership Question (Want to become a member?) -->
+                    <div class="bg-slate-950/70 p-4 sm:p-5 rounded-2xl border border-white/10 space-y-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-xs shrink-0">
+                                <i class="fa-solid fa-users"></i>
+                            </span>
+                            <div>
+                                <label class="block text-xs font-bold text-amber-300 uppercase tracking-wider">
+                                    Want to become a member? <span class="text-amber-400">*</span>
+                                </label>
+                                <p class="text-[11px] text-slate-400">Let us know if you want to join The Kingdom Leaders or if you are already a member.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                            <!-- Option 1: Want to become a member -->
+                            <label class="membership-card flex flex-col justify-between p-3.5 rounded-xl border-2 border-slate-700 bg-slate-900/90 cursor-pointer hover:border-amber-400 transition-all">
+                                <div>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-xs sm:text-sm font-bold text-white">Want to Join</span>
+                                        <input type="radio" name="membership_status" value="Wants to Join" checked class="text-amber-500 focus:ring-amber-400">
+                                    </div>
+                                    <p class="text-[10px] text-slate-400 leading-snug">
+                                        I want to become a TKL member and join chapter fellowships.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <!-- Option 2: Existing TKL Member -->
+                            <label class="membership-card flex flex-col justify-between p-3.5 rounded-xl border-2 border-slate-700 bg-slate-900/90 cursor-pointer hover:border-amber-400 transition-all">
+                                <div>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-xs sm:text-sm font-bold text-white">Already a Member</span>
+                                        <input type="radio" name="membership_status" value="Existing Member" class="text-amber-500 focus:ring-amber-400">
+                                    </div>
+                                    <p class="text-[10px] text-slate-400 leading-snug">
+                                        I am already a registered member of a TKL chapter.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <!-- Option 3: Guest -->
+                            <label class="membership-card flex flex-col justify-between p-3.5 rounded-xl border-2 border-slate-700 bg-slate-900/90 cursor-pointer hover:border-amber-400 transition-all">
+                                <div>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-xs sm:text-sm font-bold text-white">Attending as Guest</span>
+                                        <input type="radio" name="membership_status" value="Guest" class="text-amber-500 focus:ring-amber-400">
+                                    </div>
+                                    <p class="text-[10px] text-slate-400 leading-snug">
+                                        Attending Aréte’26 as a guest delegate or business associate.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
                     </div>
 
                     <!-- Fellowship Dinner Preference -->
@@ -517,6 +581,9 @@
             const chapter = document.getElementById('reg-chapter').value;
             const notes = document.getElementById('reg-notes').value.trim();
 
+            const membershipStatusEl = document.querySelector('input[name="membership_status"]:checked');
+            const membershipStatus = membershipStatusEl ? membershipStatusEl.value : 'Wants to Join';
+
             const foodPrefEl = document.querySelector('input[name="food_preference"]:checked');
             const primaryFood = foodPrefEl ? foodPrefEl.value : 'Non-Veg';
 
@@ -551,6 +618,7 @@
                 '[ARETE 26 SUMMIT DELEGATE - REF: ' + refId + ']',
                 'Food: ' + primaryFood + ' (Summary: ' + vegCount + ' Veg, ' + nonVegCount + ' Non-Veg)',
                 'Chapter: ' + chapter,
+                'Membership: ' + membershipStatus,
                 'Designation: ' + designation,
                 'Company: ' + company,
                 notes ? 'Notes: ' + notes : '',
@@ -568,7 +636,7 @@
                 email: email,
                 chapter: chapter,
                 pincode: '600014',
-                isExistingMember: chapter.includes('Guest') ? 'No' : 'Yes',
+                isExistingMember: membershipStatus === 'Existing Member' ? 'Yes' : (membershipStatus === 'Wants to Join' ? 'Wants to Join' : 'No'),
                 referredBy: chapter,
                 additionalGuests: guestCount,
                 foodPreference: primaryFood,
