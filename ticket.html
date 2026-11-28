@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARÉTE'26 Digital Summit Ticket • The Kingdom Leaders</title>
+    <link rel="icon" type="image/jpeg" href="images/Arete26.jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="ticket-generator.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+
+    <!-- Top Navigation -->
+    <header class="border-b border-amber-500/20 bg-slate-950/90 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="arete26.html" class="flex items-center gap-2.5">
+                <img src="images/tkl_logo.png" alt="TKL Logo" class="w-9 h-9 rounded-full border border-amber-400/50 object-cover bg-white" onerror="this.style.display='none'">
+                <div>
+                    <div class="text-xs font-black text-amber-400 tracking-wider uppercase font-cinzel">ARÉTE'26 SUMMIT</div>
+                    <div class="text-[10px] text-slate-400">Official Digital Delegate Pass</div>
+                </div>
+            </a>
+            <a href="arete26.html" class="text-xs font-bold text-amber-300 hover:text-amber-200 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-lg transition-all">
+                ← Summit Page
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-2xl w-full mx-auto px-4 py-8 space-y-6">
+
+        <!-- Lookup Box (Shown if no ref in URL or for searching another ticket) -->
+        <section id="lookup-section" class="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-5 shadow-xl">
+            <h1 class="text-lg sm:text-xl font-black text-white font-cinzel">Retrieve Your ARÉTE'26 Ticket (JPG)</h1>
+            <p class="text-xs text-slate-300 mt-1">Enter your registered 10-digit mobile number or Ticket Reference ID (e.g. ARETE26-123456).</p>
+            <form id="ticket-lookup-form" onsubmit="handleLookupSubmit(event)" class="mt-4 flex flex-col sm:flex-row gap-2.5">
+                <input type="text" id="lookup-query-input" required placeholder="Phone Number or ARETE26-XXXXXX"
+                    class="flex-1 bg-slate-950 border border-slate-700 focus:border-amber-400 text-white px-4 py-2.5 rounded-xl text-sm outline-none font-mono">
+                <button type="submit" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-lg">
+                    Find My Ticket
+                </button>
+            </form>
+        </section>
+
+        <!-- Loading State -->
+        <div id="ticket-loading" class="hidden text-center py-12 space-y-3">
+            <div class="w-10 h-10 border-4 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p class="text-sm text-amber-300 font-semibold">Generating your high-resolution JPG Summit Pass...</p>
+        </div>
+
+        <!-- Not Found State -->
+        <div id="ticket-not-found" class="hidden bg-rose-950/50 border border-rose-500/40 rounded-2xl p-6 text-center space-y-3">
+            <div class="text-3xl">❌</div>
+            <h2 class="text-lg font-black text-rose-300">Registration Not Found</h2>
+            <p class="text-xs text-slate-300 max-w-md mx-auto">
+                We could not locate an ARÉTE'26 ticket matching your query. Please check your Reference ID or 10-digit mobile number, or register now.
+            </p>
+            <a href="arete26.html" class="inline-block bg-amber-500 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl uppercase tracking-wider">
+                Register for ARÉTE'26
+            </a>
+        </div>
+
+        <!-- Active Ticket Display -->
+        <section id="ticket-display" class="hidden space-y-5">
+            <!-- Live Check-in Status Banner -->
+            <div id="ticket-status-banner" class="rounded-2xl p-4 border flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span id="status-icon" class="text-2xl">🟢</span>
+                    <div>
+                        <div id="status-title" class="text-xs font-black uppercase tracking-wider">VALID PASS • READY FOR ENTRY</div>
+                        <div id="status-subtitle" class="text-[11px] opacity-85 mt-0.5">Present this QR code or your phone number at the entrance desk.</div>
+                    </div>
+                </div>
+                <span id="status-ref-badge" class="font-mono text-xs font-black px-2.5 py-1 rounded-lg bg-black/30 border border-white/10"></span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button type="button" onclick="downloadCurrentTicket()"
+                    class="w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3.5 px-5 rounded-xl text-xs sm:text-sm uppercase tracking-wider shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all">
+                    <span>📥 Download Ticket (JPG)</span>
+                </button>
+                <button type="button" onclick="shareCurrentTicketWhatsApp()"
+                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-3.5 px-5 rounded-xl text-xs sm:text-sm uppercase tracking-wider shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all">
+                    <span>📲 Send JPG via WhatsApp</span>
+                </button>
+            </div>
+
+            <!-- Generated High-Res JPG Ticket Preview -->
+            <div class="bg-slate-900/80 border border-amber-500/30 rounded-3xl p-3 sm:p-4 shadow-2xl">
+                <img id="ticket-jpg-preview" src="" alt="ARETE 26 Summit Digital Ticket JPG"
+                    class="w-full max-w-md mx-auto rounded-2xl shadow-2xl border border-amber-400/40">
+            </div>
+
+            <!-- Venue & Help Links -->
+            <div class="bg-slate-900/80 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                <div>
+                    <strong class="text-amber-300 block">CSI Synod Centre, Royapettah</strong>
+                    <span class="text-slate-400">Friday, 5 December 2026 • 5:00 PM – 9:00 PM</span>
+                </div>
+                <a href="https://maps.google.com/?q=CSI+Synod+Centre+Royapettah+Chennai" target="_blank" rel="noopener"
+                    class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-4 py-2 rounded-xl border border-white/10 transition-all shrink-0">
+                    📍 Get Venue Directions
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        let currentRecord = null;
+        let currentTicketData = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const ref = params.get('ref') || params.get('scan') || '';
+            const phone = params.get('p') || params.get('phone') || '';
+            const query = ref || phone;
+
+            if (query) {
+                document.getElementById('lookup-query-input').value = query;
+                fetchAndRenderTicket(query);
+            }
+        });
+
+        function handleLookupSubmit(e) {
+            e.preventDefault();
+            const q = document.getElementById('lookup-query-input').value.trim();
+            if (q) fetchAndRenderTicket(q);
+        }
+
+        async function fetchAndRenderTicket(query) {
+            const loading = document.getElementById('ticket-loading');
+            const notFound = document.getElementById('ticket-not-found');
+            const display = document.getElementById('ticket-display');
+
+            loading.classList.remove('hidden');
+            notFound.classList.add('hidden');
+            display.classList.add('hidden');
+
+            try {
+                let result = { found: false };
+                if (window.TKL_SUPABASE && window.TKL_SUPABASE.registrations && window.TKL_SUPABASE.registrations.getByRefOrPhone) {
+                    result = await window.TKL_SUPABASE.registrations.getByRefOrPhone(query);
+                }
+
+                if (!result.found || !result.record) {
+                    loading.classList.add('hidden');
+                    notFound.classList.remove('hidden');
+                    return;
+                }
+
+                currentRecord = result.record;
+                currentTicketData = window.TKL_TICKET.normalizeTicketData(currentRecord);
+
+                // Check-in status badge
+                const status = window.TKL_SUPABASE.registrations.parseCheckinStatus(currentRecord);
+                const banner = document.getElementById('ticket-status-banner');
+                const icon = document.getElementById('status-icon');
+                const title = document.getElementById('status-title');
+                const subtitle = document.getElementById('status-subtitle');
+                document.getElementById('status-ref-badge').textContent = currentTicketData.refId;
+
+                if (status.checkedIn) {
+                    banner.className = 'rounded-2xl p-4 border bg-amber-500/15 border-amber-500/40 text-amber-200 flex items-center justify-between gap-3';
+                    icon.textContent = '🟡';
+                    title.textContent = `CHECKED IN • ${status.timestamp}`;
+                    subtitle.textContent = `Verified at venue by ${status.volunteer}. Welcome to ARÉTE'26!`;
+                } else {
+                    banner.className = 'rounded-2xl p-4 border bg-emerald-500/15 border-emerald-500/40 text-emerald-200 flex items-center justify-between gap-3';
+                    icon.textContent = '🟢';
+                    title.textContent = 'VALID ENTRY PASS • READY FOR CHECK-IN';
+                    subtitle.textContent = 'Present this JPG QR code or your phone number at the entrance desk.';
+                }
+
+                // Render JPG Ticket Image
+                const jpgUrl = await window.TKL_TICKET.generateTicketJpgDataUrl(currentRecord);
+                document.getElementById('ticket-jpg-preview').src = jpgUrl;
+
+                loading.classList.add('hidden');
+                display.classList.remove('hidden');
+            } catch (err) {
+                console.error('Error loading ticket:', err);
+                loading.classList.add('hidden');
+                notFound.classList.remove('hidden');
+            }
+        }
+
+        async function downloadCurrentTicket() {
+            if (!currentRecord) return;
+            await window.TKL_TICKET.downloadTicketJpg(currentRecord);
+        }
+
+        async function shareCurrentTicketWhatsApp() {
+            if (!currentRecord) return;
+            await window.TKL_TICKET.shareTicketViaWhatsApp(currentRecord);
+        }
+    </script>
+</body>
+</html>

@@ -45,9 +45,11 @@
     <!-- Custom Central Stylesheet -->
     <link rel="stylesheet" href="styles.css">
 
-    <!-- Supabase CDN Client -->
+    <!-- Supabase CDN Client & Ticket Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
+    <script src="ticket-generator.js"></script>
 
     <style>
         /* Failsafe to guarantee content is NEVER invisible or empty */
@@ -478,6 +480,26 @@
                                     </p>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Digital JPG Ticket & WhatsApp Delivery Card -->
+                        <div class="max-w-md mx-auto bg-slate-950/90 border-2 border-amber-400/60 rounded-2xl p-4 sm:p-5 space-y-3 shadow-xl text-center">
+                            <div class="text-[10px] font-black uppercase tracking-widest text-amber-400">🎟️ YOUR DIGITAL SUMMIT PASS (JPG)</div>
+                            <img id="page-ticket-jpg-preview" src="" alt="ARETE 26 Ticket JPG" class="w-64 mx-auto rounded-xl border border-amber-400/50 shadow-lg hidden">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                <button type="button" onclick="downloadAreteTicketJpg()"
+                                    class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-wider shadow cursor-pointer flex items-center justify-center gap-1.5">
+                                    <span>📥 Download JPG</span>
+                                </button>
+                                <button type="button" onclick="shareAreteTicketWhatsApp()"
+                                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-wider shadow cursor-pointer flex items-center justify-center gap-1.5">
+                                    <span>📲 WhatsApp Ticket</span>
+                                </button>
+                            </div>
+                            <a id="page-view-ticket-link" href="ticket.html" target="_blank"
+                                class="inline-block text-[11px] text-amber-300 hover:text-amber-200 underline font-semibold pt-1">
+                                Open Full Ticket Pass Page ↗
+                            </a>
                         </div>
 
                         <!-- Post-Registration Actions -->
@@ -1339,12 +1361,28 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="mt-4">
-                <button type="button" onclick="closeSuccessModal()"
-                    class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-colors shadow cursor-pointer">
-                    Done / Return to Page &rarr;
-                </button>
+            <!-- Action Buttons (JPG Ticket & WhatsApp Delivery) -->
+            <div class="mt-4 space-y-2.5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <button type="button" onclick="shareAreteTicketWhatsApp()"
+                        class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-wider shadow-lg cursor-pointer flex items-center justify-center gap-1.5">
+                        <span>📲 Send JPG to WhatsApp</span>
+                    </button>
+                    <button type="button" onclick="downloadAreteTicketJpg()"
+                        class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-wider shadow-lg cursor-pointer flex items-center justify-center gap-1.5">
+                        <span>📥 Download Ticket (JPG)</span>
+                    </button>
+                </div>
+                <div class="flex items-center justify-between gap-2 pt-1">
+                    <a id="modal-view-ticket-link" href="ticket.html" target="_blank"
+                        class="flex-1 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 font-bold py-2.5 px-3 rounded-xl text-xs text-center transition-colors">
+                        🎟️ View Pass
+                    </a>
+                    <button type="button" onclick="closeSuccessModal()"
+                        class="flex-1 bg-white/10 hover:bg-white/20 text-white font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                        Done / Return &rarr;
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1696,11 +1734,11 @@
                 }
 
                 // Show confirmation modal immediately!
-                populateSuccessDetails(m.full_name || 'TKL Member', refId, totalParticipants, totalCost);
+                populateSuccessDetails(m.full_name || 'TKL Member', refId, totalParticipants, totalCost, payload);
 
             } catch (err) {
                 console.error("Fast pass error:", err);
-                populateSuccessDetails(m.full_name || 'TKL Member', refId, totalParticipants, totalCost);
+                populateSuccessDetails(m.full_name || 'TKL Member', refId, totalParticipants, totalCost, payload);
             } finally {
                 submitBtn.disabled = false;
                 spinner.classList.add('hidden');
@@ -2153,7 +2191,7 @@
                 } catch (gErr) {}
 
                 // 3. Populate Success Details & Bank Info (AFTER Registration)
-                populateSuccessDetails(fullName, refId, totalParticipants, totalCost);
+                populateSuccessDetails(fullName, refId, totalParticipants, totalCost, payload);
 
                 // Reset form
                 document.getElementById('arete-registration-form').reset();
@@ -2164,7 +2202,7 @@
             } catch (err) {
                 console.error("Submission error:", err);
                 alert("Thank you! Your registration has been received and saved locally. See you at ARETE 26!");
-                populateSuccessDetails(fullName, refId, totalParticipants, totalCost);
+                populateSuccessDetails(fullName, refId, totalParticipants, totalCost, payload);
             } finally {
                 submitBtn.disabled = false;
                 spinner.classList.add('hidden');
@@ -2172,9 +2210,28 @@
             }
         }
 
+        let lastConfirmedTicketData = null;
+
+        async function downloadAreteTicketJpg() {
+            if (!lastConfirmedTicketData || !window.TKL_TICKET) return;
+            await window.TKL_TICKET.downloadTicketJpg(lastConfirmedTicketData);
+        }
+
+        async function shareAreteTicketWhatsApp() {
+            if (!lastConfirmedTicketData || !window.TKL_TICKET) return;
+            await window.TKL_TICKET.shareTicketViaWhatsApp(lastConfirmedTicketData);
+        }
+
         // Populate Success Details & Bank Information AFTER Registration
-        function populateSuccessDetails(fullName, refId, totalParticipants, totalCost) {
+        async function populateSuccessDetails(fullName, refId, totalParticipants, totalCost, payloadData) {
             const feeFormatted = `₹${totalCost.toLocaleString('en-IN')}`;
+            lastConfirmedTicketData = {
+                ...(payloadData || {}),
+                fullName,
+                refId,
+                totalParticipants,
+                totalCost
+            };
             
             // Modal fields
             const modalName = document.getElementById('modal-attendee-name');
@@ -2228,6 +2285,27 @@
             if (modal) modal.classList.remove('hidden');
 
             updateUpiPaymentLinks(totalCost);
+
+            // Generate JPG Ticket Preview & Update Pass Links
+            if (window.TKL_TICKET) {
+                const norm = window.TKL_TICKET.normalizeTicketData(lastConfirmedTicketData);
+                const ticketHref = `ticket.html?ref=${encodeURIComponent(norm.refId)}${norm.phone ? '&p=' + encodeURIComponent(norm.phone) : ''}`;
+                const modalLink = document.getElementById('modal-view-ticket-link');
+                if (modalLink) modalLink.href = ticketHref;
+                const pageLink = document.getElementById('page-view-ticket-link');
+                if (pageLink) pageLink.href = ticketHref;
+
+                try {
+                    const jpgUrl = await window.TKL_TICKET.generateTicketJpgDataUrl(lastConfirmedTicketData);
+                    const previewImg = document.getElementById('page-ticket-jpg-preview');
+                    if (previewImg && jpgUrl) {
+                        previewImg.src = jpgUrl;
+                        previewImg.classList.remove('hidden');
+                    }
+                } catch (e) {
+                    console.warn('Ticket JPG preview warning:', e);
+                }
+            }
         }
 
         function closeSuccessModal() {

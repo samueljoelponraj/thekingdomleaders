@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARÉTE'26 Gate Check-in Scanner • The Kingdom Leaders</title>
+    <link rel="icon" type="image/jpeg" href="images/Arete26.jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        #qr-reader video { border-radius: 1rem; object-fit: cover; }
+        #qr-reader__scan_region { border-radius: 1rem; overflow: hidden; }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+
+    <!-- Gate Staff Passcode Lock Modal -->
+    <div id="gate-auth-overlay" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border-2 border-amber-400/50 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 text-center">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 flex items-center justify-center text-3xl mx-auto shadow-lg">
+                🔐
+            </div>
+            <div>
+                <span class="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full">
+                    ARÉTE'26 VENUE ACCESS
+                </span>
+                <h1 class="text-xl sm:text-2xl font-black text-white font-cinzel mt-3">Gate Check-in Desk</h1>
+                <p class="text-xs text-slate-400 mt-1">Enter Volunteer Desk Name & Gate PIN to unlock QR Scanner & Phone Check-in.</p>
+            </div>
+            <form onsubmit="unlockGateApp(event)" class="space-y-3.5 text-left">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Desk / Volunteer Name</label>
+                    <input type="text" id="auth-volunteer-name" value="Gate 1 Desk" required
+                        class="w-full bg-slate-950 border border-slate-700 focus:border-amber-400 text-white px-4 py-2.5 rounded-xl text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Gate Access PIN</label>
+                    <input type="password" id="auth-gate-pin" placeholder="Enter PIN (e.g. 2026)" required
+                        class="w-full bg-slate-950 border border-slate-700 focus:border-amber-400 text-white px-4 py-2.5 rounded-xl text-sm outline-none font-mono">
+                </div>
+                <p id="auth-error-msg" class="hidden text-xs text-rose-400 font-semibold text-center">Invalid Gate PIN. Please try again.</p>
+                <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3 rounded-xl text-sm uppercase tracking-wider shadow-lg cursor-pointer">
+                    Unlock Check-in System ➔
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="border-b border-amber-500/20 bg-slate-950/90 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black text-lg shadow">📷</div>
+                <div>
+                    <div class="text-xs sm:text-sm font-black text-amber-400 font-cinzel tracking-wider">ARÉTE'26 GATE CHECK-IN</div>
+                    <div class="text-[10px] text-slate-400">Desk: <span id="header-volunteer-name" class="text-emerald-400 font-semibold">Gate Desk</span></div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="loadAttendanceData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 cursor-pointer">
+                    ↻ Refresh
+                </button>
+                <a href="master-login.html" class="hidden sm:inline-block bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold px-3 py-1.5 rounded-lg border border-amber-500/30">
+                    Admin Portal
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-6 space-y-6">
+
+        <!-- 1. LIVE ATTENDANCE METRICS -->
+        <section class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="bg-slate-900/90 border border-white/10 rounded-2xl p-4">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Registered Headcount</div>
+                <div id="metric-total-registered" class="text-2xl sm:text-3xl font-black text-white mt-1">0</div>
+                <div id="metric-total-orders" class="text-[10px] text-slate-400 mt-0.5">0 Registrations</div>
+            </div>
+            <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-2xl p-4">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">Checked In</div>
+                <div id="metric-checked-in" class="text-2xl sm:text-3xl font-black text-emerald-300 mt-1">0</div>
+                <div id="metric-checked-percent" class="text-[10px] text-emerald-400/80 mt-0.5">0% Arrived</div>
+            </div>
+            <div class="bg-amber-950/30 border border-amber-500/30 rounded-2xl p-4">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Pending Arrival</div>
+                <div id="metric-pending" class="text-2xl sm:text-3xl font-black text-amber-300 mt-1">0</div>
+                <div class="text-[10px] text-slate-400 mt-0.5">Remaining Passes</div>
+            </div>
+            <div class="bg-slate-900/90 border border-white/10 rounded-2xl p-4">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Arrived Meals</div>
+                <div id="metric-meals" class="text-sm sm:text-base font-black text-white mt-2">0 Veg • 0 Non-Veg</div>
+                <div class="text-[10px] text-slate-400 mt-1">Based on checked-in</div>
+            </div>
+        </section>
+
+        <!-- 2. DUAL CHECK-IN ZONE: OPTIONAL PHONE CHECK-IN + LIVE QR SCANNER -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+
+            <!-- Left / Top: Optional Phone Number Check-in + QR Camera -->
+            <div class="lg:col-span-6 space-y-4">
+
+                <!-- OPTIONAL CHECK-IN VIA PHONE NUMBER -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-900/90 border-2 border-amber-400/50 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+                            Optional Quick Check-in
+                        </span>
+                        <span class="text-[11px] text-slate-400">No QR needed</span>
+                    </div>
+                    <h2 class="text-base sm:text-lg font-black text-white font-cinzel">Check-in via Phone Number or Ref ID</h2>
+                    <form onsubmit="handlePhoneOrRefLookup(event)" class="flex flex-col sm:flex-row gap-2.5">
+                        <input type="text" id="phone-checkin-input" required
+                            placeholder="Enter 10-digit Mobile or ARETE26-XXXXXX"
+                            class="flex-1 bg-slate-950 border border-slate-700 focus:border-amber-400 text-white px-4 py-3 rounded-xl text-sm outline-none font-mono">
+                        <button type="submit"
+                            class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black px-5 py-3 rounded-xl text-xs uppercase tracking-wider shadow cursor-pointer shrink-0">
+                            🔍 Verify & Check-in
+                        </button>
+                    </form>
+                </div>
+
+                <!-- LIVE CAMERA QR SCANNER -->
+                <div class="bg-slate-900/90 border border-white/15 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div>
+                            <h2 class="text-base font-black text-white font-cinzel">📷 Live Ticket QR Scanner</h2>
+                            <p class="text-[11px] text-slate-400">Point camera at attendee's JPG ticket QR code</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="btn-start-scanner" onclick="startQrScanner()"
+                                class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-3.5 py-2 rounded-xl cursor-pointer shadow">
+                                ▶ Start Camera
+                            </button>
+                            <button type="button" id="btn-stop-scanner" onclick="stopQrScanner()"
+                                class="hidden bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl cursor-pointer">
+                                ⏹ Stop Camera
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="qr-reader" class="w-full rounded-2xl overflow-hidden bg-slate-950 border border-white/10 min-h-[240px] flex items-center justify-center">
+                        <div id="qr-placeholder" class="text-center p-6 text-slate-500 text-xs space-y-2">
+                            <div class="text-3xl">📷</div>
+                            <p>Tap <strong>"▶ Start Camera"</strong> above to scan attendee QR tickets.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: VALIDATION RESULT PANEL (Valid / Duplicate / Invalid) -->
+            <div class="lg:col-span-6">
+                <div id="validation-empty-state" class="bg-slate-900/60 border border-dashed border-slate-700 rounded-2xl p-8 text-center space-y-3">
+                    <div class="text-4xl">🎟️</div>
+                    <h3 class="text-base font-bold text-slate-200">Ready to Validate Tickets</h3>
+                    <p class="text-xs text-slate-400 max-w-sm mx-auto">
+                        Scan an attendee's QR code or enter their 10-digit phone number to verify ticket validity and prevent duplicate entry.
+                    </p>
+                </div>
+
+                <!-- Active Validation Card -->
+                <div id="validation-result-card" class="hidden rounded-3xl p-5 sm:p-6 border-2 shadow-2xl space-y-4">
+                    <!-- Status Header -->
+                    <div class="flex items-center justify-between gap-3 pb-3 border-b border-white/15">
+                        <div class="flex items-center gap-3">
+                            <span id="val-status-icon" class="text-3xl">🟢</span>
+                            <div>
+                                <div id="val-status-badge" class="text-xs font-black uppercase tracking-widest">VALID TICKET</div>
+                                <div id="val-status-sub" class="text-[11px] opacity-90 mt-0.5">Ready for entrance check-in</div>
+                            </div>
+                        </div>
+                        <span id="val-ref-id" class="font-mono text-xs font-black px-3 py-1 rounded-lg bg-black/40 border border-white/15">ARETE26-000000</span>
+                    </div>
+
+                    <!-- Attendee Details -->
+                    <div class="space-y-3">
+                        <div>
+                            <div class="text-[10px] uppercase tracking-wider opacity-70 font-bold">Delegate Name</div>
+                            <div id="val-name" class="text-xl sm:text-2xl font-black text-white">Delegate Name</div>
+                            <div id="val-org" class="text-xs opacity-85 mt-0.5">Role • Company</div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2.5 text-xs">
+                            <div class="bg-black/30 p-3 rounded-xl border border-white/10">
+                                <span class="text-[10px] opacity-70 block uppercase">Phone Number</span>
+                                <strong id="val-phone" class="font-mono text-sm text-white">9876543210</strong>
+                            </div>
+                            <div class="bg-black/30 p-3 rounded-xl border border-white/10">
+                                <span class="text-[10px] opacity-70 block uppercase">Total Badges</span>
+                                <strong id="val-badges" class="text-sm text-amber-300">1 Delegate</strong>
+                            </div>
+                            <div class="bg-black/30 p-3 rounded-xl border border-white/10">
+                                <span class="text-[10px] opacity-70 block uppercase">Dinner Tokens</span>
+                                <strong id="val-food" class="text-sm text-white">1 Veg</strong>
+                            </div>
+                            <div class="bg-black/30 p-3 rounded-xl border border-white/10">
+                                <span class="text-[10px] opacity-70 block uppercase">Payment Status</span>
+                                <strong id="val-payment" class="text-sm text-emerald-300">Verified</strong>
+                            </div>
+                        </div>
+
+                        <div id="val-guests-box" class="hidden bg-black/30 p-3 rounded-xl border border-white/10 text-xs">
+                            <span class="text-[10px] uppercase opacity-70 block font-bold mb-1">Registered Additional Guests</span>
+                            <div id="val-guests-list" class="text-slate-200 space-y-1"></div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div id="val-actions" class="pt-2 space-y-2.5">
+                        <button type="button" id="btn-confirm-checkin" onclick="confirmCurrentCheckIn()"
+                            class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-4 px-5 rounded-xl text-sm uppercase tracking-wider shadow-xl cursor-pointer transition-all">
+                            ✅ CONFIRM CHECK-IN & ISSUE BADGES
+                        </button>
+                        <button type="button" onclick="resetValidationPanel()"
+                            class="w-full bg-white/10 hover:bg-white/15 text-white font-bold py-2.5 px-4 rounded-xl text-xs cursor-pointer">
+                            Scan / Search Next Attendee
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. ATTENDEE CHECK-IN LIST & FILTER -->
+        <section class="bg-slate-900/80 border border-white/10 rounded-2xl p-4 sm:p-5 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button type="button" onclick="setRosterFilter('all')" id="filter-btn-all" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 cursor-pointer">All</button>
+                    <button type="button" onclick="setRosterFilter('checkedin')" id="filter-btn-checkedin" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 cursor-pointer">Checked In</button>
+                    <button type="button" onclick="setRosterFilter('pending')" id="filter-btn-pending" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 cursor-pointer">Pending</button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="roster-search" oninput="renderRosterTable()" placeholder="Filter list by name or phone..."
+                        class="bg-slate-950 border border-slate-700 text-white px-3 py-1.5 rounded-lg text-xs outline-none w-full sm:w-56">
+                    <button type="button" onclick="exportCheckinCsv()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg cursor-pointer shrink-0">
+                        📥 Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-white/10 text-slate-400 uppercase text-[10px]">
+                            <th class="py-2.5 px-3">Delegate</th>
+                            <th class="py-2.5 px-3">Ref ID</th>
+                            <th class="py-2.5 px-3">Passes</th>
+                            <th class="py-2.5 px-3">Status</th>
+                            <th class="py-2.5 px-3 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roster-tbody" class="divide-y divide-white/5">
+                        <tr><td colspan="5" class="py-8 text-center text-slate-500">Loading registrations...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        let allAreteRecords = [];
+        let activeFilter = 'all';
+        let currentValidatedRecord = null;
+        let html5QrScanner = null;
+        let isScannerRunning = false;
+        let lastScanText = '';
+        let lastScanTime = 0;
+
+        // Audio feedback via Web Audio API (no external audio files needed)
+        function playTone(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                if (type === 'success') {
+                    osc.frequency.setValueAtTime(880, ctx.currentTime);
+                    osc.frequency.setValueAtTime(1174, ctx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.22);
+                } else if (type === 'warn') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(320, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.35);
+                } else {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.35);
+                }
+            } catch (e) {}
+        }
+
+        // Auth Gate
+        function unlockGateApp(e) {
+            if (e) e.preventDefault();
+            const vol = (document.getElementById('auth-volunteer-name').value || '').trim() || 'Gate Desk';
+            const pin = (document.getElementById('auth-gate-pin').value || '').trim();
+            let masterPass = 'TKL#Admin$2026!Master';
+            try {
+                if (window.TKL_SUPABASE && window.TKL_SUPABASE.config && typeof window.TKL_SUPABASE.config.get === 'function') {
+                    masterPass = window.TKL_SUPABASE.config.get().masterPasscode || masterPass;
+                }
+            } catch (err) {}
+
+            if (pin === '2026' || pin === masterPass || pin.toUpperCase() === 'ARETE26') {
+                try {
+                    sessionStorage.setItem('tkl_gate_unlocked', 'true');
+                    sessionStorage.setItem('tkl_gate_volunteer', vol);
+                } catch (err) {}
+                document.getElementById('auth-error-msg').classList.add('hidden');
+                document.getElementById('gate-auth-overlay').classList.add('hidden');
+                document.getElementById('header-volunteer-name').textContent = vol;
+                initGateApp();
+            } else {
+                document.getElementById('auth-error-msg').classList.remove('hidden');
+            }
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let unlocked = false;
+            let vol = 'Gate Desk';
+            try {
+                unlocked = sessionStorage.getItem('tkl_gate_unlocked') === 'true';
+                vol = sessionStorage.getItem('tkl_gate_volunteer') || 'Gate Desk';
+            } catch (err) {}
+
+            if (unlocked) {
+                document.getElementById('gate-auth-overlay').classList.add('hidden');
+                document.getElementById('header-volunteer-name').textContent = vol;
+                initGateApp();
+            }
+        });
+
+        async function initGateApp() {
+            await loadAttendanceData();
+            const params = new URLSearchParams(window.location.search);
+            const scanParam = params.get('scan') || params.get('ref');
+            if (scanParam) {
+                document.getElementById('phone-checkin-input').value = scanParam;
+                await validateQuery(scanParam);
+            }
+        }
+
+        async function loadAttendanceData() {
+            try {
+                const all = await window.TKL_SUPABASE.registrations.getAll();
+                allAreteRecords = all.filter(r =>
+                    (r.event_name || '').toLowerCase().includes('arete') ||
+                    (r.notes || '').toLowerCase().includes('arete26')
+                );
+                updateMetrics();
+                renderRosterTable();
+            } catch (err) {
+                console.error('Error loading attendance data:', err);
+            }
+        }
+
+        function parseFoodCounts(record) {
+            const notes = String(record.notes || '');
+            const total = 1 + (parseInt(record.additional_guests, 10) || 0);
+            const vegMatch = notes.match(/(\d+)\s*Veg/i);
+            const nonVegMatch = notes.match(/(\d+)\s*Non-Veg/i);
+            return {
+                veg: vegMatch ? parseInt(vegMatch[1], 10) : (notes.toLowerCase().includes('non-veg') ? 0 : total),
+                nonVeg: nonVegMatch ? parseInt(nonVegMatch[1], 10) : (notes.toLowerCase().includes('non-veg') && !vegMatch ? total : 0),
+                summary: (vegMatch || nonVegMatch) ? `${vegMatch ? vegMatch[1] : 0} Veg, ${nonVegMatch ? nonVegMatch[1] : 0} Non-Veg` : `${total} Standard`
+            };
+        }
+
+        function updateMetrics() {
+            let totalHeadcount = 0;
+            let checkedInHeadcount = 0;
+            let vegCheckedIn = 0;
+            let nonVegCheckedIn = 0;
+
+            allAreteRecords.forEach(r => {
+                const passes = 1 + (parseInt(r.additional_guests, 10) || 0);
+                totalHeadcount += passes;
+                const status = window.TKL_SUPABASE.registrations.parseCheckinStatus(r);
+                if (status.checkedIn) {
+                    checkedInHeadcount += passes;
+                    const food = parseFoodCounts(r);
+                    vegCheckedIn += food.veg;
+                    nonVegCheckedIn += food.nonVeg;
+                }
+            });
+
+            const pending = Math.max(0, totalHeadcount - checkedInHeadcount);
+            const pct = totalHeadcount > 0 ? Math.round((checkedInHeadcount / totalHeadcount) * 100) : 0;
+
+            document.getElementById('metric-total-registered').textContent = totalHeadcount;
+            document.getElementById('metric-total-orders').textContent = `${allAreteRecords.length} Registrations`;
+            document.getElementById('metric-checked-in').textContent = checkedInHeadcount;
+            document.getElementById('metric-checked-percent').textContent = `${pct}% Arrived`;
+            document.getElementById('metric-pending').textContent = pending;
+            document.getElementById('metric-meals').textContent = `${vegCheckedIn} Veg • ${nonVegCheckedIn} Non-Veg`;
+        }
+
+        function handlePhoneOrRefLookup(e) {
+            e.preventDefault();
+            const q = document.getElementById('phone-checkin-input').value.trim();
+            if (q) validateQuery(q);
+        }
+
+        async function validateQuery(query) {
+            const res = await window.TKL_SUPABASE.registrations.getByRefOrPhone(query);
+            const emptyState = document.getElementById('validation-empty-state');
+            const card = document.getElementById('validation-result-card');
+            emptyState.classList.add('hidden');
+            card.classList.remove('hidden');
+
+            if (!res.found || !res.record) {
+                currentValidatedRecord = null;
+                playTone('error');
+                if (navigator.vibrate) navigator.vibrate([120, 80, 120]);
+
+                card.className = 'rounded-3xl p-5 sm:p-6 border-2 shadow-2xl space-y-4 bg-rose-950/60 border-rose-500 text-rose-100';
+                document.getElementById('val-status-icon').textContent = '❌';
+                document.getElementById('val-status-badge').textContent = 'INVALID TICKET / NOT FOUND';
+                document.getElementById('val-status-sub').textContent = `No registration matched "${query}"`;
+                document.getElementById('val-ref-id').textContent = 'NOT FOUND';
+                document.getElementById('val-name').textContent = 'Unregistered Visitor';
+                document.getElementById('val-org').textContent = 'Please verify mobile number or register at helpdesk.';
+                document.getElementById('val-phone').textContent = query;
+                document.getElementById('val-badges').textContent = '-';
+                document.getElementById('val-food').textContent = '-';
+                document.getElementById('val-payment').textContent = '-';
+                document.getElementById('val-guests-box').classList.add('hidden');
+                document.getElementById('btn-confirm-checkin').classList.add('hidden');
+                return;
+            }
+
+            const record = res.record;
+            currentValidatedRecord = record;
+            const refId = window.TKL_SUPABASE.registrations.extractRefId(record);
+            const status = window.TKL_SUPABASE.registrations.parseCheckinStatus(record);
+            const passes = 1 + (parseInt(record.additional_guests, 10) || 0);
+            const food = parseFoodCounts(record);
+
+            document.getElementById('val-ref-id').textContent = refId;
+            document.getElementById('val-name').textContent = record.full_name || 'Delegate';
+            document.getElementById('val-org').textContent = [record.role, record.company, record.referred_by].filter(Boolean).join(' • ');
+            document.getElementById('val-phone').textContent = record.phone || '-';
+            document.getElementById('val-badges').textContent = `${passes} Badge${passes > 1 ? 's' : ''} (1 + ${passes - 1} Guests)`;
+            document.getElementById('val-food').textContent = food.summary;
+            document.getElementById('val-payment').textContent = `${record.payment_status || 'Recorded'} (₹${record.total_cost || 0})`;
+
+            // Guest list extraction if present
+            const guestsBox = document.getElementById('val-guests-box');
+            const guestsListEl = document.getElementById('val-guests-list');
+            const guestJsonMatch = String(record.notes || '').match(/(?:Additional Members|Guests)\s*\(\d+\):\s*(\[[^\]]+\])/i);
+            if (guestJsonMatch) {
+                try {
+                    const guests = JSON.parse(guestJsonMatch[1]);
+                    if (Array.isArray(guests) && guests.length > 0) {
+                        guestsListEl.innerHTML = guests.map((g, idx) =>
+                            `<div>${idx + 1}. <strong>${escapeHtml(g.name)}</strong> (${escapeHtml(g.food || 'Veg')}) ${g.phone ? '• ' + escapeHtml(g.phone) : ''}</div>`
+                        ).join('');
+                        guestsBox.classList.remove('hidden');
+                    } else {
+                        guestsBox.classList.add('hidden');
+                    }
+                } catch (e) {
+                    guestsBox.classList.add('hidden');
+                }
+            } else {
+                guestsBox.classList.add('hidden');
+            }
+
+            const confirmBtn = document.getElementById('btn-confirm-checkin');
+            if (status.checkedIn) {
+                playTone('warn');
+                if (navigator.vibrate) navigator.vibrate([100, 60, 100]);
+                card.className = 'rounded-3xl p-5 sm:p-6 border-2 shadow-2xl space-y-4 bg-amber-950/60 border-amber-500 text-amber-100';
+                document.getElementById('val-status-icon').textContent = '⚠️';
+                document.getElementById('val-status-badge').textContent = 'ALREADY CHECKED IN (DUPLICATE)';
+                document.getElementById('val-status-sub').textContent = `Checked in at ${status.timestamp} by ${status.volunteer}`;
+                confirmBtn.classList.add('hidden');
+            } else {
+                playTone('success');
+                if (navigator.vibrate) navigator.vibrate(80);
+                card.className = 'rounded-3xl p-5 sm:p-6 border-2 shadow-2xl space-y-4 bg-emerald-950/60 border-emerald-500 text-emerald-100';
+                document.getElementById('val-status-icon').textContent = '🟢';
+                document.getElementById('val-status-badge').textContent = 'VALID TICKET • READY TO CHECK IN';
+                document.getElementById('val-status-sub').textContent = 'Ticket verified! Tap below to issue badges.';
+                confirmBtn.classList.remove('hidden');
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = `✅ CONFIRM CHECK-IN (ISSUE ${passes} BADGE${passes > 1 ? 'S' : ''})`;
+            }
+        }
+
+        async function confirmCurrentCheckIn() {
+            if (!currentValidatedRecord) return;
+            const btn = document.getElementById('btn-confirm-checkin');
+            btn.disabled = true;
+            btn.textContent = 'Recording Check-in...';
+
+            const volunteer = (document.getElementById('header-volunteer-name') && document.getElementById('header-volunteer-name').textContent) || 'Gate Desk';
+            const res = await window.TKL_SUPABASE.registrations.checkIn(currentValidatedRecord, volunteer);
+
+            if (res.success) {
+                playTone('success');
+                currentValidatedRecord = res.record;
+                // Update in local array
+                const idx = allAreteRecords.findIndex(r => r.id === res.record.id || r.phone === res.record.phone);
+                if (idx >= 0) allAreteRecords[idx] = res.record;
+                else allAreteRecords.unshift(res.record);
+
+                updateMetrics();
+                renderRosterTable();
+
+                const card = document.getElementById('validation-result-card');
+                card.className = 'rounded-3xl p-5 sm:p-6 border-2 shadow-2xl space-y-4 bg-emerald-900/50 border-emerald-400 text-white';
+                document.getElementById('val-status-icon').textContent = '✅';
+                document.getElementById('val-status-badge').textContent = 'CHECK-IN COMPLETE!';
+                document.getElementById('val-status-sub').textContent = `Checked in at ${res.timestamp} by ${volunteer}`;
+                btn.classList.add('hidden');
+            } else if (res.alreadyCheckedIn) {
+                alert(`Already checked in at ${res.status.timestamp}`);
+                validateQuery(currentValidatedRecord.phone || window.TKL_SUPABASE.registrations.extractRefId(currentValidatedRecord));
+            }
+        }
+
+        function resetValidationPanel() {
+            currentValidatedRecord = null;
+            document.getElementById('validation-result-card').classList.add('hidden');
+            document.getElementById('validation-empty-state').classList.remove('hidden');
+            document.getElementById('phone-checkin-input').value = '';
+            document.getElementById('phone-checkin-input').focus();
+        }
+
+        // Camera QR Scanner
+        async function startQrScanner() {
+            if (isScannerRunning) return;
+            const placeholder = document.getElementById('qr-placeholder');
+            if (placeholder) placeholder.classList.add('hidden');
+
+            html5QrScanner = new Html5Qrcode('qr-reader');
+            try {
+                await html5QrScanner.start(
+                    { facingMode: 'environment' },
+                    { fps: 10, qrbox: { width: 230, height: 230 } },
+                    async (decodedText) => {
+                        const now = Date.now();
+                        if (decodedText === lastScanText && now - lastScanTime < 3000) return;
+                        lastScanText = decodedText;
+                        lastScanTime = now;
+                        await validateQuery(decodedText);
+                    }
+                );
+                isScannerRunning = true;
+                document.getElementById('btn-start-scanner').classList.add('hidden');
+                document.getElementById('btn-stop-scanner').classList.remove('hidden');
+            } catch (err) {
+                console.error('Camera start failed:', err);
+                alert('Could not access camera. Please allow camera permission or use Phone Number Check-in above.');
+                if (placeholder) placeholder.classList.remove('hidden');
+            }
+        }
+
+        async function stopQrScanner() {
+            if (html5QrScanner && isScannerRunning) {
+                await html5QrScanner.stop();
+                html5QrScanner.clear();
+                isScannerRunning = false;
+            }
+            document.getElementById('btn-start-scanner').classList.remove('hidden');
+            document.getElementById('btn-stop-scanner').classList.add('hidden');
+            const placeholder = document.getElementById('qr-placeholder');
+            if (placeholder) placeholder.classList.remove('hidden');
+        }
+
+        // Roster Table
+        function setRosterFilter(filter) {
+            activeFilter = filter;
+            ['all', 'checkedin', 'pending'].forEach(f => {
+                const btn = document.getElementById(`filter-btn-${f}`);
+                btn.className = f === filter
+                    ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 cursor-pointer'
+                    : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 cursor-pointer';
+            });
+            renderRosterTable();
+        }
+
+        function renderRosterTable() {
+            const tbody = document.getElementById('roster-tbody');
+            const search = (document.getElementById('roster-search').value || '').toLowerCase().trim();
+
+            const filtered = allAreteRecords.filter(r => {
+                const status = window.TKL_SUPABASE.registrations.parseCheckinStatus(r);
+                if (activeFilter === 'checkedin' && !status.checkedIn) return false;
+                if (activeFilter === 'pending' && status.checkedIn) return false;
+                if (search) {
+                    const text = `${r.full_name || ''} ${r.phone || ''} ${r.company || ''} ${r.notes || ''}`.toLowerCase();
+                    if (!text.includes(search)) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-slate-500">No matching delegates found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(r => {
+                const refId = window.TKL_SUPABASE.registrations.extractRefId(r);
+                const status = window.TKL_SUPABASE.registrations.parseCheckinStatus(r);
+                const passes = 1 + (parseInt(r.additional_guests, 10) || 0);
+                const statusPill = status.checkedIn
+                    ? `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full text-[10px] font-bold">✓ ${escapeHtml(status.timestamp)}</span>`
+                    : `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full text-[10px] font-bold">Pending</span>`;
+
+                const actionBtn = status.checkedIn
+                    ? `<button type="button" onclick="validateQuery('${escapeHtml(refId)}')" class="text-[10px] text-slate-400 hover:text-white underline cursor-pointer">View</button>`
+                    : `<button type="button" onclick="validateQuery('${escapeHtml(refId)}')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-2.5 py-1 rounded-lg text-[10px] cursor-pointer">Check In</button>`;
+
+                return `
+                    <tr class="hover:bg-slate-800/40 transition-colors">
+                        <td class="py-2.5 px-3">
+                            <div class="font-bold text-white">${escapeHtml(r.full_name)}</div>
+                            <div class="text-[10px] text-slate-400 font-mono">${escapeHtml(r.phone || '')}</div>
+                        </td>
+                        <td class="py-2.5 px-3 font-mono text-amber-300 font-bold">${escapeHtml(refId)}</td>
+                        <td class="py-2.5 px-3 font-bold">${passes}</td>
+                        <td class="py-2.5 px-3">${statusPill}</td>
+                        <td class="py-2.5 px-3 text-right">${actionBtn}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function exportCheckinCsv() {
+            const headers = ['Ref ID', 'Name', 'Phone', 'Company', 'Passes', 'Check-in Status', 'Check-in Time', 'Volunteer'];
+            const rows = allAreteRecords.map(r => {
+                const refId = window.TKL_SUPABASE.registrations.extractRefId(r);
+                const status = window.TKL_SUPABASE.registrations.parseCheckinStatus(r);
+                const passes = 1 + (parseInt(r.additional_guests, 10) || 0);
+                return [
+                    refId,
+                    `"${(r.full_name || '').replace(/"/g, '""')}"`,
+                    r.phone || '',
+                    `"${(r.company || '').replace(/"/g, '""')}"`,
+                    passes,
+                    status.checkedIn ? 'Checked In' : 'Pending',
+                    `"${status.timestamp || ''}"`,
+                    `"${status.volunteer || ''}"`
+                ].join(',');
+            });
+            const csv = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ARETE26-Attendance-${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>

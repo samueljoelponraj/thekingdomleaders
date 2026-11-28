@@ -631,6 +631,190 @@
                 isMember: false,
                 message: 'Mobile number not found in registered members list'
             };
+        },
+
+        /**
+         * Parse check-in state from a registration record
+         */
+        parseCheckinStatus(record) {
+            if (!record) return { checkedIn: false, timestamp: null, volunteer: null };
+            const notes = String(record.notes || '');
+            const match = notes.match(/\[CHECKED_IN:\s*([^|\]]+)(?:\|\s*([^\]]+))?\]/i);
+            if (match) {
+                return {
+                    checkedIn: true,
+                    timestamp: match[1].trim(),
+                    volunteer: match[2] ? match[2].trim() : 'Gate Volunteer'
+                };
+            }
+            if (record.is_checked_in === true || record.checked_in_at) {
+                return {
+                    checkedIn: true,
+                    timestamp: record.checked_in_at || 'Earlier Today',
+                    volunteer: 'Gate Desk'
+                };
+            }
+            return { checkedIn: false, timestamp: null, volunteer: null };
+        },
+
+        /**
+         * Extract ARETE26 Reference ID from record notes or fallback
+         */
+        extractRefId(record) {
+            if (!record) return '';
+            const notes = String(record.notes || '');
+            const refMatch = notes.match(/ARETE26-[A-Z0-9]{4,10}/i);
+            if (refMatch) return refMatch[0].toUpperCase();
+            if (record.id && String(record.id).length >= 6) {
+                return 'ARETE26-' + String(record.id).replace(/[^a-zA-Z0-9]/g, '').slice(-6).toUpperCase();
+            }
+            const phoneDigits = String(record.phone || '').replace(/\D/g, '');
+            return phoneDigits ? 'ARETE26-' + phoneDigits.slice(-6) : 'ARETE26-000000';
+        },
+
+        /**
+         * Look up an Aréte'26 registration by QR scan value, Ref ID, or 10-digit Phone Number
+         */
+        async getByRefOrPhone(rawQuery) {
+            if (!rawQuery) return { found: false, message: 'Empty query' };
+            let q = String(rawQuery).trim();
+
+            // If a full URL was scanned (e.g. https://.../checkin.html?scan=ARETE26-123456), extract scan/ref param
+            if (q.includes('scan=') || q.includes('ref=')) {
+                try {
+                    const parsedUrl = new URL(q.startsWith('http') ? q : 'https://example.com/' + q.replace(/^\?/, ''));
+                    q = parsedUrl.searchParams.get('scan') || parsedUrl.searchParams.get('ref') || q;
+                } catch (e) {
+                    const m = q.match(/(?:scan|ref)=([^&\s]+)/i);
+                    if (m) q = decodeURIComponent(m[1]);
+                }
+            }
+
+            // Try JSON payload if QR encoded JSON
+            if (q.startsWith('{')) {
+                try {
+                    const obj = JSON.parse(q);
+                    q = obj.ref || obj.phone || q;
+                } catch (e) {}
+            }
+
+            const refMatch = q.match(/ARETE26-[A-Z0-9]+/i);
+            const refCode = refMatch ? refMatch[0].toUpperCase() : null;
+            const digits = q.replace(/\D/g, '');
+            const cleanPhone = digits.length >= 10 ? digits.slice(-10) : null;
+
+            const url = getSupabaseUrl();
+            const key = getSupabaseAnonKey();
+            let matches = [];
+
+            if (url && key && typeof fetch !== 'undefined') {
+                try {
+                    let endpoint = '';
+                    if (refCode) {
+                        endpoint = `${url}/rest/v1/registrations?notes=ilike.*${encodeURIComponent(refCode)}*&order=created_at.desc&limit=10`;
+                    } else if (cleanPhone) {
+                        endpoint = `${url}/rest/v1/registrations?phone=ilike.*${encodeURIComponent(cleanPhone)}*&order=created_at.desc&limit=10`;
+                    } else {
+                        endpoint = `${url}/rest/v1/registrations?or=(full_name.ilike.*${encodeURIComponent(q)}*,notes.ilike.*${encodeURIComponent(q)}*)&order=created_at.desc&limit=10`;
+                    }
+
+                    const res = await fetch(endpoint, {
+                        headers: {
+                            'apikey': key,
+                            'Authorization': 'Bearer ' + key
+                        }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (Array.isArray(data)) matches = data;
+                    }
+                } catch (err) {
+                    console.warn('[TKL Supabase] getByRefOrPhone REST warning:', err);
+                }
+            }
+
+            // Prioritize ARETE 26 records if multiple exist for same phone
+            const areteMatches = matches.filter(r => (r.event_name || '').toLowerCase().includes('arete') || (r.notes || '').toLowerCase().includes('arete26'));
+            const finalMatches = areteMatches.length > 0 ? areteMatches : matches;
+
+            if (finalMatches.length > 0) {
+                return { found: true, record: finalMatches[0], allMatches: finalMatches, source: 'supabase' };
+            }
+
+            // Fallback: check local cache
+            const local = getLocalRegistrations();
+            const localFound = local.filter(r => {
+                if (refCode && String(r.notes || '').toUpperCase().includes(refCode)) return true;
+                if (cleanPhone && String(r.phone || '').replace(/\D/g, '').slice(-10) === cleanPhone) return true;
+                if (!refCode && !cleanPhone && String(r.full_name || '').toLowerCase().includes(q.toLowerCase())) return true;
+                return false;
+            });
+
+            if (localFound.length > 0) {
+                const areteLocal = localFound.filter(r => (r.event_name || '').toLowerCase().includes('arete') || (r.notes || '').toLowerCase().includes('arete26'));
+                const chosen = areteLocal.length > 0 ? areteLocal : localFound;
+                return { found: true, record: chosen[0], allMatches: chosen, source: 'local' };
+            }
+
+            return { found: false, query: q, message: 'No matching Aréte\'26 registration found.' };
+        },
+
+        /**
+         * Mark an attendee registration as checked in at the venue gate
+         */
+        async checkIn(record, volunteerName = 'Gate Desk') {
+            if (!record) return { success: false, error: 'Invalid record' };
+
+            const currentStatus = this.parseCheckinStatus(record);
+            if (currentStatus.checkedIn) {
+                return {
+                    success: false,
+                    alreadyCheckedIn: true,
+                    status: currentStatus,
+                    record
+                };
+            }
+
+            const now = new Date();
+            const timeStr = now.toLocaleString('en-IN', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', hour12: true
+            });
+            const tag = `[CHECKED_IN: ${timeStr} | ${volunteerName}]`;
+            const updatedNotes = record.notes ? `${record.notes} | ${tag}` : tag;
+
+            const updatedRecord = { ...record, notes: updatedNotes };
+            const url = getSupabaseUrl();
+            const key = getSupabaseAnonKey();
+
+            // Persist to Supabase via REST PATCH
+            if (record.id && isUUID(record.id) && url && key && typeof fetch !== 'undefined') {
+                try {
+                    const res = await fetch(`${url}/rest/v1/registrations?id=eq.${encodeURIComponent(record.id)}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': key,
+                            'Authorization': 'Bearer ' + key,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify({ notes: updatedNotes })
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (Array.isArray(data) && data[0]) {
+                            saveLocalRegistration(data[0]);
+                            return { success: true, alreadyCheckedIn: false, timestamp: timeStr, record: data[0] };
+                        }
+                    }
+                } catch (err) {
+                    console.warn('[TKL Supabase] REST checkIn PATCH warning:', err);
+                }
+            }
+
+            // Local fallback update
+            saveLocalRegistration(updatedRecord);
+            return { success: true, alreadyCheckedIn: false, timestamp: timeStr, record: updatedRecord, localOnly: true };
         }
     };
 
